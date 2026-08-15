@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import mawwalRoutes from "./routes/mawwal.route.js";
+import { errorHandler } from "./middleware/errorHandler.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(express.static(path.join(path.resolve(), "public")));
 
 app.use("/api/mawwal", mawwalRoutes);
+
+app.use(errorHandler);
 
 mongoose
   .connect(MONGO_URI)

@@ -1,6 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-const opts = { toJSON: { virtuals: true } };
-const missionData = new Schema(
+const missionDataSchema = new Schema(
   {
     missionNumber: {
       type: String,
@@ -35,18 +34,16 @@ const missionData = new Schema(
   },
   {
     toJSON: { virtuals: true },
-  }
+  },
 );
 
-missionData.virtual("duration").get(function () {
+missionDataSchema.virtual("duration").get(function () {
   if (this.startDate && this.endDate) {
     const durationInMilliseconds = this.endDate - this.startDate;
 
-    return Math.floor(
-      durationInMilliseconds / (1000 * 60 * 60 * 24)
-    );
+    return Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24));
   }
   return null;
 });
 
-export default mongoose.model("Mission", missionData);
+export default mongoose.model("Mission", missionDataSchema);
