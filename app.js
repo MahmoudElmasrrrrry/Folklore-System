@@ -5,6 +5,8 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import mawwalRoutes from "./routes/mawwal.route.js";
+import categoryRoutes from "./routes/category.route.js";
+import subCategoryRoutes from "./routes/subCategory.route.js";
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
 
 const app = express();
@@ -17,6 +19,9 @@ app.use(express.json());
 app.use(express.static(path.join(path.resolve(), "public")));
 
 app.use("/api/mawwal", mawwalRoutes);
+app.use("/api/category", categoryRoutes);
+app.use("/api/subCategory", subCategoryRoutes);
+
 
 app.use(errorHandler);
 

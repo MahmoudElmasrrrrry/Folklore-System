@@ -1,0 +1,188 @@
+import mongoose from "mongoose";
+import { Schema } from "mongoose";
+const mawwalSchema = new Schema(
+  {
+    //  1 بيانات الموال 
+    mawwalName: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+
+    mawwalType: {
+      type: String,
+      enum: ["قصصي", "غنائي", "ملحمي"],
+      required: true,
+    },
+
+    thematicClassification: {
+      type: [String],
+      enum: ["بطولة", "غزل", "ملحمي", "متعدد القيم"],
+      default: [],
+    },
+
+    //  2 النص والمحتوى 
+    fullText: {
+      type: String,
+      required: true,
+    },
+
+    duration: {
+      value: Number,
+      unit: {
+        type: String,
+        enum: ["ساعة", "دقائق", "ثواني"],
+      },
+    },
+
+    performanceMode: {
+      type: String,
+      enum: ["مغني", "ملقن"],
+    },
+
+    dialect: {
+      type: String,
+      enum: ["صعيدي", "بدوي"],
+    },
+
+    eventsSummary: String,
+
+    linesCount: {
+      type: Number,
+      min: 4,
+      max: 300,
+    },
+
+    //  3 سرد الموال 
+    narrationTime: {
+      type: String,
+      enum: ["قديم", "غير محدد", "غير مجدد"],
+    },
+
+    narrationPlace: {
+      type: String,
+      enum: ["عرس", "موالد"],
+    },
+
+    narrativeStyle: {
+      type: String,
+      enum: ["وصفي", "حواري", "ملحمي"],
+    },
+
+    rhetoricalImagery: {
+      type: [String],
+      enum: ["تشبيه", "استعارة", "كناية"],
+      default: [],
+    },
+
+    rhymeRoleInNarration: String,
+
+    storyStructure: {
+      type: [String],
+      enum: ["بداية", "عقدة", "ذروة", "تفاعل جمهور", "خاتمة"],
+      default: [],
+    },
+
+    //  4 الدلالات الثقافية والاجتماعية 
+    socialFunction: {
+      //الوظيفة الاجتماعية للموال
+      type: [String],
+      enum: ["تسلية", "وعظ", "توثيق تاريخي", "تعبير وجداني"],
+      default: [],
+    },
+
+    socialPracticesAndRituals: String,
+
+    reflectedValues: {
+      type: [String],
+      default: [],
+    },
+
+    depictedSocialEnvironment: String,
+
+    //  5 الأداء والتداول 
+    occasion: {
+      type: [String],
+      enum: ["فرح", "سيرة", "سمر", "كوسم"],
+      default: [],
+    },
+
+    performanceMethod: {
+      type: String,
+      enum: ["فردي", "جماعي"],
+    },
+
+    prosodicMeter: {
+      type: String,
+      enum: ["أعرج", "هزج"],
+      default: [],
+    },
+
+    melodyAndMaqam: {
+      maqamName: String,
+      audioUrl: String,
+    },
+
+    accompanyingInstruments: {
+      type: [String],
+      default: [],
+    },
+
+    mawwalPresentation: String,
+
+    //  6 وصف العنصر 
+    elementDescription: {
+      type: String,
+      maxlength: maxWords(300),
+    },
+
+    practiceContext: String,
+
+    //  7 مشاركة المجتمع المحلي 
+    supportingInstitutions: {
+      type: [String],
+      default: [],
+    },
+
+    communityDocumentationEngagement: String,
+
+    narrationVariants: String,
+
+    //  8 الملاحظات والتعليقات 
+    researcherNotes: String,
+
+    geographicSpread: String,
+
+    transmissionMethods: {
+      type: [String],
+      default: [],
+    },
+
+    //  9 خصائص العنصر 
+    currentStatus: String,
+  },
+  {
+    timestamps: true,
+  },
+);
+
+mawwalSchema.index({
+  mawwalName: "text",
+  fullText: "text",
+  eventsSummary: "text",
+  elementDescription: "text",
+});
+
+module.exports = mongoose.model("Mawwal", mawwalSchema);
+
+
+const maxWords = (max) => ({
+  validator: function (value) {
+    if (!value) return true;
+
+    return value.trim().split(/\s+/).length <= max;
+  },
+  message: ({ value }) =>
+    `Text must not exceed ${max} words`,
+});
