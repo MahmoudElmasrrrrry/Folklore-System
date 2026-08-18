@@ -49,6 +49,13 @@ const costumeSchema = new Schema(
 // ---- الرقصة الشعبية ----
 const folkDanceSchema = new Schema(
   {
+    folkloreMaterial: {
+      type: Schema.Types.ObjectId,
+      ref: "FolkloreMaterial",
+      required: true,
+      index: true,
+    },
+
     // ===== بيانات الرقصة =====
     danceName: {
       type: String, 

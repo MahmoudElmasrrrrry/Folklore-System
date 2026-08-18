@@ -81,6 +81,13 @@ const productSchema = new Schema(
 // ---- الحرفة الشعبية (Schema الرئيسي) ----
 const folkCraftSchema = new Schema(
   {
+    folkloreMaterial: {
+      type: Schema.Types.ObjectId,
+      ref: "FolkloreMaterial",
+      required: true,
+      index: true,
+    },
+
     craftName: {
       type: String, 
       required: true,
@@ -141,4 +148,4 @@ const folkCraftSchema = new Schema(
 // فهرس نصي على اسم الحرفة لدعم الاسترجاع/البحث
 folkCraftSchema.index({ craftName: 'text' });
 
-export default mongoose.model.Craft || mongoose.model('Craft', craftsmanSchema);
+export default mongoose.models.Craft || mongoose.model('Craft', folkCraftSchema);

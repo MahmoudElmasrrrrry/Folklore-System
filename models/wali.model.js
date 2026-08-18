@@ -54,6 +54,13 @@ const sufiOrderSchema = new Schema(
 // ---- main schema ----
 const waliSchema = new Schema(
   {
+    folkloreMaterial: {
+      type: Schema.Types.ObjectId,
+      ref: "FolkloreMaterial",
+      required: true,
+      index: true,
+    },
+
     name: {
       type: String, 
       required: true,
@@ -106,4 +113,4 @@ waliSchema.index({
   miracles: 'text',
 });
 
-export default mongoose.model.wali || mongoose.model('Wali', waliSchema);
+export default mongoose.models.Wali || mongoose.model('Wali', waliSchema);
