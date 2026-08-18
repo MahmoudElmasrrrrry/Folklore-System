@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+const maxWords = (max) => ({
+  validator: function (value) {
+    if (!value) return true;
+
+    return value.trim().split(/\s+/).length <= max;
+  },
+  message: ({ value }) =>
+    `Text must not exceed ${max} words`,
+});
+
 const mawwalSchema = new Schema(
   {
     //  1 بيانات الموال 
@@ -134,7 +144,7 @@ const mawwalSchema = new Schema(
     //  6 وصف العنصر 
     elementDescription: {
       type: String,
-      maxlength: maxWords(300),
+      validate: maxWords(300),
     },
 
     practiceContext: String,
@@ -161,6 +171,15 @@ const mawwalSchema = new Schema(
 
     //  9 خصائص العنصر 
     currentStatus: String,
+
+
+
+    folkloreMaterial:{
+        type: Schema.Types.ObjectId,
+        ref: "FolkloreMaterial",
+        required: true,
+        index: true
+    }
   },
   {
     timestamps: true,
@@ -174,15 +193,4 @@ mawwalSchema.index({
   elementDescription: "text",
 });
 
-module.exports = mongoose.model("Mawwal", mawwalSchema);
-
-
-const maxWords = (max) => ({
-  validator: function (value) {
-    if (!value) return true;
-
-    return value.trim().split(/\s+/).length <= max;
-  },
-  message: ({ value }) =>
-    `Text must not exceed ${max} words`,
-});
+export default mongoose.models.Mawwal || mongoose.model('Mawwal', mawwalSchema);

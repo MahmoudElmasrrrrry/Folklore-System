@@ -46,4 +46,4 @@ missionDataSchema.virtual("duration").get(function () {
   return null;
 });
 
-export default mongoose.model("Mission", missionDataSchema);
+export default mongoose.models.Mission || mongoose.model("Mission", missionDataSchema);

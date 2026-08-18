@@ -21,4 +21,4 @@ const narratorDataSchema = new Schema({
   additionalInfo: String,
 });
 
-export default mongoose.model("Narrator", narratorDataSchema);
+export default mongoose.models.Narrator || mongoose.model("Narrator", narratorDataSchema);

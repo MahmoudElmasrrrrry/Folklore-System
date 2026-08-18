@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import path from "path";
 import mawwalRoutes from "./routes/mawwal.route.js";
 import categoryRoutes from "./routes/category.route.js";
-import subCategoryRoutes from "./routes/subCategory.route.js";
+import folklerMaterial from "./routes/folklerMaterial.route.js";
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
 
 const app = express();
@@ -20,7 +20,7 @@ app.use(express.static(path.join(path.resolve(), "public")));
 
 app.use("/api/mawwal", mawwalRoutes);
 app.use("/api/category", categoryRoutes);
-app.use("/api/subCategory", subCategoryRoutes);
+app.use("/api/folkoler", folklerMaterial);
 
 
 app.use(errorHandler);

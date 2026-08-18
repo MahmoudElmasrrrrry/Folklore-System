@@ -89,7 +89,12 @@ const FolkloreMaterialSchema = new Schema(
     fieldMaterialType: {
       type: String,
       required: true,
-      default: "موال قصصي",
+    },
+    
+    category:{
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      index: true,
     },
 
     subjectData: subjectDataSchema,
@@ -103,4 +108,5 @@ const FolkloreMaterialSchema = new Schema(
   },
 );
 
-export default mongoose.model("FolkloreMaterial", FolkloreMaterialSchema);
+export default mongoose.models.FolkloreMaterial ||
+  mongoose.model("FolkloreMaterial", FolkloreMaterialSchema);
