@@ -3,17 +3,31 @@ import narratorModel from "../models/narrator.model.js";
 import missionModel from "../models/mission.model.js";
 import collectorModel from "../models/collector.model.js";
 
+export const renderFolkloreMaterial = async (req, res, next) => {
+  res.render("folklore/add", { title: "إضافة مادة فلكلورية" });
+};
+
 export const createFolkloreMaterial = async (req, res, next) => {
   try {
     const {
-      narrator,
       mission,
+      narrator,
       collector,
-      fieldMaterialType,
-      subjectData,
       collectionData,
       dataSource,
+      subjectData,
+      fieldMaterialType,
     } = req.body;
+
+    // تحويل النصوص المكتوبة (بفواصل) إلى مصفوفات (Arrays) كما تتوقع قاعدة البيانات
+    if (mission && typeof mission.missionMembers === 'string') {
+      mission.missionMembers = mission.missionMembers.split('-').map(m => m.trim()).filter(m => m);
+    }
+
+    if (subjectData && typeof subjectData.subjectDetails === 'string') {
+      // يدعم الفاصلة العربية (،) والإنجليزية (,)
+      subjectData.subjectDetails = subjectData.subjectDetails.split(/[،,]/).map(s => s.trim()).filter(s => s);
+    }
 
     // 1. Find or Create Narrator
     let narratorExists = await narratorModel.findOne({
@@ -55,11 +69,8 @@ export const createFolkloreMaterial = async (req, res, next) => {
     });
 
     // 5. Response
-    return res.status(201).json({
-      status: "success",
-      message: "Folklore material created successfully",
-      folkloreMaterial: folkloreMaterial._id,
-    });
+    // Redirect to home page upon successful form submission
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }

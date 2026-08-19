@@ -1,0 +1,221 @@
+<div class="page-header">
+    <h1>البيانات الاساسية</h1>
+    <p>سجل بيانات الموال الميداني</p>
+</div>
+
+<form action="/folklore" method="POST">
+
+    <!-- ١. بيانات البعثة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-map-location-dot"></i> بيانات البعثة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>رقم البعثة <span class="required">*</span></label>
+                <input type="text" name="mission[missionNumber]" class="form-control" required placeholder="مثال: M-001">
+            </div>
+            <div class="form-group">
+                <label>مكان البعثة (المحافظة) <span class="required">*</span></label>
+                <select name="mission[place]" class="form-control" required>
+                    <option value="">اختر المحافظة</option>
+                    <option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option>
+                    <option>الدقهلية</option><option>الشرقية</option><option>المنوفية</option>
+                    <option>الغربية</option><option>كفر الشيخ</option><option>البحيرة</option>
+                    <option>دمياط</option><option>بورسعيد</option><option>الإسماعيلية</option>
+                    <option>السويس</option><option>الفيوم</option><option>بني سويف</option>
+                    <option>المنيا</option><option>أسيوط</option><option>سوهاج</option>
+                    <option>قنا</option><option>الأقصر</option><option>أسوان</option>
+                    <option>البحر الأحمر</option><option>الوادي الجديد</option><option>مطروح</option>
+                    <option>شمال سيناء</option><option>جنوب سيناء</option><option>القليوبية</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>تاريخ البداية <span class="required">*</span></label>
+                <input type="date" id="missionStartDate" name="mission[startDate]" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>تاريخ النهاية <span class="required">*</span></label>
+                <input type="date" id="missionEndDate" name="mission[endDate]" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>المدة (بالأيام)</label>
+                <input type="text" id="missionDuration" class="form-control" readonly placeholder="تحسب تلقائياً" style="background-color: #f8f9fa; cursor: not-allowed;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label>أعضاء البعثة (افصل بـ -) <span class="required">*</span></label>
+                <input type="text" name="mission[missionMembers]" class="form-control" placeholder="مثال: أحمد - محمد" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- ٢. المادة الميدانية -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-file-audio"></i> المادة الميدانية</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>نوع المادة الميدانية <span class="required">*</span></label>
+                <input type="text" name="fieldMaterialType" class="form-control" value="موال قصصي" required>
+            </div>
+        </div>
+    </div>
+
+    <!-- ٣. مصدر المادة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-compact-disc"></i> مصدر المادة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>نوع المصدر</label>
+                <input type="text" name="dataSource[sourceType]" class="form-control" value="مادة ميدانية جمعت من الميدان مباشرة">
+            </div>
+            <div class="form-group">
+                <label>رقم الصورة</label>
+                <input type="text" name="dataSource[photoNumber]" class="form-control" placeholder="001">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>رقم الشريط</label>
+                <input type="text" name="dataSource[tapeNumber]" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>رقم الجزء</label>
+                <input type="text" name="dataSource[partNumber]" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>رقم نسخة الشريط</label>
+                <input type="text" name="dataSource[tapeCopyNumber]" class="form-control">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label>مكان حفظ الملف الرقمي</label>
+                <input type="text" name="dataSource[digitalFileLocation]" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <!-- ٤. بيانات الجمع -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-clipboard-list"></i> بيانات الجمع</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>الجامع <span class="required">*</span></label>
+                <input type="text" name="collector[name]" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>تاريخ الجمع <span class="required">*</span></label>
+                <input type="date" name="collectionData[collectionDate]" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>المنطقة الثقافية</label>
+                <select name="collectionData[collectionCulturePlace]" class="form-control">
+                    <option value="">اختر</option>
+                    <option>حضر</option><option>ريف</option><option>سواحل</option>
+                    <option>بدو</option><option>الصعيد</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>المحافظة <span class="required">*</span></label>
+                <select name="collectionData[collectionPlace][governorate]" class="form-control" required>
+                    <option value="">اختر المحافظة</option>
+                    <option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option>
+                    <option>الدقهلية</option><option>الشرقية</option><option>المنوفية</option>
+                    <option>الغربية</option><option>كفر الشيخ</option><option>البحيرة</option>
+                    <option>دمياط</option><option>بورسعيد</option><option>الإسماعيلية</option>
+                    <option>السويس</option><option>الفيوم</option><option>بني سويف</option>
+                    <option>المنيا</option><option>أسيوط</option><option>سوهاج</option>
+                    <option>قنا</option><option>الأقصر</option><option>أسوان</option>
+                    <option>البحر الأحمر</option><option>الوادي الجديد</option><option>مطروح</option>
+                    <option>شمال سيناء</option><option>جنوب سيناء</option><option>القليوبية</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>المركز (المدينة) <span class="required">*</span></label>
+                <input type="text" name="collectionData[collectionPlace][city]" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>القرية</label>
+                <input type="text" name="collectionData[collectionPlace][village]" class="form-control">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>العزبة / النجع</label><input type="text" name="collectionData[collectionPlace][hamlet]" class="form-control"></div>
+            <div class="form-group"><label>مكان التسجيل التفصيلي</label><input type="text" name="collectionData[collectionPlaceInDetail]" class="form-control"></div>
+        </div>
+    </div>
+
+    <!-- ٥. الراوي -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-microphone-lines"></i> الراوي / الإخباري</h2>
+        <div class="form-row">
+            <div class="form-group"><label>اسم الراوي <span class="required">*</span></label><input type="text" name="narrator[name]" class="form-control" required></div>
+            <div class="form-group"><label>السن <span class="required">*</span></label><input type="number" name="narrator[age]" class="form-control" required></div>
+            <div class="form-group">
+                <label>الحالة الاجتماعية</label>
+                <select name="narrator[status]" class="form-control">
+                    <option value="">اختر</option>
+                    <option>أعزب</option><option>متزوج</option><option>مطلق</option><option>أرمل</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>المهنة <span class="required">*</span></label><input type="text" name="narrator[occupation]" class="form-control" required></div>
+            <div class="form-group full-width"><label>نبذة عن الراوي</label><textarea name="narrator[additionalInfo]" class="form-control"></textarea></div>
+        </div>
+    </div>
+
+    <!-- ٦. البيانات الموضوعية -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-book-open"></i> البيانات الموضوعية</h2>
+        <div class="form-row">
+            <div class="form-group"><label>الموضوع الرئيسي <span class="required">*</span></label><input type="text" name="subjectData[mainSubject]" class="form-control" value="أشكال التعبير الشفهي (الأدب الشعبي)" required></div>
+            <div class="form-group"><label>الموضوع الفرعي <span class="required">*</span></label><input type="text" name="subjectData[subSubject]" class="form-control" value="الشعر الشعبي" required></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>الواصفات (افصل بفاصلة)</label><input type="text" name="subjectData[subjectDetails]" class="form-control" placeholder="غزل، حنين، غربة"></div>
+            <div class="form-group"><label>رقم المكنز</label><input type="text" name="subjectData[thesaurusNumber]" class="form-control"></div>
+        </div>
+    </div>
+
+    <div style="text-align: left; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> حفظ البيانات</button>
+    </div>
+
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.getElementById('missionStartDate');
+        const endDateInput = document.getElementById('missionEndDate');
+        const durationInput = document.getElementById('missionDuration');
+
+        function calculateDuration() {
+            if (startDateInput.value && endDateInput.value) {
+                const start = new Date(startDateInput.value);
+                const end = new Date(endDateInput.value);
+                
+                const differenceInTime = end.getTime() - start.getTime();
+                const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+                
+                if (differenceInDays >= 0) {
+                    durationInput.value = differenceInDays + ' يوم';
+                    durationInput.style.color = 'inherit';
+                } else {
+                    durationInput.value = 'خطأ: النهاية قبل البداية!';
+                    durationInput.style.color = 'red';
+                }
+            } else {
+                durationInput.value = '';
+            }
+        }
+
+        startDateInput.addEventListener('change', calculateDuration);
+        endDateInput.addEventListener('change', calculateDuration);
+    });
+</script>
+
