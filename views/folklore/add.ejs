@@ -1,9 +1,23 @@
 <div class="page-header">
-    <h1>البيانات الاساسية</h1>
-    <p>سجل بيانات الموال الميداني</p>
+    <h1>إضافة مادة فلكلورية جديدة</h1>
+    <p>سجل بيانات الموال والمادة الميدانية في الأرشيف</p>
 </div>
 
-<form action="/folklore" method="POST">
+<!-- شريط التقدم -->
+<div class="progress-steps" id="progressSteps">
+    <div class="progress-step active" id="progress-1" onclick="document.getElementById('prevBtn').click()" style="cursor: pointer;" title="العودة للبيانات الأساسية">
+        <div class="step-num">1</div>
+        <span>البيانات الأساسية</span>
+    </div>
+    <div class="progress-connector" id="connector-1"></div>
+    <div class="progress-step" id="progress-2">
+        <div class="step-num">2</div>
+        <span>تصنيف المادة</span>
+    </div>
+</div>
+
+<form id="folkloreForm" action="/folklore" method="POST">
+    <div id="step-1">
 
     <!-- ١. بيانات البعثة -->
     <div class="form-section">
@@ -47,17 +61,6 @@
             <div class="form-group full-width">
                 <label>أعضاء البعثة (افصل بـ -) <span class="required">*</span></label>
                 <input type="text" name="mission[missionMembers]" class="form-control" placeholder="مثال: أحمد - محمد" required>
-            </div>
-        </div>
-    </div>
-
-    <!-- ٢. المادة الميدانية -->
-    <div class="form-section">
-        <h2 class="form-section-title"><i class="fa-solid fa-file-audio"></i> المادة الميدانية</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>نوع المادة الميدانية <span class="required">*</span></label>
-                <input type="text" name="fieldMaterialType" class="form-control" value="موال قصصي" required>
             </div>
         </div>
     </div>
@@ -183,12 +186,63 @@
     </div>
 
     <div style="text-align: left; margin-top: 20px;">
-        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> حفظ البيانات</button>
+        <button type="button" class="btn btn-primary" id="nextBtn">التالي <i class="fa-solid fa-arrow-left"></i></button>
     </div>
+    </div> <!-- end step 1 -->
+
+    <!-- خطوة ٢: التصنيف -->
+    <div id="step-2" style="display: none;">
+        <div class="form-section">
+            <h2 class="form-section-title"><i class="fa-solid fa-tags"></i> تصنيف المادة</h2>
+            <p style="margin-bottom: 20px; color: var(--color-text-muted);">اختر التصنيف والعنصر المناسب للمادة التي قمت بإدخالها.</p>
+            
+            <input type="hidden" name="category" id="hiddenCategory" required>
+            <input type="hidden" name="fieldMaterialType" id="hiddenElement" required>
+
+            <div class="categories-interactive-grid">
+                <% categories.forEach(cat => { %>
+                    <div class="interactive-category-card">
+                        <div class="category-header">
+                            <h3><%= cat.name %></h3>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="category-elements-list">
+                            <% 
+                               const elements = categoryElementMap[cat.name] || [];
+                               elements.forEach(el => { 
+                            %>
+                                <% if (el.ready) { %>
+                                    <div class="element-item selectable" data-category-id="<%= cat._id %>" data-element-name="<%= el.name %>">
+                                        <div class="element-content">
+                                            <%- el.icon %> <span><%= el.name %></span>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <div class="element-item disabled" title="سيتوفر قريباً">
+                                        <div class="element-content">
+                                            <%- el.icon %> <span><%= el.name %></span>
+                                        </div>
+                                        <span class="badge-soon">قريباً</span>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <div style="text-align: left; margin-top: 20px; display: flex; justify-content: space-between;">
+            <button type="button" class="btn btn-outline" id="prevBtn"><i class="fa-solid fa-arrow-right"></i> العودة إلى الخطوة السابقة</button>
+            <button type="submit" class="btn btn-primary" id="saveBtn" disabled><i class="fa-solid fa-save"></i> حفظ البيانات</button>
+        </div>
+    </div> <!-- end step 2 -->
 
 </form>
 
 <script>
+    const categoryElementMap = <%- JSON.stringify(categoryElementMap) %>;
+
     document.addEventListener('DOMContentLoaded', function() {
         const startDateInput = document.getElementById('missionStartDate');
         const endDateInput = document.getElementById('missionEndDate');
@@ -216,6 +270,113 @@
 
         startDateInput.addEventListener('change', calculateDuration);
         endDateInput.addEventListener('change', calculateDuration);
+
+        // Step Navigation Logic with Browser History Support
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+
+        function showStep(stepNumber) {
+            const p1 = document.getElementById('progress-1');
+            const p2 = document.getElementById('progress-2');
+            const c1 = document.getElementById('connector-1');
+
+            if (stepNumber === 1) {
+                step2.style.display = 'none';
+                step1.style.display = 'block';
+                
+                // تحديث شريط التقدم
+                p1.classList.add('active');
+                p2.classList.remove('active');
+                c1.classList.remove('done');
+                
+            } else if (stepNumber === 2) {
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+
+                // تحديث شريط التقدم
+                p1.classList.remove('active');
+                p1.classList.add('completed');
+                p2.classList.add('active');
+                c1.classList.add('done');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            // Check form validity before proceeding
+            const requiredFields = step1.querySelectorAll('[required]');
+            let allValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    allValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (allValid) {
+                showStep(2);
+                // Push state to browser history to support browser Back button
+                history.pushState({ step: 2 }, '', '#category-selection');
+            } else {
+                alert('يرجى تعبئة جميع الحقول الإجبارية المشار إليها بنجمة (*) قبل المتابعة.');
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            showStep(1);
+            history.pushState({ step: 1 }, '', window.location.pathname);
+        });
+
+        // Handle browser's physical Back button
+        window.addEventListener('popstate', (event) => {
+            if (window.location.hash === '#category-selection' || (event.state && event.state.step === 2)) {
+                showStep(2);
+            } else {
+                showStep(1);
+            }
+        });
+
+        // Category & Element Interactive Logic
+        const hiddenCategory = document.getElementById('hiddenCategory');
+        const hiddenElement = document.getElementById('hiddenElement');
+        const saveBtn = document.getElementById('saveBtn');
+        const selectableElements = document.querySelectorAll('.element-item.selectable');
+        const categoryCards = document.querySelectorAll('.interactive-category-card');
+
+        // Toggle category cards on mobile or hover alternative
+        categoryCards.forEach(card => {
+            card.querySelector('.category-header').addEventListener('click', () => {
+                // For mobile click support, toggle a class
+                card.classList.toggle('expanded');
+            });
+        });
+
+        selectableElements.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Prevent event bubbling if necessary
+                e.stopPropagation();
+
+                // Remove selected class from all
+                selectableElements.forEach(el => el.classList.remove('selected'));
+                
+                // Add selected class to this
+                this.classList.add('selected');
+                
+                // Update hidden inputs
+                hiddenCategory.value = this.getAttribute('data-category-id');
+                hiddenElement.value = this.getAttribute('data-element-name');
+                
+                // Enable save button
+                saveBtn.disabled = false;
+            });
+        });
     });
 </script>
 
+<style>
+    .is-invalid { border-color: red !important; box-shadow: 0 0 5px rgba(255,0,0,0.3); }
+</style>

@@ -2,9 +2,20 @@ import folkloreMaterialModel from "../models/folkloreMaterial.model.js";
 import narratorModel from "../models/narrator.model.js";
 import missionModel from "../models/mission.model.js";
 import collectorModel from "../models/collector.model.js";
+import categoryModel from "../models/category.model.js";
+import { CATEGORY_ELEMENT_MAP } from "../utils/categoryElementMap.js";
 
 export const renderFolkloreMaterial = async (req, res, next) => {
-  res.render("folklore/add", { title: "إضافة مادة فلكلورية" });
+  try {
+    const categories = await categoryModel.find();
+    res.render("folklore/add", { 
+      title: "إضافة مادة فلكلورية",
+      categories,
+      categoryElementMap: CATEGORY_ELEMENT_MAP
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const createFolkloreMaterial = async (req, res, next) => {
@@ -17,6 +28,7 @@ export const createFolkloreMaterial = async (req, res, next) => {
       dataSource,
       subjectData,
       fieldMaterialType,
+      category,
     } = req.body;
 
     // تحويل النصوص المكتوبة (بفواصل) إلى مصفوفات (Arrays) كما تتوقع قاعدة البيانات
@@ -62,6 +74,7 @@ export const createFolkloreMaterial = async (req, res, next) => {
       narrator: narratorExists._id,
       mission: missionExists._id,
       collector: collectorExists._id,
+      category,
       fieldMaterialType,
       subjectData,
       collectionData,
