@@ -9,15 +9,15 @@
         والرقصات والموروثات الثقافية — لتظل حاضرة للأجيال القادمة.
     </p>
     <div class="hero-actions">
-        <a href="/folklore/create" class="btn btn-primary">+ إضافة مادة جديدة</a>
-        <a href="/archive" class="btn btn-outline">📚 تصفح الأرشيف</a>
+        <a href="/folklore/create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
+        <a href="/archive" class="btn btn-outline">تصفح الأرشيف</a>
     </div>
 </section>
 
 <!-- About Section -->
 <section class="about-section">
     <div class="about-content">
-        <h2>🏛️ عن المشروع</h2>
+        <h2><i class="fa-solid fa-building-columns"></i> عن المشروع</h2>
         <p>
             يُعدّ مركز دراسات الفنون الشعبية أحد أبرز المراكز البحثية المعنية بالتراث الشعبي المصري.
             يعمل المركز منذ عقود على جمع وتوثيق المواد الفلكلورية من مختلف محافظات مصر، 
@@ -36,22 +36,22 @@
 <section class="stats-section">
     <div class="stats-grid container">
         <div class="stat-card">
-            <span class="stat-icon">📄</span>
+            <span class="stat-icon"><i class="fa-solid fa-file-lines"></i></span>
             <span class="stat-number"><%= stats.totalMaterials %></span>
             <span class="stat-label">مادة ميدانية</span>
         </div>
         <div class="stat-card">
-            <span class="stat-icon">📂</span>
+            <span class="stat-icon"><i class="fa-solid fa-folder-open"></i></span>
             <span class="stat-number"><%= stats.totalCategories %></span>
             <span class="stat-label">تصنيف رئيسي</span>
         </div>
         <div class="stat-card">
-            <span class="stat-icon">🎙️</span>
+            <span class="stat-icon"><i class="fa-solid fa-microphone-lines"></i></span>
             <span class="stat-number"><%= stats.totalNarrators %></span>
             <span class="stat-label">راوي</span>
         </div>
         <div class="stat-card">
-            <span class="stat-icon">🗺️</span>
+            <span class="stat-icon"><i class="fa-solid fa-map"></i></span>
             <span class="stat-number"><%= stats.totalMissions %></span>
             <span class="stat-label">بعثة ميدانية</span>
         </div>
@@ -64,13 +64,13 @@
 <section class="categories-section">
     <div class="container">
         <div class="section-header">
-            <h2>📂 التصنيفات الرئيسية</h2>
+            <h2>التصنيفات الرئيسية</h2>
             <p>اضغط على أي تصنيف لاستعراض المواد الفلكلورية التابعة له</p>
         </div>
         <div class="categories-grid">
             <% categories.forEach(cat => { %>
             <a href="/archive?category=<%= cat._id %>" class="category-card">
-                <span class="category-icon"><%= cat.icon || '📁' %></span>
+                <span class="category-icon"><%- cat.icon || '<i class="fa-solid fa-folder"></i>' %></span>
                 <h3><%= cat.name %></h3>
                 <p><%= cat.description || '' %></p>
                 <span class="category-count"><%= cat.elementCount || 0 %> عنصر</span>
@@ -84,33 +84,33 @@
 <section class="recent-section">
     <div class="container">
         <div class="section-header">
-            <h2>🕐 آخر المواد المضافة</h2>
+            <h2><i class="fa-regular fa-clock"></i> آخر المواد المضافة</h2>
             <p>أحدث المواد الفلكلورية التي تم توثيقها في الأرشيف</p>
         </div>
 
         <% if (recentItems.length === 0) { %>
         <div class="empty-state">
-            <div class="empty-icon">📭</div>
+            <div class="empty-icon"><i class="fa-regular fa-folder-open"></i></div>
             <h3>لا توجد مواد بعد</h3>
             <p>ابدأ بإضافة أول مادة فلكلورية للأرشيف</p>
-            <a href="/folklore/create" class="btn btn-primary" style="margin-top: 16px;">+ إضافة مادة جديدة</a>
+            <a href="/folklore/create" class="btn btn-primary" style="margin-top: 16px;"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
         </div>
         <% } else { %>
         <div class="items-grid">
             <% recentItems.forEach(item => { %>
             <div class="item-card">
-                <span class="item-type type-<%= item.type %>"><%= item.typeLabel %></span>
+                <span class="item-type type-<%= item.type %>"><%- item.typeLabel %></span>
                 <h3><%= item.name %></h3>
                 <div class="item-meta">
                     <% if (item.narrator) { %>
-                    <span>🎙️ <%= item.narrator %></span>
+                    <span><i class="fa-solid fa-microphone-lines"></i> <%= item.narrator %></span>
                     <% } %>
                     <% if (item.date) { %>
-                    <span>📅 <%= new Date(item.date).toLocaleDateString('ar-EG') %></span>
+                    <span><i class="fa-regular fa-calendar-days"></i> <%= new Date(item.date).toLocaleDateString('ar-EG') %></span>
                     <% } %>
                 </div>
                 <a href="/archive/<%= item.type %>/<%= item.id %>" class="btn-details">
-                    عرض التفاصيل ←
+                    عرض التفاصيل <i class="fa-solid fa-arrow-left"></i>
                 </a>
             </div>
             <% }); %>

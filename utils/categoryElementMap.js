@@ -10,28 +10,28 @@ export const CATEGORY_ELEMENT_MAP = {
   "الأدب الشعبي": [
     {
       name: "الموال",
-      icon: "🎵",
+      icon: "<i class=\"fa-solid fa-music\"></i>",
       modelName: "Mawwal",
       routeSlug: "mawwal",
       ready: true,
     },
     {
       name: "الأغنية الشعبية",
-      icon: "🎤",
+      icon: "<i class=\"fa-solid fa-microphone\"></i>",
       modelName: null,
       routeSlug: "folk-song",
       ready: false,
     },
     {
       name: "السيرة الشعبية",
-      icon: "📕",
+      icon: "<i class=\"fa-solid fa-book-journal-whills\"></i>",
       modelName: null,
       routeSlug: "folk-biography",
       ready: false,
     },
     {
       name: "الحكاية الشعبية",
-      icon: "📖",
+      icon: "<i class=\"fa-solid fa-book-open\"></i>",
       modelName: null,
       routeSlug: "folk-tale",
       ready: false,
@@ -41,35 +41,35 @@ export const CATEGORY_ELEMENT_MAP = {
   "العادات والتقاليد": [
     {
       name: "عادات الميلاد",
-      icon: "👶",
+      icon: "<i class=\"fa-solid fa-baby\"></i>",
       modelName: null,
       routeSlug: "birth-customs",
       ready: false,
     },
     {
       name: "عادات الزواج",
-      icon: "💍",
+      icon: "<i class=\"fa-solid fa-ring\"></i>",
       modelName: null,
       routeSlug: "marriage-customs",
       ready: false,
     },
     {
       name: "عادات الوفاة",
-      icon: "🕯️",
+      icon: "<i class=\"fa-solid fa-fire\"></i>",
       modelName: null,
       routeSlug: "death-customs",
       ready: false,
     },
     {
       name: "الأعياد والمناسبات",
-      icon: "🎉",
+      icon: "<i class=\"fa-solid fa-gift\"></i>",
       modelName: null,
       routeSlug: "holidays",
       ready: false,
     },
     {
       name: "الفرد في المجتمع المحلي",
-      icon: "🧑‍🤝‍🧑",
+      icon: "<i class=\"fa-solid fa-users\"></i>",
       modelName: null,
       routeSlug: "individual-society",
       ready: false,
@@ -79,14 +79,14 @@ export const CATEGORY_ELEMENT_MAP = {
   "المعتقدات والمعارف": [
     {
       name: "الأولياء",
-      icon: "🕌",
+      icon: "<i class=\"fa-solid fa-mosque\"></i>",
       modelName: "Wali",
       routeSlug: "wali",
       ready: true,
     },
     {
       name: "الطب الشعبي",
-      icon: "🌿",
+      icon: "<i class=\"fa-solid fa-leaf\"></i>",
       modelName: null,
       routeSlug: "folk-medicine",
       ready: false,
@@ -96,14 +96,14 @@ export const CATEGORY_ELEMENT_MAP = {
   "الفنون الشعبية": [
     {
       name: "الرقص الشعبي",
-      icon: "💃",
+      icon: "<i class=\"fa-solid fa-person-dress\"></i>",
       modelName: "Dance",
       routeSlug: "dance",
       ready: true,
     },
     {
       name: "الألعاب الشعبية",
-      icon: "🎲",
+      icon: "<i class=\"fa-solid fa-dice\"></i>",
       modelName: null,
       routeSlug: "folk-game",
       ready: false,
@@ -113,14 +113,14 @@ export const CATEGORY_ELEMENT_MAP = {
   "الثقافة المادية": [
     {
       name: "الحرف الشعبية",
-      icon: "🧶",
+      icon: "<i class=\"fa-solid fa-hammer\"></i>",
       modelName: "Craft",
       routeSlug: "craft",
       ready: true,
     },
     {
       name: "الأزياء الشعبية",
-      icon: "👗",
+      icon: "<i class=\"fa-solid fa-shirt\"></i>",
       modelName: null,
       routeSlug: "folk-costume",
       ready: false,
@@ -130,11 +130,11 @@ export const CATEGORY_ELEMENT_MAP = {
 
 /** أيقونات التصنيفات الرئيسية */
 export const CATEGORY_ICONS = {
-  "الأدب الشعبي": "📚",
-  "العادات والتقاليد": "🎭",
-  "المعتقدات والمعارف": "🕌",
-  "الفنون الشعبية": "🎨",
-  "الثقافة المادية": "🏺",
+  "الأدب الشعبي": "<i class=\"fa-solid fa-book\"></i>",
+  "العادات والتقاليد": "<i class=\"fa-solid fa-masks-theater\"></i>",
+  "المعتقدات والمعارف": "<i class=\"fa-solid fa-mosque\"></i>",
+  "الفنون الشعبية": "<i class=\"fa-solid fa-palette\"></i>",
+  "الثقافة المادية": "<i class=\"fa-solid fa-shapes\"></i>",
 };
 
 /** وصف مختصر لكل تصنيف */

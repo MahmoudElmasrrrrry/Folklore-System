@@ -77,7 +77,7 @@ export const renderHome = async (req, res, next) => {
         id: m._id,
         name: m.mawwalName,
         type: "mawwal",
-        typeLabel: "🎵 موال",
+        typeLabel: "<i class=\"fa-solid fa-music\"></i> موال",
         narrator: m.folkloreMaterialModel?.narrator?.name || "",
         date: m.createdAt,
       })
@@ -88,7 +88,7 @@ export const renderHome = async (req, res, next) => {
         id: d._id,
         name: d.danceName,
         type: "dance",
-        typeLabel: "💃 رقصة شعبية",
+        typeLabel: "<i class=\"fa-solid fa-person-dress\"></i> رقصة شعبية",
         narrator: d.folkloreMaterialModel?.narrator?.name || "",
         date: d.createdAt,
       })
@@ -99,7 +99,7 @@ export const renderHome = async (req, res, next) => {
         id: c._id,
         name: c.craftName,
         type: "craft",
-        typeLabel: "🧶 حرفة شعبية",
+        typeLabel: "<i class=\"fa-solid fa-hammer\"></i> حرفة شعبية",
         narrator: c.folkloreMaterialModel?.narrator?.name || "",
         date: c.createdAt,
       })
@@ -110,7 +110,7 @@ export const renderHome = async (req, res, next) => {
         id: w._id,
         name: w.name,
         type: "wali",
-        typeLabel: "🕌 ولي",
+        typeLabel: "<i class=\"fa-solid fa-mosque\"></i> ولي",
         narrator: w.folkloreMaterialModel?.narrator?.name || "",
         date: w.createdAt,
       })

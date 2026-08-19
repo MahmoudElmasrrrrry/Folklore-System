@@ -14,6 +14,6 @@ export const seedCategories = async () => {
       );
     }
   } catch (error) {
-    console.error("❌ خطأ في تهيئة التصنيفات:", error.message);
+    console.error("[ERROR] خطأ في تهيئة التصنيفات:", error.message);
   }
 };
