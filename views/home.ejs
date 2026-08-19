@@ -118,3 +118,21 @@
         <% } %>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            Swal.fire({
+                title: 'تم بنجاح!',
+                text: 'تم حفظ جميع البيانات التفصيلية في الأرشيف بنجاح.',
+                icon: 'success',
+                confirmButtonText: 'حسناً',
+                confirmButtonColor: '#1d3557'
+            }).then(() => {
+                // إزالة المتغير من الرابط لتجنب ظهور الرسالة مرة أخرى عند التحديث
+                window.history.replaceState(null, '', window.location.pathname);
+            });
+        }
+    });
+</script>

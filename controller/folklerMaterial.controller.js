@@ -5,18 +5,7 @@ import collectorModel from "../models/collector.model.js";
 import categoryModel from "../models/category.model.js";
 import { CATEGORY_ELEMENT_MAP } from "../utils/categoryElementMap.js";
 
-export const renderFolkloreMaterial = async (req, res, next) => {
-  try {
-    const categories = await categoryModel.find();
-    res.render("folklore/add", { 
-      title: "إضافة مادة فلكلورية",
-      categories,
-      categoryElementMap: CATEGORY_ELEMENT_MAP
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+
 
 export const createFolkloreMaterial = async (req, res, next) => {
   try {
@@ -40,6 +29,10 @@ export const createFolkloreMaterial = async (req, res, next) => {
       // يدعم الفاصلة العربية (،) والإنجليزية (,)
       subjectData.subjectDetails = subjectData.subjectDetails.split(/[،,]/).map(s => s.trim()).filter(s => s);
     }
+
+    // تنظيف الحقول الفارغة لتجنب أخطاء Mongoose Enum
+    if (narrator && narrator.status === "") delete narrator.status;
+    if (collectionData && collectionData.collectionCulturePlace === "") delete collectionData.collectionCulturePlace;
 
     // 1. Find or Create Narrator
     let narratorExists = await narratorModel.findOne({
@@ -81,8 +74,21 @@ export const createFolkloreMaterial = async (req, res, next) => {
       dataSource,
     });
 
-    // 5. Response
-    // Redirect to home page upon successful form submission
+    // توجيه المستخدم لصفحة استكمال البيانات الخاصة بالعنصر ديناميكياً
+    let targetRouteSlug = null;
+    for (const elements of Object.values(CATEGORY_ELEMENT_MAP)) {
+      const foundElement = elements.find(el => el.name === fieldMaterialType);
+      if (foundElement && foundElement.ready) {
+        targetRouteSlug = foundElement.routeSlug;
+        break;
+      }
+    }
+
+    if (targetRouteSlug) {
+      return res.redirect(`/${targetRouteSlug}/add?folkloreId=${folkloreMaterial._id}`);
+    }
+
+    // للمواد الأخرى التي لم يتم برمجة نماذجها بعد
     return res.redirect("/");
   } catch (error) {
     next(error);

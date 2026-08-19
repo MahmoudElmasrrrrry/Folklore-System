@@ -1,70 +1,100 @@
-import { Router } from "express";
-import mawwalModel from "../models/FolkloreMaterial.model.js";
-import narratorModel from "../models/narrator.model.js";
-import missionModel from "../models/mission.model.js";
-import AppError from "../utils/appError.js";
+import mawwalModel from "../models/mawwal.model.js";
 
 export const createMawwal = async (req, res, next) => {
   try {
     const {
-      fieldMaterialData,
-      narrator,
-      collectionData,
-      subjectData,
-      mission,
-      fieldMaterialType,
-      dataSource,
+      folkloreMaterial, // Hidden input
+      mawwalName,
+      mawwalType,
+      thematicClassification,
+      fullText,
+      durationValue,
+      durationUnit,
+      performanceMode,
+      dialect,
+      eventsSummary,
+      linesCount,
+      narrationTime,
+      narrationPlace,
+      narrativeStyle,
+      rhetoricalImagery,
+      rhymeRoleInNarration,
+      storyStructure,
+      socialFunction,
+      socialPracticesAndRituals,
+      reflectedValues,
+      depictedSocialEnvironment,
+      occasion,
+      performanceMethod,
+      prosodicMeter,
+      maqamName,
+      audioUrl,
+      accompanyingInstruments,
+      mawwalPresentation,
+      elementDescription,
+      practiceContext,
+      supportingInstitutions,
+      communityDocumentationEngagement,
+      narrationVariants,
+      researcherNotes,
+      geographicSpread,
+      transmissionMethods,
+      currentStatus,
     } = req.body;
 
-    const narratorExists = await narratorModel.findOne({
-      name: narrator.name,
-      age: narrator.age,
-    });
-
-    let narratorId;
-
-    if (narratorExists) {
-      narratorId = narratorExists._id;
-    } else {
-      const newNarrator = await narratorModel.create({
-        name: narrator.name,
-        age: narrator.age,
-        status: narrator.status,
-        occupation: narrator.occupation,
-        additionalInfo: narrator.additionalInfo,
-      });
-
-      narratorId = newNarrator._id;
-    }
-    
-    if( !mission || !mission.missionNumber) {
-      throw new AppError("Mission data is required", 400);
-    }
-    const missionExists = await missionModel.findOne({
-      missionNumber: mission.missionNumber,
-    });
-
-    
-    if (!missionExists) {
-      throw new AppError("Mission not found", 404);
-    }
-
-    const missionId = missionExists._id;
+    // Helper to parse strings with dash into arrays, or return empty array
+    const parseArray = (str) => {
+      if (!str) return [];
+      if (Array.isArray(str)) return str;
+      return str.split("-").map((s) => s.trim()).filter((s) => s);
+    };
 
     const newMawwal = await mawwalModel.create({
-      fieldMaterialData,
-      narrator: narratorId,
-      collectionData,
-      subjectData,
-      mission: missionId,
-      fieldMaterialType,
-      dataSource,
+      folkloreMaterial,
+      mawwalName,
+      mawwalType,
+      thematicClassification: parseArray(thematicClassification),
+      fullText,
+      duration: {
+        value: durationValue ? Number(durationValue) : undefined,
+        unit: durationUnit || undefined,
+      },
+      performanceMode: performanceMode || undefined,
+      dialect: dialect || undefined,
+      eventsSummary,
+      linesCount: linesCount ? Number(linesCount) : undefined,
+      narrationTime: narrationTime || undefined,
+      narrationPlace: narrationPlace || undefined,
+      narrativeStyle: narrativeStyle || undefined,
+      rhetoricalImagery: parseArray(rhetoricalImagery),
+      rhymeRoleInNarration,
+      storyStructure: parseArray(storyStructure),
+      socialFunction: parseArray(socialFunction),
+      socialPracticesAndRituals,
+      reflectedValues: parseArray(reflectedValues),
+      depictedSocialEnvironment,
+      occasion: parseArray(occasion),
+      performanceMethod: performanceMethod || undefined,
+      prosodicMeter: prosodicMeter || undefined,
+      melodyAndMaqam: {
+        maqamName: maqamName || undefined,
+        audioUrl: req.file ? `/uploads/audio/${req.file.filename}` : (audioUrl || undefined),
+      },
+      accompanyingInstruments: parseArray(accompanyingInstruments),
+      mawwalPresentation,
+      elementDescription,
+      practiceContext,
+      supportingInstitutions: parseArray(supportingInstitutions),
+      communityDocumentationEngagement,
+      narrationVariants,
+      researcherNotes,
+      geographicSpread,
+      transmissionMethods: parseArray(transmissionMethods),
+      currentStatus,
     });
-    
-    return res.status(201).json({
-      message: "Mawwal created successfully",
-      data: newMawwal,
-    });
+
+    // بعد نجاح إضافة الموال، توجيه المستخدم للرئيسية بنجاح
+    return res.redirect("/?success=true");
   } catch (error) {
     next(error);
   }

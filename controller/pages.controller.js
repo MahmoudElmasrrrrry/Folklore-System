@@ -78,7 +78,7 @@ export const renderHome = async (req, res, next) => {
         name: m.mawwalName,
         type: "mawwal",
         typeLabel: "<i class=\"fa-solid fa-music\"></i> موال",
-        narrator: m.folkloreMaterialModel?.narrator?.name || "",
+        narrator: m.folkloreMaterial?.narrator?.name || "",
         date: m.createdAt,
       })
     );
@@ -89,7 +89,7 @@ export const renderHome = async (req, res, next) => {
         name: d.danceName,
         type: "dance",
         typeLabel: "<i class=\"fa-solid fa-person-dress\"></i> رقصة شعبية",
-        narrator: d.folkloreMaterialModel?.narrator?.name || "",
+        narrator: d.folkloreMaterial?.narrator?.name || "",
         date: d.createdAt,
       })
     );
@@ -100,7 +100,7 @@ export const renderHome = async (req, res, next) => {
         name: c.craftName,
         type: "craft",
         typeLabel: "<i class=\"fa-solid fa-hammer\"></i> حرفة شعبية",
-        narrator: c.folkloreMaterialModel?.narrator?.name || "",
+        narrator: c.folkloreMaterial?.narrator?.name || "",
         date: c.createdAt,
       })
     );
@@ -111,7 +111,7 @@ export const renderHome = async (req, res, next) => {
         name: w.name,
         type: "wali",
         typeLabel: "<i class=\"fa-solid fa-mosque\"></i> ولي",
-        narrator: w.folkloreMaterialModel?.narrator?.name || "",
+        narrator: w.folkloreMaterial?.narrator?.name || "",
         date: w.createdAt,
       })
     );
@@ -129,6 +129,49 @@ export const renderHome = async (req, res, next) => {
       },
       categories,
       recentItems: recentItems.slice(0, 6),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── صفحة إضافة المادة الأساسية ───
+export const renderFolkloreMaterial = async (req, res, next) => {
+  try {
+    const categories = await Category.find();
+    res.render("folklore/add", { 
+      title: "إضافة مادة فلكلورية",
+      categories,
+      categoryElementMap: CATEGORY_ELEMENT_MAP
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── صفحة إضافة الموال التفصيلي ───
+export const renderAddMawwal = async (req, res, next) => {
+  try {
+    const { folkloreId } = req.query;
+    
+    if (!folkloreId) {
+      // throw new Error instead of AppError to keep it simple, or import AppError
+      const err = new Error("يجب تقديم معرف المادة الفلكلورية");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // التأكد من وجود المادة الفلكلورية
+    const folkloreMaterial = await folkloreMaterialModel.findById(folkloreId);
+    if (!folkloreMaterial) {
+      const err = new Error("المادة الفلكلورية غير موجودة");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("mawwal/add", {
+      title: "إضافة تفاصيل الموال",
+      folkloreId
     });
   } catch (error) {
     next(error);

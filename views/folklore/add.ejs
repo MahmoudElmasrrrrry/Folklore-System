@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<form id="folkloreForm" action="/folklore" method="POST">
+<form id="folkloreForm" action="/folklore" method="POST" novalidate>
     <div id="step-1">
 
     <!-- ١. بيانات البعثة -->
@@ -196,8 +196,8 @@
             <h2 class="form-section-title"><i class="fa-solid fa-tags"></i> تصنيف المادة</h2>
             <p style="margin-bottom: 20px; color: var(--color-text-muted);">اختر التصنيف والعنصر المناسب للمادة التي قمت بإدخالها.</p>
             
-            <input type="hidden" name="category" id="hiddenCategory" required>
-            <input type="hidden" name="fieldMaterialType" id="hiddenElement" required>
+            <input type="hidden" name="category" id="hiddenCategory">
+            <input type="hidden" name="fieldMaterialType" id="hiddenElement">
 
             <div class="categories-interactive-grid">
                 <% categories.forEach(cat => { %>
@@ -234,7 +234,7 @@
 
         <div style="text-align: left; margin-top: 20px; display: flex; justify-content: space-between;">
             <button type="button" class="btn btn-outline" id="prevBtn"><i class="fa-solid fa-arrow-right"></i> العودة إلى الخطوة السابقة</button>
-            <button type="submit" class="btn btn-primary" id="saveBtn" disabled><i class="fa-solid fa-save"></i> حفظ البيانات</button>
+            <button type="submit" class="btn btn-primary" id="saveBtn" disabled>التالي لاستكمال البيانات <i class="fa-solid fa-arrow-left"></i></button>
         </div>
     </div> <!-- end step 2 -->
 
