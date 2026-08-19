@@ -177,3 +177,94 @@ export const renderAddMawwal = async (req, res, next) => {
     next(error);
   }
 };
+
+// ─── صفحة الأرشيف (الجدول الزمني - Timeline) ───
+export const renderArchiveTimeline = async (req, res, next) => {
+  try {
+    const { category, type } = req.query;
+    
+    const [mawwals, dances, crafts, walis] = await Promise.all([
+      Mawwal.find().populate({
+        path: "folkloreMaterial",
+        populate: [{ path: "narrator" }, { path: "category" }]
+      }).lean(),
+      Dance.find().populate({
+        path: "folkloreMaterial",
+        populate: [{ path: "narrator" }, { path: "category" }]
+      }).lean(),
+      Craft.find().populate({
+        path: "folkloreMaterial",
+        populate: [{ path: "narrator" }, { path: "category" }]
+      }).lean(),
+      Wali.find().populate({
+        path: "folkloreMaterial",
+        populate: [{ path: "narrator" }, { path: "category" }]
+      }).lean(),
+    ]);
+
+    let timelineItems = [];
+
+    mawwals.forEach(m => {
+      if (!m.folkloreMaterial) return;
+      if (category && m.folkloreMaterial.category?._id.toString() !== category) return;
+      if (type && type !== "mawwal") return;
+      
+      timelineItems.push({
+        id: m._id,
+        title: m.mawwalName,
+        type: "mawwal",
+        typeLabel: "موال",
+        icon: '<i class="fa-solid fa-music"></i>',
+        narrator: m.folkloreMaterial.narrator?.name || "مجهول",
+        categoryName: m.folkloreMaterial.category?.name || "غير مصنف",
+        date: m.createdAt,
+        contentPreview: m.fullText ? (m.fullText.length > 200 ? m.fullText.substring(0, 200) + "..." : m.fullText) : "",
+        audioUrl: m.melodyAndMaqam?.audioUrl,
+        tags: m.thematicClassification || []
+      });
+    });
+
+    // Can do same for others later when implemented
+    
+    timelineItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    res.render("archive/timeline", {
+      title: "الأرشيف - الخط الزمني",
+      timelineItems,
+      currentCategory: category || null,
+      currentType: type || null
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── صفحة عرض تفاصيل الموال ───
+export const renderMawwalDetails = async (req, res, next) => {
+  try {
+    const mawwal = await Mawwal.findById(req.params.id)
+      .populate({
+        path: "folkloreMaterial",
+        populate: [
+          { path: "narrator" },
+          { path: "mission" },
+          { path: "collector" },
+          { path: "category" }
+        ]
+      }).lean();
+
+    if (!mawwal) {
+      const err = new Error("الموال غير موجود");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("mawwal/details", {
+      title: mawwal.mawwalName,
+      mawwal
+    });
+  } catch (error) {
+    next(error);
+  }
+};

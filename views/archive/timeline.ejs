@@ -1,0 +1,264 @@
+<div class="page-header">
+    <h1>أرشيف الفنون الشعبية</h1>
+    <p>تصفح التراث الشعبي المصري الموثق عبر الزمن</p>
+</div>
+
+<div class="timeline-container container">
+    
+    <!-- شريط التصفية والفلترة -->
+    <div class="timeline-filters">
+        <a href="/archive" class="filter-btn <%= !currentType ? 'active' : '' %>">الكل</a>
+        <a href="/archive?type=mawwal" class="filter-btn <%= currentType === 'mawwal' ? 'active' : '' %>"><i class="fa-solid fa-music"></i> المواويل</a>
+        <a href="/archive?type=dance" class="filter-btn <%= currentType === 'dance' ? 'active' : '' %>"><i class="fa-solid fa-person-dress"></i> الرقص الشعبي</a>
+        <a href="/archive?type=craft" class="filter-btn <%= currentType === 'craft' ? 'active' : '' %>"><i class="fa-solid fa-hammer"></i> الحرف</a>
+        <a href="/archive?type=wali" class="filter-btn <%= currentType === 'wali' ? 'active' : '' %>"><i class="fa-solid fa-mosque"></i> الأولياء</a>
+    </div>
+
+    <% if (timelineItems.length === 0) { %>
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-regular fa-folder-open"></i></div>
+            <h3>لا توجد مواد في الأرشيف</h3>
+            <p>كن أول من يوثق مادة فلكلورية!</p>
+            <a href="/folklore" class="btn btn-primary" style="margin-top: 16px;"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
+        </div>
+    <% } else { %>
+        <div class="timeline">
+            <% timelineItems.forEach(item => { %>
+                <div class="timeline-post">
+                    <!-- Header -->
+                    <div class="post-header">
+                        <div class="post-avatar">
+                            <i class="fa-solid fa-user-circle"></i>
+                        </div>
+                        <div class="post-meta">
+                            <h4>الراوي: <%= item.narrator %></h4>
+                            <span class="post-date"><i class="fa-regular fa-calendar-days"></i> <%= new Date(item.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span>
+                        </div>
+                        <div class="post-tag">
+                            <span class="badge-type"><%- item.icon %> <%= item.typeLabel %></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="post-body">
+                        <h3 class="post-title"><%= item.title %></h3>
+                        <% if (item.contentPreview) { %>
+                            <p class="post-preview"><%= item.contentPreview %></p>
+                        <% } %>
+                        
+                        <% if (item.audioUrl) { %>
+                            <div class="post-audio">
+                                <audio controls preload="none">
+                                    <source src="<%= item.audioUrl %>" type="audio/mpeg">
+                                    متصفحك لا يدعم مشغل الصوت.
+                                </audio>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="post-footer">
+                        <div class="post-tags">
+                            <% if (item.tags && item.tags.length > 0) { %>
+                                <% item.tags.forEach(tag => { %>
+                                    <span class="tag">#<%= tag %></span>
+                                <% }) %>
+                            <% } %>
+                            <span class="tag cat-tag"><i class="fa-solid fa-folder"></i> <%= item.categoryName %></span>
+                        </div>
+                        
+                        <div class="post-actions">
+                            <a href="/archive/<%= item.type %>/<%= item.id %>" class="btn btn-primary-light"><i class="fa-solid fa-book-open"></i> التفاصيل الكاملة</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<style>
+.timeline-container {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.timeline-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn:hover {
+    background: var(--bg-light);
+    color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(26, 82, 118, 0.3);
+}
+
+.timeline-post {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-post:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.post-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-left: 15px;
+}
+
+.post-meta {
+    flex: 1;
+}
+
+.post-meta h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.post-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-type {
+    background: var(--bg-light);
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.post-body {
+    margin-bottom: 20px;
+}
+
+.post-title {
+    margin: 0 0 10px 0;
+    color: var(--secondary-color);
+    font-size: 1.4rem;
+}
+
+.post-preview {
+    color: var(--text-color);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    white-space: pre-wrap;
+    background: #fdfbf7;
+    padding: 15px;
+    border-right: 4px solid var(--primary-color);
+    border-radius: 8px;
+}
+
+.post-audio {
+    margin-top: 15px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.post-audio audio {
+    width: 100%;
+    height: 40px;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.tag.cat-tag {
+    background: rgba(29, 53, 87, 0.1);
+    color: var(--secondary-color);
+}
+
+.btn-primary-light {
+    background: rgba(29, 53, 87, 0.05);
+    color: var(--secondary-color);
+    border: 1px solid rgba(29, 53, 87, 0.2);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-primary-light:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+</style>
