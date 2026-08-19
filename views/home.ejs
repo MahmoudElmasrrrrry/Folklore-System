@@ -1,0 +1,117 @@
+<% const noContainer = true; %>
+
+<!-- Hero Section -->
+<section class="hero">
+    <h1>أرشيف الفلكلور المصري</h1>
+    <p>
+        مرحباً بك في المنصة الرقمية لمركز دراسات الفنون الشعبية. يهدف هذا الأرشيف إلى توثيق وحفظ
+        التراث الفلكلوري المصري بكافة أشكاله — من المواويل والأغاني الشعبية إلى الحرف التقليدية
+        والرقصات والموروثات الثقافية — لتظل حاضرة للأجيال القادمة.
+    </p>
+    <div class="hero-actions">
+        <a href="/folklore/create" class="btn btn-primary">+ إضافة مادة جديدة</a>
+        <a href="/archive" class="btn btn-outline">📚 تصفح الأرشيف</a>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-grid container">
+        <div class="stat-card">
+            <span class="stat-icon">📄</span>
+            <span class="stat-number"><%= stats.totalMaterials %></span>
+            <span class="stat-label">مادة ميدانية</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">📂</span>
+            <span class="stat-number"><%= stats.totalCategories %></span>
+            <span class="stat-label">تصنيف رئيسي</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🎙️</span>
+            <span class="stat-number"><%= stats.totalNarrators %></span>
+            <span class="stat-label">راوي</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🗺️</span>
+            <span class="stat-number"><%= stats.totalMissions %></span>
+            <span class="stat-label">بعثة ميدانية</span>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="about-content">
+        <h2>🏛️ عن المشروع</h2>
+        <p>
+            يُعدّ مركز دراسات الفنون الشعبية أحد أبرز المراكز البحثية المعنية بالتراث الشعبي المصري.
+            يعمل المركز منذ عقود على جمع وتوثيق المواد الفلكلورية من مختلف محافظات مصر، 
+            من خلال بعثات ميدانية متخصصة تتواصل مع الرواة والممارسين لتسجيل وحفظ هذا التراث الغني.
+        </p>
+        <p>
+            يضم الأرشيف الرقمي خمسة تصنيفات رئيسية تغطي أبرز مجالات التراث الشعبي المصري: 
+            الأدب الشعبي، العادات والتقاليد، المعتقدات والمعارف الشعبية، الفنون الشعبية، والثقافة المادية. 
+            ويهدف المشروع إلى إتاحة هذه المواد للباحثين والمهتمين بالتراث المصري في بيئة رقمية منظمة وسهلة الاستخدام.
+        </p>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>📂 التصنيفات الرئيسية</h2>
+            <p>اضغط على أي تصنيف لاستعراض المواد الفلكلورية التابعة له</p>
+        </div>
+        <div class="categories-grid">
+            <% categories.forEach(cat => { %>
+            <a href="/archive?category=<%= cat._id %>" class="category-card">
+                <span class="category-icon"><%= cat.icon || '📁' %></span>
+                <h3><%= cat.name %></h3>
+                <p><%= cat.description || '' %></p>
+                <span class="category-count"><%= cat.elementCount || 0 %> عنصر</span>
+            </a>
+            <% }); %>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Items Section -->
+<section class="recent-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>🕐 آخر المواد المضافة</h2>
+            <p>أحدث المواد الفلكلورية التي تم توثيقها في الأرشيف</p>
+        </div>
+
+        <% if (recentItems.length === 0) { %>
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>لا توجد مواد بعد</h3>
+            <p>ابدأ بإضافة أول مادة فلكلورية للأرشيف</p>
+            <a href="/folklore/create" class="btn btn-primary" style="margin-top: 16px;">+ إضافة مادة جديدة</a>
+        </div>
+        <% } else { %>
+        <div class="items-grid">
+            <% recentItems.forEach(item => { %>
+            <div class="item-card">
+                <span class="item-type type-<%= item.type %>"><%= item.typeLabel %></span>
+                <h3><%= item.name %></h3>
+                <div class="item-meta">
+                    <% if (item.narrator) { %>
+                    <span>🎙️ <%= item.narrator %></span>
+                    <% } %>
+                    <% if (item.date) { %>
+                    <span>📅 <%= new Date(item.date).toLocaleDateString('ar-EG') %></span>
+                    <% } %>
+                </div>
+                <a href="/archive/<%= item.type %>/<%= item.id %>" class="btn-details">
+                    عرض التفاصيل ←
+                </a>
+            </div>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+</section>
