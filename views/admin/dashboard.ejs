@@ -1,0 +1,186 @@
+<div class="page-header">
+    <h1>لوحة تحكم الإدارة</h1>
+    <p>إدارة المواد الفلكلورية - تعديل وحذف البيانات المدخلة</p>
+</div>
+
+<div class="container" style="margin-bottom: 60px;">
+    <div class="admin-panel">
+        <div class="panel-header">
+            <h2><i class="fa-solid fa-database"></i> جدول المواد (المواويل)</h2>
+            <a href="/folklore" class="btn btn-primary"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم الموال</th>
+                        <th>النوع</th>
+                        <th>الراوي</th>
+                        <th>تاريخ الإضافة</th>
+                        <th>الإجراءات (Actions)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (mawwals && mawwals.length > 0) { %>
+                        <% mawwals.forEach((m, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td class="font-weight-bold text-primary"><%= m.mawwalName %></td>
+                                <td><span class="badge-type"><i class="fa-solid fa-music"></i> موال</span></td>
+                                <td><%= m.folkloreMaterial?.narrator?.name || "مجهول" %></td>
+                                <td><%= new Date(m.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                                <td class="action-buttons">
+                                    <a href="/archive/mawwal/<%= m._id %>" class="btn-action btn-view" title="عرض"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/admin/mawwal/edit/<%= m._id %>" class="btn-action btn-edit" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <form action="/admin/mawwal/<%= m._id %>?_method=DELETE" method="POST" class="delete-form" style="display:inline-block;">
+                                        <button type="submit" class="btn-action btn-delete" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="text-center" style="padding: 30px;">لا توجد مواد فلكلورية مضافة حتى الآن</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Success alerts via SweetAlert
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            const action = urlParams.get('success');
+            let text = action === 'deleted' ? 'تم حذف المادة الفلكلورية بالكامل بنجاح.' : 'تم تعديل المادة الفلكلورية بنجاح.';
+            Swal.fire({
+                title: 'عملية ناجحة!',
+                text: text,
+                icon: 'success',
+                confirmButtonColor: '#1d3557'
+            }).then(() => {
+                window.history.replaceState(null, '', window.location.pathname);
+            });
+        }
+
+        // Delete confirmation via SweetAlert
+        const deleteForms = document.querySelectorAll('.delete-form');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'هل أنت متأكد؟',
+                    text: "سيتم حذف الموال وجميع البيانات الأساسية (المادة الفلكلورية) المرتبطة به نهائياً!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e63946',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'نعم، قم بالحذف!',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+.admin-panel {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.panel-header {
+    background: var(--bg-light);
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header h2 {
+    margin: 0;
+    color: var(--secondary-color);
+    font-size: 1.4rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 15px 20px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    background: white;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.table tbody tr:hover {
+    background: #fdfbf7;
+}
+
+.badge-type {
+    background: rgba(29, 53, 87, 0.1);
+    color: var(--secondary-color);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-view {
+    background: var(--secondary-color);
+}
+.btn-view:hover { background: #152740; }
+
+.btn-edit {
+    background: #fca311;
+}
+.btn-edit:hover { background: #e08f09; }
+
+.btn-delete {
+    background: #e63946;
+}
+.btn-delete:hover { background: #cc303d; }
+</style>

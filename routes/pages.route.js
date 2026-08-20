@@ -3,6 +3,7 @@ import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimel
 import { createFolkloreMaterial } from "../controller/folklerMaterial.controller.js";
 import { createMawwal } from "../controller/mawwal.controller.js";
 import { uploadAudio } from "../middleware/upload.middleware.js";
+import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal } from "../controller/admin.controller.js";
 
 const router = express.Router();
 
@@ -21,6 +22,13 @@ router.post("/mawwal/add", uploadAudio.single("audioFile"), createMawwal);
 router.get("/archive", renderArchiveTimeline);
 
 // صفحة تفاصيل الموال
+// صفحة تفاصيل الموال
 router.get("/archive/mawwal/:id", renderMawwalDetails);
+
+// ─── لوحة التحكم (الإدارة) ───
+router.get("/admin", renderDashboard);
+router.get("/admin/mawwal/edit/:id", renderEditMawwal);
+router.put("/admin/mawwal/:id", uploadAudio.single("audioFile"), updateMawwal);
+router.delete("/admin/mawwal/:id", deleteMawwal);
 
 export default router;

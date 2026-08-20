@@ -1,0 +1,269 @@
+<div class="page-header">
+    <h1>تعديل تفاصيل الموال</h1>
+    <p>تعديل البيانات التفصيلية الخاصة بعنصر الموال</p>
+</div>
+
+<form id="mawwalForm" action="/admin/mawwal/<%= mawwal._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+    <!-- ربط الموال بالمادة الفلكلورية الأساسية -->
+    
+
+    <!-- 1. بيانات الموال -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-file-signature"></i> 1. بيانات الموال</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الموال <span class="required">*</span></label>
+                <input type="text" name="mawwalName" class="form-control" required placeholder="مثال: موال أدهم الشرقاوي" value="<%= mawwal.mawwalName || '' %>">
+            </div>
+            <div class="form-group">
+                <label>نوع الموال <span class="required">*</span></label>
+                <select name="mawwalType" class="form-control" required>
+                    <option value="">اختر النوع</option>
+                    <option  <%= mawwal.mawwalType === 'قصصي' ? 'selected' : '' %>>قصصي</option>
+                    <option  <%= mawwal.mawwalType === 'غنائي' ? 'selected' : '' %>>غنائي</option>
+                    <option  <%= mawwal.mawwalType === 'ملحمي' ? 'selected' : '' %>>ملحمي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>التصنيف الموضوعي (افصل بـ -)</label>
+                <input type="text" name="thematicClassification" class="form-control" placeholder="بطولة - ملحمي" value="<%= (mawwal.thematicClassification || []).join(' - ') %>">
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. النص والمحتوى -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-align-right"></i> 2. النص والمحتوى</h2>
+        <div class="form-group">
+            <label>النص الكامل <span class="required">*</span></label>
+            <textarea name="fullText" class="form-control" required rows="5" placeholder="اكتب نص الموال هنا..."><%= mawwal.fullText || '' %></textarea>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>المدة (رقم)</label>
+                <input type="number" name="durationValue" class="form-control" min="1" value="<%= mawwal.duration?.value || '' %>">
+            </div>
+            <div class="form-group">
+                <label>وحدة المدة</label>
+                <select name="durationUnit" class="form-control">
+                    <option value="">اختر الوحدة</option>
+                    <option  <%= mawwal.duration?.unit === 'ساعة' ? 'selected' : '' %>>ساعة</option>
+                    <option  <%= mawwal.duration?.unit === 'دقائق' ? 'selected' : '' %>>دقائق</option>
+                    <option  <%= mawwal.duration?.unit === 'ثواني' ? 'selected' : '' %>>ثواني</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>عدد الأبيات</label>
+                <input type="number" name="linesCount" class="form-control" min="4" max="300" value="<%= mawwal.linesCount || '' %>">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>نمط الأداء</label>
+                <select name="performanceMode" class="form-control">
+                    <option value="">اختر النمط</option>
+                    <option  <%= mawwal.performanceMode === 'مغني' ? 'selected' : '' %>>مغني</option>
+                    <option  <%= mawwal.performanceMode === 'ملقن' ? 'selected' : '' %>>ملقن</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اللهجة</label>
+                <select name="dialect" class="form-control">
+                    <option value="">اختر اللهجة</option>
+                    <option  <%= mawwal.dialect === 'صعيدي' ? 'selected' : '' %>>صعيدي</option>
+                    <option  <%= mawwal.dialect === 'بدوي' ? 'selected' : '' %>>بدوي</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>ملخص الأحداث</label>
+            <textarea name="eventsSummary" class="form-control" rows="3" placeholder="ملخص قصير للأحداث..."><%= mawwal.eventsSummary || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 3. سرد الموال -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-book-open"></i> 3. سرد الموال</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>زمن القص</label>
+                <select name="narrationTime" class="form-control">
+                    <option value="">اختر الزمن</option>
+                    <option  <%= mawwal.narrationTime === 'قديم' ? 'selected' : '' %>>قديم</option>
+                    <option  <%= mawwal.narrationTime === 'غير محدد' ? 'selected' : '' %>>غير محدد</option>
+                    <option  <%= mawwal.narrationTime === 'غير مجدد' ? 'selected' : '' %>>غير مجدد</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>مكان القص</label>
+                <select name="narrationPlace" class="form-control">
+                    <option value="">اختر المكان</option>
+                    <option  <%= mawwal.narrationPlace === 'عرس' ? 'selected' : '' %>>عرس</option>
+                    <option  <%= mawwal.narrationPlace === 'موالد' ? 'selected' : '' %>>موالد</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>أسلوب السرد</label>
+                <select name="narrativeStyle" class="form-control">
+                    <option value="">اختر الأسلوب</option>
+                    <option  <%= mawwal.narrativeStyle === 'وصفي' ? 'selected' : '' %>>وصفي</option>
+                    <option  <%= mawwal.narrativeStyle === 'حواري' ? 'selected' : '' %>>حواري</option>
+                    <option  <%= mawwal.narrativeStyle === 'ملحمي' ? 'selected' : '' %>>ملحمي</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>التصوير البلاغي (افصل بـ -)</label>
+                <input type="text" name="rhetoricalImagery" class="form-control" placeholder="تشبيه - استعارة" value="<%= (mawwal.rhetoricalImagery || []).join(' - ') %>">
+            </div>
+            <div class="form-group">
+                <label>بنية القصة (افصل بـ -)</label>
+                <input type="text" name="storyStructure" class="form-control" placeholder="بداية - عقدة - ذروة" value="<%= (mawwal.storyStructure || []).join(' - ') %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>دور القافية في السرد</label>
+            <textarea name="rhymeRoleInNarration" class="form-control" rows="2"><%= mawwal.rhymeRoleInNarration || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 4. الدلالات الثقافية والاجتماعية -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-people-arrows"></i> 4. الدلالات الثقافية والاجتماعية</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>الوظيفة الاجتماعية (افصل بـ -)</label>
+                <input type="text" name="socialFunction" class="form-control" placeholder="تسلية - وعظ" value="<%= (mawwal.socialFunction || []).join(' - ') %>">
+            </div>
+            <div class="form-group">
+                <label>القيم المعكوسة (افصل بـ -)</label>
+                <input type="text" name="reflectedValues" class="form-control" placeholder="الكرم - الشجاعة" value="<%= (mawwal.reflectedValues || []).join(' - ') %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>الممارسات والطقوس الاجتماعية</label>
+            <textarea name="socialPracticesAndRituals" class="form-control" rows="2"><%= mawwal.socialPracticesAndRituals || '' %></textarea>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>البيئة الاجتماعية المصورة</label>
+            <textarea name="depictedSocialEnvironment" class="form-control" rows="2"><%= mawwal.depictedSocialEnvironment || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 5. الأداء والتداول -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-music"></i> 5. الأداء والتداول</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>المناسبة (افصل بـ -)</label>
+                <input type="text" name="occasion" class="form-control" placeholder="فرح - سيرة" value="<%= (mawwal.occasion || []).join(' - ') %>">
+            </div>
+            <div class="form-group">
+                <label>طريقة الأداء</label>
+                <select name="performanceMethod" class="form-control">
+                    <option value="">اختر الطريقة</option>
+                    <option  <%= mawwal.performanceMethod === 'فردي' ? 'selected' : '' %>>فردي</option>
+                    <option  <%= mawwal.performanceMethod === 'جماعي' ? 'selected' : '' %>>جماعي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>البحر العروضي</label>
+                <select name="prosodicMeter" class="form-control">
+                    <option value="">اختر البحر</option>
+                    <option  <%= mawwal.prosodicMeter === 'أعرج' ? 'selected' : '' %>>أعرج</option>
+                    <option  <%= mawwal.prosodicMeter === 'هزج' ? 'selected' : '' %>>هزج</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم المقام الموسيقي</label>
+                <input type="text" name="maqamName" class="form-control" value="<%= mawwal.melodyAndMaqam?.maqamName || '' %>">
+            </div>
+            <div class="form-group">
+                <label>الآلات المرافقة (افصل بـ -)</label>
+                <input type="text" name="accompanyingInstruments" class="form-control" placeholder="ربابة - مزمار" value="<%= (mawwal.accompanyingInstruments || []).join(' - ') %>">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>رفع ملف صوتي للموال</label>
+                <input type="file" name="audioFile" class="form-control" accept="audio/*" style="padding: 5px;">
+            </div>
+            <div class="form-group">
+                <label>أو إضافة رابط خارجي للملف</label>
+                <input type="url" name="audioUrl" class="form-control" placeholder="https://..." value="<%= mawwal.melodyAndMaqam?.audioUrl || '' %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>تقديم الموال</label>
+            <textarea name="mawwalPresentation" class="form-control" rows="2"><%= mawwal.mawwalPresentation || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 6. وصف العنصر -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-info-circle"></i> 6. وصف العنصر</h2>
+        <div class="form-group">
+            <label>وصف العنصر الفلكلوري (حد أقصى 300 كلمة)</label>
+            <textarea name="elementDescription" class="form-control" rows="3"><%= mawwal.elementDescription || '' %></textarea>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>سياق الممارسة</label>
+            <textarea name="practiceContext" class="form-control" rows="2"><%= mawwal.practiceContext || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 7. مشاركة المجتمع -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-handshake"></i> 7. مشاركة المجتمع المحلي</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>المؤسسات الداعمة (افصل بـ -)</label>
+                <input type="text" name="supportingInstitutions" class="form-control" value="<%= (mawwal.supportingInstitutions || []).join(' - ') %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>مشاركة المجتمع في التوثيق</label>
+            <textarea name="communityDocumentationEngagement" class="form-control" rows="2"><%= mawwal.communityDocumentationEngagement || '' %></textarea>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>تنوع الروايات (Variants)</label>
+            <textarea name="narrationVariants" class="form-control" rows="2"><%= mawwal.narrationVariants || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 8. الملاحظات والتعليقات -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-clipboard"></i> 8. الملاحظات والتعليقات</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>الانتشار الجغرافي</label>
+                <input type="text" name="geographicSpread" class="form-control" value="<%= mawwal.geographicSpread || '' %>">
+            </div>
+            <div class="form-group">
+                <label>طرق الانتقال (افصل بـ -)</label>
+                <input type="text" name="transmissionMethods" class="form-control" placeholder="شفاهي - مكتوب" value="<%= (mawwal.transmissionMethods || []).join(' - ') %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>ملاحظات الباحث</label>
+            <textarea name="researcherNotes" class="form-control" rows="3"><%= mawwal.researcherNotes || '' %></textarea>
+        </div>
+    </div>
+
+    <!-- 9. خصائص أخرى -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-star"></i> 9. خصائص العنصر</h2>
+        <div class="form-group">
+            <label>الوضع الحالي للعنصر</label>
+            <input type="text" name="currentStatus" class="form-control" placeholder="مستمر - مهدد بالانقراض" value="<%= mawwal.currentStatus || '' %>">
+        </div>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem;"><i class="fa-solid fa-save"></i> حفظ التعديلات</button>
+    </div>
+
+</form>
