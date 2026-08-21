@@ -4,6 +4,17 @@
 </div>
 
 <div class="timeline-container container">
+
+    <!-- شريط البحث -->
+    <div class="search-container">
+        <form action="/archive" method="GET" class="search-form">
+            <% if (currentType) { %>
+                <input type="hidden" name="type" value="<%= currentType %>">
+            <% } %>
+            <input type="text" name="search" class="search-input" placeholder="ابحث باسم الموال، الراوي، أو كلمات في النص..." value="<%= searchQuery || '' %>">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i> بحث</button>
+        </form>
+    </div>
     
     <!-- شريط التصفية والفلترة -->
     <div class="timeline-filters">
@@ -74,6 +85,21 @@
                 </div>
             <% }) %>
         </div>
+        
+        <!-- Pagination UI -->
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="/archive?page=<%= currentPage - 1 %><%= currentType ? '&type=' + currentType : '' %><%= searchQuery ? '&search=' + searchQuery : '' %>" class="btn btn-outline">&laquo; السابق</a>
+                <% } %>
+                
+                <span class="page-info">صفحة <%= currentPage %> من <%= totalPages %></span>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="/archive?page=<%= currentPage + 1 %><%= currentType ? '&type=' + currentType : '' %><%= searchQuery ? '&search=' + searchQuery : '' %>" class="btn btn-outline">التالي &raquo;</a>
+                <% } %>
+            </div>
+        <% } %>
     <% } %>
 </div>
 
@@ -87,6 +113,76 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
+}
+
+.search-container {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-form {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-radius: 30px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: var(--secondary-color);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.page-info {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.btn-outline {
+    border: 1px solid var(--border-color);
+    background: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.btn-outline:hover {
+    background: var(--bg-light);
+    color: var(--primary-color);
 }
 
 .timeline-filters {

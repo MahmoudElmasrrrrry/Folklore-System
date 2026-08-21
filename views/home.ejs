@@ -69,12 +69,27 @@
         </div>
         <div class="categories-grid">
             <% categories.forEach(cat => { %>
-            <a href="/archive?category=<%= cat._id %>" class="category-card">
-                <span class="category-icon"><%- cat.icon || '<i class="fa-solid fa-folder"></i>' %></span>
-                <h3><%= cat.name %></h3>
-                <p><%= cat.description || '' %></p>
-                <span class="category-count"><%= cat.elementCount || 0 %> عنصر</span>
-            </a>
+            <div class="category-card modern-card">
+                <div class="card-front">
+                    <span class="category-icon"><%- cat.icon || '<i class="fa-solid fa-folder"></i>' %></span>
+                    <h3><%= cat.name %></h3>
+                    <p><%= cat.description || '' %></p>
+                    <span class="category-count"><%= cat.elementCount || 0 %> عنصر</span>
+                </div>
+                <div class="card-overlay">
+                    <h4>مكونات التصنيف</h4>
+                    <ul class="overlay-elements-list">
+                        <% if (cat.elementsList && cat.elementsList.length > 0) { %>
+                            <% cat.elementsList.forEach(el => { %>
+                                <li><%- el.icon %> <%= el.name %></li>
+                            <% }); %>
+                        <% } else { %>
+                            <li>لا توجد عناصر مضافة</li>
+                        <% } %>
+                    </ul>
+                    <a href="/archive?category=<%= cat._id %>" class="btn btn-outline btn-sm">تصفح الأرشيف</a>
+                </div>
+            </div>
             <% }); %>
         </div>
     </div>
@@ -136,3 +151,77 @@
         }
     });
 </script>
+
+<style>
+.modern-card {
+    position: relative;
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+.card-front {
+    padding: 30px 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.modern-card:hover .card-front {
+    transform: translateY(-20px);
+    opacity: 0;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26, 82, 118, 0.95); /* Primary color with opacity */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.4s ease;
+    padding: 20px;
+    border-radius: var(--radius-md);
+}
+
+.modern-card:hover .card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-overlay h4 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--color-accent-light);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+}
+
+.overlay-elements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+    width: 100%;
+    text-align: center;
+}
+
+.overlay-elements-list li {
+    font-size: 0.95rem;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+}
+
+.overlay-elements-list li:last-child {
+    border-bottom: none;
+}
+</style>

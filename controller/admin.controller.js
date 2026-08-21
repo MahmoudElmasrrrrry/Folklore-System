@@ -4,6 +4,24 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Helper function to safely delete local files
+const deleteLocalFile = (fileUrl) => {
+  if (fileUrl && fileUrl.startsWith("/uploads/")) {
+    const filePath = path.join(__dirname, "..", "public", fileUrl);
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted local file: ${filePath}`);
+      } catch (err) {
+        console.error("Error deleting file:", err);
+      }
+    }
+  }
+};
+
 export const renderDashboard = async (req, res, next) => {
   try {
     const mawwals = await Mawwal.find().populate({
@@ -31,6 +49,11 @@ export const deleteMawwal = async (req, res, next) => {
     // Delete associated FolkloreMaterial
     if (mawwal.folkloreMaterial) {
       await FolkloreMaterial.findByIdAndDelete(mawwal.folkloreMaterial);
+    }
+
+    // Clean up local audio file if it exists
+    if (mawwal.melodyAndMaqam && mawwal.melodyAndMaqam.audioUrl) {
+      deleteLocalFile(mawwal.melodyAndMaqam.audioUrl);
     }
 
     // Delete the Mawwal document
@@ -114,8 +137,14 @@ export const updateMawwal = async (req, res, next) => {
     // Handle audio file replacement
     let newAudioUrl = existingMawwal.melodyAndMaqam?.audioUrl;
     if (req.file) {
+      // Delete old file if user uploads a new one
+      deleteLocalFile(newAudioUrl);
       newAudioUrl = `/uploads/audio/${req.file.filename}`;
     } else if (audioUrl && audioUrl.trim() !== "") {
+      // If user provided an external URL, delete local file if it was previously local
+      if (newAudioUrl && newAudioUrl.startsWith("/uploads/")) {
+        deleteLocalFile(newAudioUrl);
+      }
       newAudioUrl = audioUrl;
     }
 

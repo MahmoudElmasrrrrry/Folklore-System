@@ -31,6 +31,7 @@ export const renderHome = async (req, res, next) => {
       icon: CATEGORY_ICONS[cat.name] || "📁",
       description: CATEGORY_DESCRIPTIONS[cat.name] || "",
       elementCount: (CATEGORY_ELEMENT_MAP[cat.name] || []).length,
+      elementsList: CATEGORY_ELEMENT_MAP[cat.name] || [],
     }));
 
     // آخر المواد المضافة (أحدث 6)
@@ -181,7 +182,7 @@ export const renderAddMawwal = async (req, res, next) => {
 // ─── صفحة الأرشيف (الجدول الزمني - Timeline) ───
 export const renderArchiveTimeline = async (req, res, next) => {
   try {
-    const { category, type } = req.query;
+    const { category, type, search, page } = req.query;
     
     const [mawwals, dances, crafts, walis] = await Promise.all([
       Mawwal.find().populate({
@@ -226,13 +227,39 @@ export const renderArchiveTimeline = async (req, res, next) => {
 
     // Can do same for others later when implemented
     
+    // Apply Search Filter
+    if (search && search.trim() !== '') {
+      const q = search.trim().toLowerCase();
+      timelineItems = timelineItems.filter(item => {
+        return (
+          (item.title && item.title.toLowerCase().includes(q)) ||
+          (item.narrator && item.narrator.toLowerCase().includes(q)) ||
+          (item.contentPreview && item.contentPreview.toLowerCase().includes(q))
+        );
+      });
+    }
+
     timelineItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Pagination logic
+    const currentPage = parseInt(page) || 1;
+    const limit = 5; // عدد المنشورات في كل صفحة
+    const totalItems = timelineItems.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = currentPage * limit;
+    
+    const paginatedItems = timelineItems.slice(startIndex, endIndex);
 
     res.render("archive/timeline", {
       title: "الأرشيف - الخط الزمني",
-      timelineItems,
+      timelineItems: paginatedItems,
       currentCategory: category || null,
-      currentType: type || null
+      currentType: type || null,
+      searchQuery: search || '',
+      currentPage,
+      totalPages,
+      totalItems
     });
 
   } catch (error) {
