@@ -32,28 +32,34 @@
 </section>
 
 
-<!-- Stats Section -->
-<section class="stats-section">
-    <div class="stats-grid container">
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fa-solid fa-file-lines"></i></span>
-            <span class="stat-number"><%= stats.totalMaterials %></span>
-            <span class="stat-label">مادة ميدانية</span>
+<!-- Features / How it Works Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2><i class="fa-solid fa-layer-group"></i> منهجية العمل</h2>
+            <p>تعرف على الهيكل التنظيمي ودورة التوثيق داخل الأرشيف</p>
         </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fa-solid fa-folder-open"></i></span>
-            <span class="stat-number"><%= stats.totalCategories %></span>
-            <span class="stat-label">تصنيف رئيسي</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fa-solid fa-microphone-lines"></i></span>
-            <span class="stat-number"><%= stats.totalNarrators %></span>
-            <span class="stat-label">راوي</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fa-solid fa-map"></i></span>
-            <span class="stat-number"><%= stats.totalMissions %></span>
-            <span class="stat-label">بعثة ميدانية</span>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon"><i class="fa-solid fa-map"></i></span>
+                <h3>البعثات الميدانية</h3>
+                <p>نرسل فرقاً بحثية إلى مختلف قرى ومحافظات مصر لجمع التراث من مصادره الأصلية وسط بيئته الطبيعية الحية.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon"><i class="fa-solid fa-microphone-lines"></i></span>
+                <h3>الرواة والممارسون</h3>
+                <p>هم الذاكرة الحية للأمة؛ أفراد يحفظون المواويل والحكايات، ويمارسون الحرف والفنون التي توارثوها عبر الأجيال.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon"><i class="fa-solid fa-folder-open"></i></span>
+                <h3>التصنيف العلمي</h3>
+                <p>يتم فهرسة كل مادة فلكلورية ضمن تصنيفات أكاديمية دقيقة (أدب شعبي، عادات وتقاليد، معتقدات) لتسهيل استرجاعها.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+                <h3>الرقمنة والإتاحة</h3>
+                <p>نُحول التسجيلات الصوتية، والصور، والنصوص إلى أرشيف رقمي تفاعلي متاح للباحثين والمهتمين بالتراث حول العالم.</p>
+            </div>
         </div>
     </div>
 </section>
@@ -223,5 +229,58 @@
 
 .overlay-elements-list li:last-child {
     border-bottom: none;
+}
+
+/* Features Section */
+.features-section {
+    padding: 60px 20px;
+    background: var(--color-bg-card);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 40px 25px;
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-light);
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: rgba(26, 82, 118, 0.1);
+    color: var(--color-primary);
+    border-radius: 50%;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-light);
+    line-height: 1.7;
 }
 </style>

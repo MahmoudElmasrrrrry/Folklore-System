@@ -4,7 +4,7 @@
             مركز دراسات الفنون الشعبية
         </a>
         <button class="nav-toggle" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button>
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" id="main-nav">
             <li><a href="/">الرئيسية</a></li>
             <li><a href="/archive">الأرشيف</a></li>
             <li><a href="/admin">تعديل البيانات</a></li>
@@ -12,3 +12,28 @@
         </ul>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('#main-nav a:not(.btn-nav)');
+        
+        navLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (linkPath === '/' && currentPath === '/') {
+                link.classList.add('active');
+            } else if (linkPath !== '/' && currentPath.startsWith(linkPath)) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+
+<style>
+.navbar-nav a.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-bottom: 3px solid var(--color-accent);
+    padding-bottom: 7px; /* adjust padding to prevent layout shift */
+}
+</style>
