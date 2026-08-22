@@ -6,7 +6,7 @@
 <div class="container" style="margin-bottom: 60px;">
     <div class="admin-panel">
         <div class="panel-header">
-            <h2><i class="fa-solid fa-database"></i> جدول المواد (المواويل)</h2>
+            <h2><i class="fa-solid fa-database"></i> جدول المواد الأرشيفية</h2>
             <a href="/folklore" class="btn btn-primary"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
         </div>
 
@@ -23,18 +23,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (mawwals && mawwals.length > 0) { %>
-                        <% mawwals.forEach((m, index) => { %>
+                    <% if (items && items.length > 0) { %>
+                        <% items.forEach((item, index) => { %>
                             <tr>
                                 <td><%= index + 1 %></td>
-                                <td class="font-weight-bold text-primary"><%= m.mawwalName %></td>
-                                <td><span class="badge-type"><i class="fa-solid fa-music"></i> موال</span></td>
-                                <td><%= m.folkloreMaterial?.narrator?.name || "مجهول" %></td>
-                                <td><%= new Date(m.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                                <td class="font-weight-bold text-primary">
+                                    <%= item.itemType === 'mawwal' ? item.mawwalName : item.danceName %>
+                                </td>
+                                <td>
+                                    <% if (item.itemType === 'mawwal') { %>
+                                        <span class="badge-type" style="background: rgba(29, 53, 87, 0.1); color: var(--secondary-color);"><i class="fa-solid fa-music"></i> موال</span>
+                                    <% } else if (item.itemType === 'dance') { %>
+                                        <span class="badge-type" style="background: rgba(230, 57, 70, 0.1); color: #e63946;"><i class="fa-solid fa-person-dress"></i> رقصة شعبية</span>
+                                    <% } %>
+                                </td>
+                                <td><%= item.folkloreMaterial?.narrator?.name || "مجهول" %></td>
+                                <td><%= new Date(item.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) %></td>
                                 <td class="action-buttons">
-                                    <a href="/archive/mawwal/<%= m._id %>" class="btn-action btn-view" title="عرض"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="/admin/mawwal/edit/<%= m._id %>" class="btn-action btn-edit" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <form action="/admin/mawwal/<%= m._id %>?_method=DELETE" method="POST" class="delete-form" style="display:inline-block;">
+                                    <a href="/archive/<%= item.itemType %>/<%= item._id %>" class="btn-action btn-view" title="عرض"><i class="fa-solid fa-eye"></i></a>
+                                    <a href="/admin/<%= item.itemType %>/edit/<%= item._id %>" class="btn-action btn-edit" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <form action="/admin/<%= item.itemType %>/<%= item._id %>?_method=DELETE" method="POST" class="delete-form" style="display:inline-block;">
                                         <button type="submit" class="btn-action btn-delete" title="حذف"><i class="fa-solid fa-trash"></i></button>
                                     </form>
                                 </td>
@@ -48,6 +56,21 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination UI -->
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="/admin?page=<%= currentPage - 1 %>" class="btn btn-outline">&laquo; السابق</a>
+                <% } %>
+                
+                <span class="page-info">صفحة <%= currentPage %> من <%= totalPages %></span>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="/admin?page=<%= currentPage + 1 %>" class="btn btn-outline">التالي &raquo;</a>
+                <% } %>
+            </div>
+        <% } %>
     </div>
 </div>
 
@@ -183,4 +206,17 @@
     background: #e63946;
 }
 .btn-delete:hover { background: #cc303d; }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+}
+.pagination .page-info {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
 </style>

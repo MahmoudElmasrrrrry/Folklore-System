@@ -247,9 +247,7 @@
                 <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.collectionData) { %>
                     <ul class="widget-list">
                         <li><span>تاريخ الجمع:</span> <strong>
-                                <%= new
-                                    Date(mawwal.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG')
-                                    %>
+                                <%= mawwal.folkloreMaterial.collectionData.collectionDate ? new Date(mawwal.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
                             </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= mawwal.folkloreMaterial.collectionData.collectionPlace.governorate %>

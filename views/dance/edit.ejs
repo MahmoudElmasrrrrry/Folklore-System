@@ -1,0 +1,400 @@
+<div class="page-header">
+    <h1>تعديل بيانات الرقصة الشعبية</h1>
+    <p>تحديث بيانات: <%= dance.danceName %></p>
+</div>
+
+<form id="danceForm" action="/admin/dance/<%= dance._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+
+    <!-- 1. بيانات الرقصة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-person-dress"></i> 1. بيانات الرقصة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الرقصة <span class="required">*</span></label>
+                <input type="text" name="danceName" class="form-control" required value="<%= dance.danceName %>">
+            </div>
+            <div class="form-group">
+                <label>المناسبة</label>
+                <input type="text" name="occasion" class="form-control" value="<%= dance.occasion || '' %>">
+            </div>
+            <div class="form-group">
+                <label>نوع الوسيط</label>
+                <input type="text" name="mediumType" class="form-control" value="<%= dance.mediumType || '' %>">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>الوصف النصي للرقصة</label>
+            <textarea name="descriptionText" class="form-control" rows="4"><%= dance.description?.text || '' %></textarea>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>فيديو توضيحي للرقصة (اختياري)</label>
+                <input type="file" name="descriptionVideo" class="form-control" accept="video/*" style="padding: 5px;">
+                <% if (dance.description?.videoUrl) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد فيديو محفوظ حالياً. <a href="<%= dance.description.videoUrl %>" target="_blank">عرض</a></small>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <label>صور للرقصة (يمكن اختيار أكثر من صورة)</label>
+                <input type="file" name="descriptionImages" class="form-control" accept="image/*" multiple style="padding: 5px;">
+                <% if (dance.description?.images && dance.description.images.length > 0) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد <%= dance.description.images.length %> صورة محفوظة حالياً.</small>
+                <% } %>
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>أسلوب التقديم</label>
+            <input type="text" name="presentationStyle" class="form-control" value="<%= dance.presentationStyle || '' %>">
+        </div>
+    </div>
+
+    <!-- 2. الموسيقى المصاحبة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-music"></i> 2. الموسيقى المصاحبة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>نوع المصاحبة</label>
+                <select name="accompanimentType" class="form-control">
+                    <option value="">اختر النوع</option>
+                    <% const accTypes = ['فردي', 'جماعي', 'ردة', 'هتاف', 'مواويل', 'أهازيج']; %>
+                    <% accTypes.forEach(t => { %>
+                        <option value="<%= t %>" <%= dance.music?.accompanimentType === t ? 'selected' : '' %>><%= t %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اسم الأغنية/الموسيقى</label>
+                <input type="text" name="songName" class="form-control" value="<%= dance.music?.songName || '' %>">
+            </div>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>تغيير الملف الصوتي (اختياري)</label>
+                <input type="file" name="audioFile" class="form-control" accept="audio/*" style="padding: 5px;">
+                <% if (dance.music?.audioUrl) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد ملف صوتي محفوظ حالياً. <a href="<%= dance.music.audioUrl %>" target="_blank">استماع</a></small>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <label>تغيير ملف كلمات الأغنية (اختياري)</label>
+                <input type="file" name="lyricsFileUrl" class="form-control" style="padding: 5px;">
+                <% if (dance.music?.lyricsFileUrl) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد ملف كلمات محفوظ حالياً. <a href="<%= dance.music.lyricsFileUrl %>" target="_blank">عرض</a></small>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. الأزياء -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-shirt"></i> 3. الأزياء المرتبطة بالرقصة</h2>
+        
+        <h3 style="font-size: 1.1rem; color: var(--secondary-color); margin-bottom: 10px;">زي النساء</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الزي</label>
+                <input type="text" name="costumeWomenName" class="form-control" value="<%= dance.costumes?.women?.name || '' %>">
+            </div>
+            <div class="form-group">
+                <label>وصف الزي</label>
+                <input type="text" name="costumeWomenDesc" class="form-control" value="<%= dance.costumes?.women?.description || '' %>">
+            </div>
+            <div class="form-group">
+                <label>صورة الزي (اختياري)</label>
+                <input type="file" name="costumeWomenImage" class="form-control" accept="image/*" style="padding: 5px;">
+                <% if (dance.costumes?.women?.image) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد صورة محفوظة. <a href="<%= dance.costumes.women.image %>" target="_blank">عرض</a></small>
+                <% } %>
+            </div>
+        </div>
+        
+        <h3 style="font-size: 1.1rem; color: var(--secondary-color); margin-top: 20px; margin-bottom: 10px;">زي الرجال</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الزي</label>
+                <input type="text" name="costumeMenName" class="form-control" value="<%= dance.costumes?.men?.name || '' %>">
+            </div>
+            <div class="form-group">
+                <label>وصف الزي</label>
+                <input type="text" name="costumeMenDesc" class="form-control" value="<%= dance.costumes?.men?.description || '' %>">
+            </div>
+            <div class="form-group">
+                <label>صورة الزي (اختياري)</label>
+                <input type="file" name="costumeMenImage" class="form-control" accept="image/*" style="padding: 5px;">
+                <% if (dance.costumes?.men?.image) { %>
+                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">يوجد صورة محفوظة. <a href="<%= dance.costumes.men.image %>" target="_blank">عرض</a></small>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. المؤدون -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-users"></i> 4. المؤدون</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد المؤدين الإجمالي</label>
+            <input type="number" name="performersCount" class="form-control" min="1" value="<%= dance.performersCount || '' %>">
+        </div>
+        
+        <div id="performersContainer">
+            <% if (dance.performers && dance.performers.length > 0) { %>
+                <% dance.performers.forEach((p, index) => { %>
+                    <div class="dynamic-row">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>النوع</label>
+                                <select name="performers[<%= index %>][gender]" class="form-control">
+                                    <option value="">اختر</option>
+                                    <option value="رجال" <%= p.gender === 'رجال' ? 'selected' : '' %>>رجال</option>
+                                    <option value="نساء" <%= p.gender === 'نساء' ? 'selected' : '' %>>نساء</option>
+                                    <option value="أطفال" <%= p.gender === 'أطفال' ? 'selected' : '' %>>أطفال</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>العمر التقريبي</label>
+                                <input type="number" name="performers[<%= index %>][age]" class="form-control" value="<%= p.age || '' %>">
+                            </div>
+                            <div class="form-group">
+                                <label>التعليم</label>
+                                <select name="performers[<%= index %>][education]" class="form-control">
+                                    <option value="">اختر</option>
+                                    <% const edus = ['أمي', 'ابتدائي', 'ثانوي', 'جامعي']; %>
+                                    <% edus.forEach(e => { %>
+                                        <option value="<%= e %>" <%= p.education === e ? 'selected' : '' %>><%= e %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin-top:10px;">
+                            <div class="form-group">
+                                <label>المهنة</label>
+                                <input type="text" name="performers[<%= index %>][occupation]" class="form-control" value="<%= p.occupation || '' %>">
+                            </div>
+                            <div class="form-group">
+                                <label>طريقة تعلم الرقصة</label>
+                                <select name="performers[<%= index %>][experience][source]" class="form-control">
+                                    <option value="">اختر</option>
+                                    <option value="وراثة" <%= p.experience?.source === 'وراثة' ? 'selected' : '' %>>وراثة</option>
+                                    <option value="تعليم" <%= p.experience?.source === 'تعليم' ? 'selected' : '' %>>تعليم</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="display:flex; align-items:flex-end;">
+                                <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i> إزالة</button>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+        <button type="button" class="btn btn-outline" id="addPerformerBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة بيانات مؤدي
+        </button>
+    </div>
+
+    <!-- 5. الأدوات المستخدمة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-toolbox"></i> 5. الأدوات المستخدمة</h2>
+        
+        <div id="toolsContainer">
+            <% if (dance.tools && dance.tools.length > 0) { %>
+                <% dance.tools.forEach((t, index) => { %>
+                    <div class="dynamic-row">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>اسم الأداة</label>
+                                <input type="text" name="tools[<%= index %>][name]" class="form-control" value="<%= t.name || '' %>">
+                            </div>
+                            <div class="form-group" style="flex: 2;">
+                                <label>وصف الأداة وكيفية استخدامها</label>
+                                <input type="text" name="tools[<%= index %>][description]" class="form-control" value="<%= t.description || '' %>">
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>تغيير صورة الأداة</label>
+                                <input type="file" name="tools_<%= index %>_image" class="form-control" accept="image/*" style="padding: 5px;">
+                                <% if (t.image) { %>
+                                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">صورة محفوظة: <a href="<%= t.image %>" target="_blank">عرض</a></small>
+                                <% } %>
+                            </div>
+                            <div class="form-group">
+                                <label>تغيير فيديو استخدام الأداة</label>
+                                <input type="file" name="tools_<%= index %>_video" class="form-control" accept="video/*" style="padding: 5px;">
+                                <% if (t.video) { %>
+                                    <small style="display:block; margin-top: 5px; color: var(--color-primary);">فيديو محفوظ: <a href="<%= t.video %>" target="_blank">عرض</a></small>
+                                <% } %>
+                            </div>
+                            <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                                <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+        <button type="button" class="btn btn-outline" id="addToolBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة أداة جديدة
+        </button>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem;">
+            <i class="fa-solid fa-save"></i> حفظ التعديلات
+        </button>
+    </div>
+
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // ---- Delete existing rows ----
+    document.querySelectorAll('.btn-delete-row').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.dynamic-row').remove();
+            const countInput = document.querySelector('input[name="performersCount"]');
+            if(countInput.value > 0) countInput.value = document.getElementById("performersContainer").children.length;
+        });
+    });
+
+    // ---- Dynamic Performers Logic ----
+    const performersContainer = document.getElementById("performersContainer");
+    const addPerformerBtn = document.getElementById("addPerformerBtn");
+    let performerIndex = <%= dance.performers ? dance.performers.length : 0 %>;
+
+    function addPerformerRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>النوع</label>
+                    <select name="performers[${performerIndex}][gender]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>رجال</option>
+                        <option>نساء</option>
+                        <option>أطفال</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العمر التقريبي</label>
+                    <input type="number" name="performers[${performerIndex}][age]" class="form-control" min="5" max="100">
+                </div>
+                <div class="form-group">
+                    <label>التعليم</label>
+                    <select name="performers[${performerIndex}][education]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>أمي</option>
+                        <option>ابتدائي</option>
+                        <option>ثانوي</option>
+                        <option>جامعي</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>المهنة</label>
+                    <input type="text" name="performers[${performerIndex}][occupation]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>طريقة تعلم الرقصة</label>
+                    <select name="performers[${performerIndex}][experience][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>وراثة</option>
+                        <option>تعليم</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                    <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i> إزالة</button>
+                </div>
+            </div>
+        `;
+        performersContainer.appendChild(div);
+        performerIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            const countInput = document.querySelector('input[name="performersCount"]');
+            if(countInput.value > 0) countInput.value = performersContainer.children.length;
+        });
+    }
+
+    addPerformerBtn.addEventListener("click", function() {
+        addPerformerRow();
+        const countInput = document.querySelector('input[name="performersCount"]');
+        countInput.value = performersContainer.children.length;
+    });
+
+    const performersCountInput = document.querySelector('input[name="performersCount"]');
+    if (performersCountInput) {
+        performersCountInput.addEventListener('input', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = performersContainer.children.length;
+            
+            if (targetCount > currentCount) {
+                for (let i = 0; i < targetCount - currentCount; i++) {
+                    addPerformerRow();
+                }
+            } else if (targetCount < currentCount) {
+                for (let i = 0; i < currentCount - targetCount; i++) {
+                    if (performersContainer.lastElementChild) {
+                        performersContainer.lastElementChild.remove();
+                    }
+                }
+            }
+        });
+    }
+
+
+    // ---- Dynamic Tools Logic ----
+    const toolsContainer = document.getElementById("toolsContainer");
+    const addToolBtn = document.getElementById("addToolBtn");
+    let toolIndex = <%= dance.tools ? dance.tools.length : 0 %>;
+
+    addToolBtn.addEventListener("click", function() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][name]" class="form-control" placeholder="مثال: عصا التحطيب، الدف">
+                </div>
+                <div class="form-group" style="flex: 2;">
+                    <label>وصف الأداة وكيفية استخدامها</label>
+                    <input type="text" name="tools[${toolIndex}][description]" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label>صورة الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                </div>
+                <div class="form-group">
+                    <label>فيديو استخدام الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_video" class="form-control" accept="video/*" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        toolsContainer.appendChild(div);
+        toolIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+        });
+    });
+});
+</script>
+
+<style>
+.dynamic-row {
+    background: #fdfbf7;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    position: relative;
+}
+</style>

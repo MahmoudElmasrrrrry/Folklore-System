@@ -206,8 +206,8 @@
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-info-circle"></i> 6. وصف العنصر</h2>
         <div class="form-group">
-            <label>وصف العنصر الفلكلوري (حد أقصى 300 كلمة)</label>
-            <textarea name="elementDescription" class="form-control" rows="3"><%= mawwal.elementDescription || '' %></textarea>
+            <label>وصف العنصر الفلكلوري (حد أقصى 300 كلمة) <span id="word-count" style="float:left; font-size: 0.9em; color: var(--color-primary);">0 / 300</span></label>
+            <textarea name="elementDescription" id="elementDescription" class="form-control" rows="3"><%= mawwal.elementDescription || '' %></textarea>
         </div>
         <div class="form-group" style="margin-top: 15px;">
             <label>سياق الممارسة</label>
@@ -267,3 +267,33 @@
     </div>
 
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const descInput = document.getElementById("elementDescription");
+        const countDisplay = document.getElementById("word-count");
+        
+        if (descInput && countDisplay) {
+            // Function to update count
+            const updateCount = function() {
+                const text = descInput.value.trim();
+                const words = text ? text.split(/\s+/) : [];
+                let wordCount = words.length;
+                
+                if (wordCount > 300) {
+                    descInput.value = words.slice(0, 300).join(" ");
+                    wordCount = 300;
+                    countDisplay.style.color = "red";
+                } else {
+                    countDisplay.style.color = "var(--color-primary)";
+                }
+                
+                countDisplay.innerText = `${wordCount} / 300`;
+            };
+
+            descInput.addEventListener("input", updateCount);
+            // Run once on load if there's pre-filled data
+            updateCount();
+        }
+    });
+</script>

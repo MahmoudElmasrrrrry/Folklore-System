@@ -1,0 +1,302 @@
+<div class="page-header">
+    <h1>إضافة تفاصيل الرقصة الشعبية</h1>
+    <p>يرجى استكمال البيانات التفصيلية الخاصة بعنصر الرقصة الشعبية</p>
+</div>
+
+<form id="danceForm" action="/dance/add" method="POST" enctype="multipart/form-data">
+    <!-- ربط الرقصة بالمادة الفلكلورية الأساسية -->
+    <input type="hidden" name="folkloreMaterial" value="<%= folkloreId %>">
+
+    <!-- 1. بيانات الرقصة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-person-dress"></i> 1. بيانات الرقصة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الرقصة <span class="required">*</span></label>
+                <input type="text" name="danceName" class="form-control" required placeholder="مثال: رقصة التحطيب">
+            </div>
+            <div class="form-group">
+                <label>المناسبة</label>
+                <input type="text" name="occasion" class="form-control" placeholder="أفراح، حصاد، إلخ">
+            </div>
+            <div class="form-group">
+                <label>نوع الوسيط</label>
+                <input type="text" name="mediumType" class="form-control">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>الوصف النصي للرقصة</label>
+            <textarea name="descriptionText" class="form-control" rows="4" placeholder="اكتب وصفاً دقيقاً لحركات الرقصة..."></textarea>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>فيديو توضيحي للرقصة (اختياري)</label>
+                <input type="file" name="descriptionVideo" class="form-control" accept="video/*" style="padding: 5px;">
+            </div>
+            <div class="form-group">
+                <label>صور للرقصة (يمكن اختيار أكثر من صورة)</label>
+                <input type="file" name="descriptionImages" class="form-control" accept="image/*" multiple style="padding: 5px;">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>أسلوب التقديم</label>
+            <input type="text" name="presentationStyle" class="form-control" placeholder="مثال: أداء جماعي في شكل دائري">
+        </div>
+    </div>
+
+    <!-- 2. الموسيقى المصاحبة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-music"></i> 2. الموسيقى المصاحبة</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>نوع المصاحبة</label>
+                <select name="accompanimentType" class="form-control">
+                    <option value="">اختر النوع</option>
+                    <option>فردي</option>
+                    <option>جماعي</option>
+                    <option>ردة</option>
+                    <option>هتاف</option>
+                    <option>مواويل</option>
+                    <option>أهازيج</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>اسم الأغنية/الموسيقى</label>
+                <input type="text" name="songName" class="form-control" placeholder="مثال: يا نخلتين في العلالي">
+            </div>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>ملف صوتي للموسيقى (اختياري)</label>
+                <input type="file" name="audioFile" class="form-control" accept="audio/*" style="padding: 5px;">
+            </div>
+            <div class="form-group">
+                <label>ملف كلمات الأغنية (اختياري)</label>
+                <input type="file" name="lyricsFileUrl" class="form-control" style="padding: 5px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. الأزياء -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-shirt"></i> 3. الأزياء المرتبطة بالرقصة</h2>
+        
+        <h3 style="font-size: 1.1rem; color: var(--secondary-color); margin-bottom: 10px;">زي النساء</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الزي</label>
+                <input type="text" name="costumeWomenName" class="form-control" placeholder="مثال: جلابية، شال">
+            </div>
+            <div class="form-group">
+                <label>وصف الزي</label>
+                <input type="text" name="costumeWomenDesc" class="form-control" placeholder="ألوان، تطريز...">
+            </div>
+            <div class="form-group">
+                <label>صورة الزي (اختياري)</label>
+                <input type="file" name="costumeWomenImage" class="form-control" accept="image/*" style="padding: 5px;">
+            </div>
+        </div>
+        
+        <h3 style="font-size: 1.1rem; color: var(--secondary-color); margin-top: 20px; margin-bottom: 10px;">زي الرجال</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الزي</label>
+                <input type="text" name="costumeMenName" class="form-control" placeholder="مثال: جلباب صعيدي، عمامة">
+            </div>
+            <div class="form-group">
+                <label>وصف الزي</label>
+                <input type="text" name="costumeMenDesc" class="form-control" placeholder="شكل العمة، الألوان...">
+            </div>
+            <div class="form-group">
+                <label>صورة الزي (اختياري)</label>
+                <input type="file" name="costumeMenImage" class="form-control" accept="image/*" style="padding: 5px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. المؤدون (Dynamic Array) -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-users"></i> 4. المؤدون</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد المؤدين الإجمالي</label>
+            <input type="number" name="performersCount" class="form-control" min="1">
+        </div>
+        
+        <div id="performersContainer">
+            <!-- سيتم إضافة حقول المؤدين هنا ديناميكياً -->
+        </div>
+        <button type="button" class="btn btn-outline" id="addPerformerBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة بيانات مؤدي
+        </button>
+    </div>
+
+    <!-- 5. الأدوات المستخدمة (Dynamic Array) -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-toolbox"></i> 5. الأدوات المستخدمة</h2>
+        
+        <div id="toolsContainer">
+            <!-- سيتم إضافة حقول الأدوات هنا ديناميكياً -->
+        </div>
+        <button type="button" class="btn btn-outline" id="addToolBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة أداة جديدة
+        </button>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem;">
+            <i class="fa-solid fa-save"></i> حفظ بيانات الرقصة
+        </button>
+    </div>
+
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // ---- Dynamic Performers Logic ----
+    const performersContainer = document.getElementById("performersContainer");
+    const addPerformerBtn = document.getElementById("addPerformerBtn");
+    let performerIndex = 0;
+
+    function addPerformerRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>النوع</label>
+                    <select name="performers[${performerIndex}][gender]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>رجال</option>
+                        <option>نساء</option>
+                        <option>أطفال</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العمر التقريبي</label>
+                    <input type="number" name="performers[${performerIndex}][age]" class="form-control" min="5" max="100">
+                </div>
+                <div class="form-group">
+                    <label>التعليم</label>
+                    <select name="performers[${performerIndex}][education]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>أمي</option>
+                        <option>ابتدائي</option>
+                        <option>ثانوي</option>
+                        <option>جامعي</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>المهنة</label>
+                    <input type="text" name="performers[${performerIndex}][occupation]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>طريقة تعلم الرقصة</label>
+                    <select name="performers[${performerIndex}][experience][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>وراثة</option>
+                        <option>تعليم</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end;">
+                    <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i> إزالة</button>
+                </div>
+            </div>
+        `;
+        performersContainer.appendChild(div);
+        performerIndex++;
+
+        // Add remove listener
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            const countInput = document.querySelector('input[name="performersCount"]');
+            if(countInput.value > 0) countInput.value = performersContainer.children.length;
+        });
+    }
+
+    addPerformerBtn.addEventListener("click", function() {
+        addPerformerRow();
+        const countInput = document.querySelector('input[name="performersCount"]');
+        countInput.value = performersContainer.children.length;
+    });
+
+    const performersCountInput = document.querySelector('input[name="performersCount"]');
+    performersCountInput.addEventListener('input', function() {
+        const targetCount = parseInt(this.value) || 0;
+        const currentCount = performersContainer.children.length;
+        
+        if (targetCount > currentCount) {
+            for (let i = 0; i < targetCount - currentCount; i++) {
+                addPerformerRow();
+            }
+        } else if (targetCount < currentCount) {
+            for (let i = 0; i < currentCount - targetCount; i++) {
+                if (performersContainer.lastElementChild) {
+                    performersContainer.lastElementChild.remove();
+                }
+            }
+        }
+    });
+
+
+    // ---- Dynamic Tools Logic ----
+    const toolsContainer = document.getElementById("toolsContainer");
+    const addToolBtn = document.getElementById("addToolBtn");
+    let toolIndex = 0;
+
+    function addToolRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][name]" class="form-control" placeholder="مثال: عصا التحطيب، الدف">
+                </div>
+                <div class="form-group" style="flex: 2;">
+                    <label>وصف الأداة وكيفية استخدامها</label>
+                    <input type="text" name="tools[${toolIndex}][description]" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label>صورة الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                </div>
+                <div class="form-group">
+                    <label>فيديو استخدام الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_video" class="form-control" accept="video/*" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row" style="background:#e63946; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; height:45px;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        toolsContainer.appendChild(div);
+        toolIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+        });
+    }
+
+    addToolBtn.addEventListener("click", addToolRow);
+    
+    // Add one empty row by default for each (but update the counter)
+    addPerformerRow();
+    document.querySelector('input[name="performersCount"]').value = 1;
+    addToolRow();
+});
+</script>
+
+<style>
+.dynamic-row {
+    background: #fdfbf7;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    position: relative;
+}
+</style>

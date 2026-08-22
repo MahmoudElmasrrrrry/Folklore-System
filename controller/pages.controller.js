@@ -179,6 +179,34 @@ export const renderAddMawwal = async (req, res, next) => {
   }
 };
 
+// ─── صفحة إضافة الرقصة الشعبية ───
+export const renderAddDance = async (req, res, next) => {
+  try {
+    const { folkloreId } = req.query;
+    
+    if (!folkloreId) {
+      const err = new Error("يجب تقديم معرف المادة الفلكلورية");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // التأكد من وجود المادة الفلكلورية
+    const folkloreMaterial = await folkloreMaterialModel.findById(folkloreId);
+    if (!folkloreMaterial) {
+      const err = new Error("المادة الفلكلورية غير موجودة");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("dance/add", {
+      title: "إضافة تفاصيل الرقصة الشعبية",
+      folkloreId
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─── صفحة الأرشيف (الجدول الزمني - Timeline) ───
 export const renderArchiveTimeline = async (req, res, next) => {
   try {
@@ -225,7 +253,25 @@ export const renderArchiveTimeline = async (req, res, next) => {
       });
     });
 
-    // Can do same for others later when implemented
+    dances.forEach(d => {
+      if (!d.folkloreMaterial) return;
+      if (category && d.folkloreMaterial.category?._id.toString() !== category) return;
+      if (type && type !== "dance") return;
+      
+      timelineItems.push({
+        id: d._id,
+        title: d.danceName,
+        type: "dance",
+        typeLabel: "رقصة شعبية",
+        icon: '<i class="fa-solid fa-person-dress"></i>',
+        narrator: d.folkloreMaterial.narrator?.name || "مجهول",
+        categoryName: d.folkloreMaterial.category?.name || "غير مصنف",
+        date: d.createdAt,
+        contentPreview: d.description?.text ? (d.description.text.length > 200 ? d.description.text.substring(0, 200) + "..." : d.description.text) : "",
+        audioUrl: d.music?.audioUrl,
+        tags: [d.occasion, d.presentationStyle].filter(Boolean)
+      });
+    });
     
     // Apply Search Filter
     if (search && search.trim() !== '') {
@@ -290,6 +336,35 @@ export const renderMawwalDetails = async (req, res, next) => {
     res.render("mawwal/details", {
       title: mawwal.mawwalName,
       mawwal
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── صفحة تفاصيل الرقصة الشعبية ───
+export const renderDanceDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const dance = await Dance.findById(id).populate({
+      path: 'folkloreMaterial',
+      populate: [
+        { path: 'narrator' },
+        { path: 'mission' },
+        { path: 'collector' },
+        { path: 'category' }
+      ]
+    }).lean();
+
+    if (!dance) {
+      const err = new Error("الرقصة غير موجودة");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("dance/details", {
+      title: dance.danceName,
+      dance
     });
   } catch (error) {
     next(error);
