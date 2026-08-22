@@ -2,14 +2,21 @@
     <div class="container">
         <div class="meta-tags">
             <span class="badge"><i class="fa-solid fa-music"></i> موال</span>
-            <span class="badge"><i class="fa-regular fa-calendar-days"></i> <%= new Date(mawwal.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+            <span class="badge"><i class="fa-regular fa-calendar-days"></i>
+                <%= new Date(mawwal.createdAt).toLocaleDateString('ar-EG', { year: 'numeric' , month: 'long' ,
+                    day: 'numeric' }) %>
+            </span>
             <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.category) { %>
-                <span class="badge"><i class="fa-solid fa-folder"></i> <%= mawwal.folkloreMaterial.category.name %></span>
-            <% } %>
+                <span class="badge"><i class="fa-solid fa-folder"></i>
+                    <%= mawwal.folkloreMaterial.category.name %>
+                </span>
+                <% } %>
         </div>
-        
-        <h1><%= mawwal.mawwalName %></h1>
-        
+
+        <h1>
+            <%= mawwal.mawwalName %>
+        </h1>
+
         <% if (mawwal.melodyAndMaqam && mawwal.melodyAndMaqam.audioUrl) { %>
             <div class="hero-audio">
                 <audio controls preload="metadata">
@@ -17,16 +24,16 @@
                     متصفحك لا يدعم مشغل الصوت.
                 </audio>
             </div>
-        <% } %>
+            <% } %>
     </div>
 </div>
 
 <div class="container" style="margin-top: 40px; margin-bottom: 60px;">
     <div class="details-grid">
-        
+
         <!-- المحتوى الرئيسي (يمين) -->
         <div class="main-content">
-            
+
             <div class="content-section">
                 <h2><i class="fa-solid fa-align-right"></i> نص الموال</h2>
                 <div class="lyrics-box">
@@ -35,77 +42,156 @@
             </div>
 
             <% if (mawwal.eventsSummary || mawwal.elementDescription || mawwal.practiceContext) { %>
-            <div class="content-section">
-                <h2><i class="fa-solid fa-info-circle"></i> الوصف والملخص</h2>
-                <% if (mawwal.eventsSummary) { %><div class="text-block"><strong>ملخص الأحداث:</strong><p><%= mawwal.eventsSummary %></p></div><% } %>
-                <% if (mawwal.elementDescription) { %><div class="text-block"><strong>وصف العنصر:</strong><p><%= mawwal.elementDescription %></p></div><% } %>
-                <% if (mawwal.practiceContext) { %><div class="text-block"><strong>سياق الممارسة:</strong><p><%= mawwal.practiceContext %></p></div><% } %>
-            </div>
-            <% } %>
-
-            <div class="content-section">
-                <h2><i class="fa-solid fa-book-open"></i> الدلالات والسرد</h2>
-                <div class="data-grid">
-                    <% if(mawwal.mawwalType) { %><div class="data-item"><span>النوع</span><strong><%= mawwal.mawwalType %></strong></div><% } %>
-                    <% if(mawwal.dialect) { %><div class="data-item"><span>اللهجة</span><strong><%= mawwal.dialect %></strong></div><% } %>
-                    <% if(mawwal.narrationTime) { %><div class="data-item"><span>زمن القص</span><strong><%= mawwal.narrationTime %></strong></div><% } %>
-                    <% if(mawwal.narrationPlace) { %><div class="data-item"><span>مكان القص</span><strong><%= mawwal.narrationPlace %></strong></div><% } %>
-                    <% if(mawwal.narrativeStyle) { %><div class="data-item"><span>أسلوب السرد</span><strong><%= mawwal.narrativeStyle %></strong></div><% } %>
-                    <% if(mawwal.linesCount) { %><div class="data-item"><span>عدد الأبيات</span><strong><%= mawwal.linesCount %></strong></div><% } %>
-                    <% if(mawwal.prosodicMeter) { %><div class="data-item"><span>البحر العروضي</span><strong><%= mawwal.prosodicMeter %></strong></div><% } %>
-                    <% if(mawwal.performanceMode) { %><div class="data-item"><span>نمط الأداء</span><strong><%= mawwal.performanceMode %></strong></div><% } %>
-                    <% if(mawwal.performanceMethod) { %><div class="data-item"><span>طريقة الأداء</span><strong><%= mawwal.performanceMethod %></strong></div><% } %>
+                <div class="content-section">
+                    <h2><i class="fa-solid fa-info-circle"></i> الوصف والملخص</h2>
+                    <% if (mawwal.eventsSummary) { %>
+                        <div class="text-block"><strong>ملخص الأحداث:</strong>
+                            <p>
+                                <%= mawwal.eventsSummary %>
+                            </p>
+                        </div>
+                        <% } %>
+                            <% if (mawwal.elementDescription) { %>
+                                <div class="text-block"><strong>وصف العنصر:</strong>
+                                    <p>
+                                        <%= mawwal.elementDescription %>
+                                    </p>
+                                </div>
+                                <% } %>
+                                    <% if (mawwal.practiceContext) { %>
+                                        <div class="text-block"><strong>سياق الممارسة:</strong>
+                                            <p>
+                                                <%= mawwal.practiceContext %>
+                                            </p>
+                                        </div>
+                                        <% } %>
                 </div>
-            </div>
-
-            <div class="content-section">
-                <h2><i class="fa-solid fa-tags"></i> دلالات ثقافية واجتماعية</h2>
-                
-                <% if (mawwal.thematicClassification && mawwal.thematicClassification.length > 0) { %>
-                    <div class="tags-group">
-                        <strong>التصنيف الموضوعي:</strong>
-                        <div class="tags-list">
-                            <% mawwal.thematicClassification.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
-                        </div>
-                    </div>
-                <% } %>
-                
-                <% if (mawwal.socialFunction && mawwal.socialFunction.length > 0) { %>
-                    <div class="tags-group">
-                        <strong>الوظيفة الاجتماعية:</strong>
-                        <div class="tags-list">
-                            <% mawwal.socialFunction.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
-                        </div>
-                    </div>
                 <% } %>
 
-                <% if (mawwal.reflectedValues && mawwal.reflectedValues.length > 0) { %>
-                    <div class="tags-group">
-                        <strong>القيم المعكوسة:</strong>
-                        <div class="tags-list">
-                            <% mawwal.reflectedValues.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
+                    <div class="content-section">
+                        <h2><i class="fa-solid fa-book-open"></i> الدلالات والسرد</h2>
+                        <div class="data-grid">
+                            <% if(mawwal.mawwalType) { %>
+                                <div class="data-item"><span>النوع</span><strong>
+                                        <%= mawwal.mawwalType %>
+                                    </strong></div>
+                                <% } %>
+                                    <% if(mawwal.dialect) { %>
+                                        <div class="data-item"><span>اللهجة</span><strong>
+                                                <%= mawwal.dialect %>
+                                            </strong></div>
+                                        <% } %>
+                                            <% if(mawwal.narrationTime) { %>
+                                                <div class="data-item"><span>زمن القص</span><strong>
+                                                        <%= mawwal.narrationTime %>
+                                                    </strong></div>
+                                                <% } %>
+                                                    <% if(mawwal.narrationPlace) { %>
+                                                        <div class="data-item"><span>مكان القص</span><strong>
+                                                                <%= mawwal.narrationPlace %>
+                                                            </strong></div>
+                                                        <% } %>
+                                                            <% if(mawwal.narrativeStyle) { %>
+                                                                <div class="data-item"><span>أسلوب السرد</span><strong>
+                                                                        <%= mawwal.narrativeStyle %>
+                                                                    </strong></div>
+                                                                <% } %>
+                                                                    <% if(mawwal.linesCount) { %>
+                                                                        <div class="data-item"><span>عدد
+                                                                                الأبيات</span><strong>
+                                                                                <%= mawwal.linesCount %>
+                                                                            </strong></div>
+                                                                        <% } %>
+                                                                            <% if(mawwal.prosodicMeter) { %>
+                                                                                <div class="data-item"><span>البحر
+                                                                                        العروضي</span><strong>
+                                                                                        <%= mawwal.prosodicMeter %>
+                                                                                    </strong></div>
+                                                                                <% } %>
+                                                                                    <% if(mawwal.performanceMode) { %>
+                                                                                        <div class="data-item"><span>نمط
+                                                                                                الأداء</span><strong>
+                                                                                                <%= mawwal.performanceMode
+                                                                                                    %>
+                                                                                            </strong></div>
+                                                                                        <% } %>
+                                                                                            <% if(mawwal.performanceMethod)
+                                                                                                { %>
+                                                                                                <div class="data-item">
+                                                                                                    <span>طريقة
+                                                                                                        الأداء</span><strong>
+                                                                                                        <%= mawwal.performanceMethod
+                                                                                                            %>
+                                                                                                    </strong></div>
+                                                                                                <% } %>
                         </div>
                     </div>
-                <% } %>
-                
-                <% if (mawwal.occasion && mawwal.occasion.length > 0) { %>
-                    <div class="tags-group">
-                        <strong>المناسبة:</strong>
-                        <div class="tags-list">
-                            <% mawwal.occasion.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
-                        </div>
+
+                    <div class="content-section">
+                        <h2><i class="fa-solid fa-tags"></i> دلالات ثقافية واجتماعية</h2>
+
+                        <% if (mawwal.thematicClassification && mawwal.thematicClassification.length> 0) { %>
+                            <div class="tags-group">
+                                <strong>التصنيف الموضوعي:</strong>
+                                <div class="tags-list">
+                                    <% mawwal.thematicClassification.forEach(t=> { %><span class="tag">
+                                            <%= t %>
+                                        </span>
+                                        <% }) %>
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <% if (mawwal.socialFunction && mawwal.socialFunction.length> 0) { %>
+                                    <div class="tags-group">
+                                        <strong>الوظيفة الاجتماعية:</strong>
+                                        <div class="tags-list">
+                                            <% mawwal.socialFunction.forEach(t=> { %><span class="tag">
+                                                    <%= t %>
+                                                </span>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                        <% if (mawwal.reflectedValues && mawwal.reflectedValues.length> 0) { %>
+                                            <div class="tags-group">
+                                                <strong>القيم المعكوسة:</strong>
+                                                <div class="tags-list">
+                                                    <% mawwal.reflectedValues.forEach(t=> { %><span class="tag">
+                                                            <%= t %>
+                                                        </span>
+                                                        <% }) %>
+                                                </div>
+                                            </div>
+                                            <% } %>
+
+                                                <% if (mawwal.occasion && mawwal.occasion.length> 0) { %>
+                                                    <div class="tags-group">
+                                                        <strong>المناسبة:</strong>
+                                                        <div class="tags-list">
+                                                            <% mawwal.occasion.forEach(t=> { %><span class="tag">
+                                                                    <%= t %>
+                                                                </span>
+                                                                <% }) %>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <% if (mawwal.accompanyingInstruments &&
+                                                            mawwal.accompanyingInstruments.length> 0) { %>
+                                                            <div class="tags-group">
+                                                                <strong>الآلات المرافقة:</strong>
+                                                                <div class="tags-list">
+                                                                    <% mawwal.accompanyingInstruments.forEach(t=> {
+                                                                        %><span class="tag">
+                                                                            <%= t %>
+                                                                        </span>
+                                                                        <% }) %>
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
                     </div>
-                <% } %>
-                
-                <% if (mawwal.accompanyingInstruments && mawwal.accompanyingInstruments.length > 0) { %>
-                    <div class="tags-group">
-                        <strong>الآلات المرافقة:</strong>
-                        <div class="tags-list">
-                            <% mawwal.accompanyingInstruments.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
 
         </div>
 
@@ -115,16 +201,24 @@
                 <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي</h3>
                 <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.narrator) { %>
                     <ul class="widget-list">
-                        <li><span>الاسم:</span> <strong><%= mawwal.folkloreMaterial.narrator.name %></strong></li>
-                        <li><span>العمر:</span> <strong><%= mawwal.folkloreMaterial.narrator.age %> سنة</strong></li>
-                        <li><span>المهنة:</span> <strong><%= mawwal.folkloreMaterial.narrator.occupation %></strong></li>
+                        <li><span>الاسم:</span> <strong>
+                                <%= mawwal.folkloreMaterial.narrator.name %>
+                            </strong></li>
+                        <li><span>العمر:</span> <strong>
+                                <%= mawwal.folkloreMaterial.narrator.age %> سنة
+                            </strong></li>
+                        <li><span>المهنة:</span> <strong>
+                                <%= mawwal.folkloreMaterial.narrator.occupation %>
+                            </strong></li>
                         <% if(mawwal.folkloreMaterial.narrator.status) { %>
-                        <li><span>الحالة:</span> <strong><%= mawwal.folkloreMaterial.narrator.status %></strong></li>
-                        <% } %>
+                            <li><span>الحالة:</span> <strong>
+                                    <%= mawwal.folkloreMaterial.narrator.status %>
+                                </strong></li>
+                            <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">بيانات الراوي غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">بيانات الراوي غير متوفرة</p>
+                        <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -132,246 +226,331 @@
                 <% if (mawwal.folkloreMaterial) { %>
                     <ul class="widget-list">
                         <% if (mawwal.folkloreMaterial.mission) { %>
-                            <li><span>رقم البعثة:</span> <strong><%= mawwal.folkloreMaterial.mission.missionNumber %></strong></li>
-                            <li><span>مكان البعثة:</span> <strong><%= mawwal.folkloreMaterial.mission.place %></strong></li>
-                        <% } %>
-                        <% if (mawwal.folkloreMaterial.collector) { %>
-                            <li><span>اسم الجامع:</span> <strong><%= mawwal.folkloreMaterial.collector.name %></strong></li>
-                        <% } %>
+                            <li><span>رقم البعثة:</span> <strong>
+                                    <%= mawwal.folkloreMaterial.mission.missionNumber %>
+                                </strong></li>
+                            <li><span>مكان البعثة:</span> <strong>
+                                    <%= mawwal.folkloreMaterial.mission.place %>
+                                </strong></li>
+                            <% } %>
+                                <% if (mawwal.folkloreMaterial.collector) { %>
+                                    <li><span>اسم الجامع:</span> <strong>
+                                            <%= mawwal.folkloreMaterial.collector.name %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
-                <% } %>
+                    <% } %>
             </div>
-            
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-list-check"></i> بيانات الجمع</h3>
+                <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.collectionData) { %>
+                    <ul class="widget-list">
+                        <li><span>تاريخ الجمع:</span> <strong>
+                                <%= new
+                                    Date(mawwal.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG')
+                                    %>
+                            </strong></li>
+                        <li><span>المحافظة:</span> <strong>
+                                <%= mawwal.folkloreMaterial.collectionData.collectionPlace.governorate %>
+                            </strong></li>
+                        <li><span>المدينة/المركز:</span> <strong>
+                                <%= mawwal.folkloreMaterial.collectionData.collectionPlace.city %>
+                            </strong></li>
+                        <% if(mawwal.folkloreMaterial.collectionData.collectionPlace.village) { %>
+                            <li><span>القرية:</span> <strong>
+                                    <%= mawwal.folkloreMaterial.collectionData.collectionPlace.village %>
+                                </strong></li>
+                            <% } %>
+                                <% if(mawwal.folkloreMaterial.collectionData.collectionCulturePlace) { %>
+                                    <li><span>البيئة الثقافية:</span> <strong>
+                                            <%= mawwal.folkloreMaterial.collectionData.collectionCulturePlace %>
+                                        </strong></li>
+                                    <% } %>
+                    </ul>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-hard-drive"></i> المصدر الأرشيفي</h3>
+                <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.dataSource) { %>
+                    <ul class="widget-list">
+                        <li><span>نوع المصدر:</span> <strong>
+                                <%= mawwal.folkloreMaterial.dataSource.sourceType %>
+                            </strong></li>
+                        <% if(mawwal.folkloreMaterial.dataSource.photoNumber) { %>
+                            <li><span>رقم الصورة:</span> <strong>
+                                    <%= mawwal.folkloreMaterial.dataSource.photoNumber %>
+                                </strong></li>
+                            <% } %>
+                                <% if(mawwal.folkloreMaterial.dataSource.tapeNumber) { %>
+                                    <li><span>رقم الشريط:</span> <strong>
+                                            <%= mawwal.folkloreMaterial.dataSource.tapeNumber %>
+                                        </strong></li>
+                                    <% } %>
+                                        <% if(mawwal.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                                            <li><span>الملف الرقمي:</span> <strong>
+                                                    <%= mawwal.folkloreMaterial.dataSource.digitalFileLocation %>
+                                                </strong></li>
+                                            <% } %>
+                    </ul>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
+            </div>
+
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
                 <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
-                <button class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</button>
+                <button class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل
+                    المادة</button>
             </div>
         </div>
-        
+
     </div>
 </div>
 
 <style>
-.details-header {
-    background: linear-gradient(135deg, var(--secondary-color), #2a4c7a);
-    color: white;
-    padding: 60px 0;
-    margin-bottom: 30px;
-    border-radius: 0 0 30px 30px;
-    text-align: center;
-}
-
-.meta-tags {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.meta-tags .badge {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 6px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    backdrop-filter: blur(5px);
-}
-
-.details-header h1 {
-    font-size: 2.5rem;
-    margin: 0 0 30px 0;
-    font-weight: 700;
-}
-
-.hero-audio {
-    max-width: 600px;
-    margin: 0 auto;
-    background: rgba(255,255,255,0.1);
-    padding: 15px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-}
-
-.hero-audio audio {
-    width: 100%;
-    height: 45px;
-    border-radius: 8px;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-}
-
-@media (max-width: 900px) {
-    .details-grid {
-        grid-template-columns: 1fr;
+    .details-header {
+        background: linear-gradient(135deg, var(--color-primary-dark), #2a4c7a);
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 30px 30px;
+        text-align: center;
     }
-}
 
-.main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    min-width: 0;
-}
+    .meta-tags {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
 
-.content-section {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border: 1px solid var(--border-color);
-}
+    .meta-tags .badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        backdrop-filter: blur(5px);
+    }
 
-.content-section h2 {
-    color: var(--secondary-color);
-    font-size: 1.4rem;
-    margin-top: 0;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--bg-light);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .details-header h1 {
+        font-size: 2.5rem;
+        margin: 0 0 30px 0;
+        font-weight: 700;
+        color: white;
+    }
 
-.lyrics-box {
-    background: #fdfbf7;
-    padding: 30px;
-    border-radius: 12px;
-    border-right: 5px solid var(--primary-color);
-    font-size: 1.2rem;
-    line-height: 2.2;
-    color: #2c3e50;
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    font-family: 'Amiri', serif; /* Good for Arabic poetry */
-}
+    .hero-audio {
+        max-width: 600px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
 
-.text-block {
-    margin-bottom: 20px;
-}
-.text-block strong {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--secondary-color);
-}
-.text-block p {
-    margin: 0;
-    line-height: 1.7;
-    color: var(--text-color);
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-wrap: break-word;
-}
+    .hero-audio audio {
+        width: 100%;
+        height: 45px;
+        border-radius: 8px;
+    }
 
-.data-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
+    .details-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
 
-.data-item {
-    background: var(--bg-light);
-    padding: 15px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+    @media (max-width: 900px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
-.data-item span {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        min-width: 0;
+    }
 
-.data-item strong {
-    color: var(--secondary-color);
-    font-size: 1.05rem;
-}
+    .content-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+    }
 
-.tags-group {
-    margin-bottom: 20px;
-}
-.tags-group strong {
-    display: block;
-    margin-bottom: 10px;
-    color: var(--secondary-color);
-}
-.tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.tag {
-    background: rgba(230, 57, 70, 0.1);
-    color: var(--primary-color);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
+    .content-section h2 {
+        color: var(--color-primary-dark);
+        font-size: 1.4rem;
+        margin-top: 0;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--bg-light);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 0;
-}
+    .lyrics-box {
+        background: #fafbfc;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        font-size: 1.25rem;
+        line-height: 2.2;
+        color: var(--color-text);
+        white-space: pre-line;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        font-family: 'Tajawal', sans-serif;
+        text-align: right;
+    }
 
-.sidebar-widget {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border: 1px solid var(--border-color);
-}
+    .text-block {
+        margin-bottom: 20px;
+    }
 
-.sidebar-widget h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--secondary-color);
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .text-block strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--color-primary-dark);
+    }
 
-.widget-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+    .text-block p {
+        margin: 0;
+        line-height: 1.8;
+        color: var(--text-color);
+        white-space: pre-line;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        text-align: right;
+        font-size: 1.1rem;
+    }
 
-.widget-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px dashed var(--border-color);
-}
+    .data-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
 
-.widget-list li:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
+    .data-item {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        border-right: 3px solid var(--color-primary-light);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        transition: all 0.2s ease;
+    }
 
-.widget-list li span {
-    color: var(--text-muted);
-}
-.widget-list li strong {
-    color: var(--text-color);
-}
+    .data-item:hover {
+        background: var(--bg-light);
+    }
 
-.action-widget {
-    background: #f8f9fa;
-    text-align: center;
-}
-.action-widget p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-}
+    .data-item span {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .data-item strong {
+        color: var(--color-primary-dark);
+        font-size: 1.05rem;
+    }
+
+    .tags-group {
+        margin-bottom: 20px;
+    }
+
+    .tags-group strong {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--color-primary-dark);
+    }
+
+    .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag {
+        background: rgba(26, 82, 118, 0.05);
+        color: var(--color-primary-dark);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid rgba(26, 82, 118, 0.15);
+    }
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    .sidebar-widget {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--border-color);
+    }
+
+    .sidebar-widget h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: var(--color-primary-dark);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .widget-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .widget-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--border-color);
+    }
+
+    .widget-list li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .widget-list li span {
+        color: var(--text-muted);
+    }
+
+    .widget-list li strong {
+        color: var(--text-color);
+    }
+
+    .action-widget {
+        background: #f8f9fa;
+        text-align: center;
+    }
+
+    .action-widget p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
 </style>

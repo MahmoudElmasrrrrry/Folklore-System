@@ -140,12 +140,12 @@ export const updateMawwal = async (req, res, next) => {
       // Delete old file if user uploads a new one
       deleteLocalFile(newAudioUrl);
       newAudioUrl = `/uploads/audio/${req.file.filename}`;
-    } else if (audioUrl && audioUrl.trim() !== "") {
-      // If user provided an external URL, delete local file if it was previously local
+    } else if (audioUrl !== undefined && audioUrl.trim() !== newAudioUrl) {
+      // If user provided a URL that is different from the current one, or cleared it
       if (newAudioUrl && newAudioUrl.startsWith("/uploads/")) {
         deleteLocalFile(newAudioUrl);
       }
-      newAudioUrl = audioUrl;
+      newAudioUrl = audioUrl.trim();
     }
 
     const updatedData = {
