@@ -1,0 +1,829 @@
+<div class="details-header craft-header">
+    <div class="container">
+        <div class="meta-tags">
+            <span class="badge"><i class="fa-solid fa-hammer"></i> حرفة شعبية</span>
+            <span class="badge"><i class="fa-regular fa-calendar-days"></i>
+                <%= new Date(craft.createdAt).toLocaleDateString('ar-EG', { year: 'numeric' , month: 'long' ,
+                    day: 'numeric' }) %>
+            </span>
+            <% if (craft.folkloreMaterial && craft.folkloreMaterial.category) { %>
+                <span class="badge"><i class="fa-solid fa-folder"></i>
+                    <%= craft.folkloreMaterial.category.name %>
+                </span>
+            <% } %>
+        </div>
+
+        <h1><%= craft.craftName %></h1>
+
+        <div class="craft-quick-info">
+            <% if(craft.workplace) { %>
+                <span class="info-item"><i class="fa-solid fa-shop"></i> مكان العمل: <%= craft.workplace %></span>
+            <% } %>
+            <% if(craft.workHoursPerDay) { %>
+                <span class="info-item"><i class="fa-regular fa-clock"></i> ساعات العمل: <%= craft.workHoursPerDay %> ساعات يومياً</span>
+            <% } %>
+            <% if(craft.craftsmenType && craft.craftsmenType.length > 0) { %>
+                <span class="info-item"><i class="fa-solid fa-users"></i> الفئة: <%= craft.craftsmenType.join('، ') %></span>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 60px;">
+    <div class="details-grid">
+
+        <!-- المحتوى الرئيسي (يمين) -->
+        <div class="main-content">
+
+            <!-- 1. الحرفيون -->
+            <% if (craft.craftsmen && craft.craftsmen.length > 0) { %>
+            <div class="content-section">
+                <h2>
+                    <i class="fa-solid fa-users-gear"></i> بيانات الحرفيين
+                    <span class="count-badge"><%= craft.craftsmenCount || craft.craftsmen.length %></span>
+                </h2>
+                <div class="craftsmen-grid">
+                    <% craft.craftsmen.forEach((c) => { %>
+                        <div class="craftsman-card">
+                            <div class="craftsman-avatar">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div class="craftsman-details">
+                                <h3><%= c.name %></h3>
+                                <div class="craftsman-meta">
+                                    <% if(c.age) { %><span><i class="fa-regular fa-id-card"></i> العمر: <%= c.age %> سنة</span><% } %>
+                                    <% if(c.occupation) { %><span><i class="fa-solid fa-briefcase"></i> المهنة: <%= c.occupation %></span><% } %>
+                                    <% if(c.education) { %><span><i class="fa-solid fa-graduation-cap"></i> التعليم: <%= c.education %></span><% } %>
+                                    <% if(c.experience?.source) { %><span><i class="fa-solid fa-lightbulb"></i> مصدر الخبرة: <%= c.experience.source %></span><% } %>
+                                    <% if(c.experience?.years) { %><span><i class="fa-solid fa-star"></i> سنوات الخبرة: <%= c.experience.years %></span><% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- 2. المواد الخام -->
+            <% if (craft.rawMaterials && craft.rawMaterials.length > 0) { %>
+            <div class="content-section">
+                <h2><i class="fa-solid fa-cubes"></i> المواد الخام</h2>
+                <div class="materials-grid">
+                    <% craft.rawMaterials.forEach((rm) => { %>
+                        <div class="material-card">
+                            <% if(rm.image) { %>
+                                <div class="material-image">
+                                    <img src="<%= rm.image %>" alt="<%= rm.name %>">
+                                </div>
+                            <% } else { %>
+                                <div class="material-image empty">
+                                    <i class="fa-solid fa-cube"></i>
+                                </div>
+                            <% } %>
+                            <div class="material-body">
+                                <h3><%= rm.name %></h3>
+                                <ul class="material-details-list">
+                                    <% if(rm.source) { %><li><strong>المصدر:</strong> <%= rm.source %></li><% } %>
+                                    <% if(rm.acquisitionMethod) { %><li><strong>الحصول عليها:</strong> <%= rm.acquisitionMethod %></li><% } %>
+                                    <% if(rm.price) { %><li><strong>السعر:</strong> <%= rm.price %></li><% } %>
+                                </ul>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- 3. الأدوات المستخدمة -->
+            <% if (craft.tools && craft.tools.length > 0) { %>
+            <div class="content-section">
+                <h2><i class="fa-solid fa-toolbox"></i> الأدوات المستخدمة</h2>
+                <div class="tools-grid">
+                    <% craft.tools.forEach((t) => { %>
+                        <div class="tool-card">
+                            <% if(t.usageVideo) { %>
+                                <div class="tool-media video-container">
+                                    <video controls preload="metadata">
+                                        <source src="<%= t.usageVideo %>" type="video/mp4">
+                                    </video>
+                                </div>
+                            <% } else if(t.usageImage) { %>
+                                <div class="tool-media">
+                                    <img src="<%= t.usageImage %>" alt="<%= t.name %>">
+                                </div>
+                            <% } else { %>
+                                <div class="tool-media empty">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </div>
+                            <% } %>
+                            
+                            <div class="tool-body">
+                                <h3><%= t.name %></h3>
+                                <% if(t.description) { %><p><strong>الوصف:</strong> <%= t.description %></p><% } %>
+                                <% if(t.usages) { %><p><strong>الاستخدام:</strong> <%= t.usages %></p><% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- 4. خطوات العمل (Timeline) -->
+            <% if (craft.workSteps && craft.workSteps.length > 0) { %>
+            <div class="content-section">
+                <h2><i class="fa-solid fa-list-ol"></i> خطوات العمل</h2>
+                
+                <div class="timeline-container">
+                    <% 
+                        // ترتيب الخطوات تصاعدياً
+                        const sortedSteps = [...craft.workSteps].sort((a,b) => a.order - b.order);
+                        sortedSteps.forEach((step, index) => { 
+                    %>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"><%= step.order %></div>
+                            <div class="timeline-content">
+                                <h3>الخطوة رقم <%= step.order %></h3>
+                                <p><%= step.description %></p>
+                                
+                                <% if(step.mediaUrl) { %>
+                                    <div class="step-media-box">
+                                        <% if(step.mediaType === 'صورة') { %>
+                                            <img src="<%= step.mediaUrl %>" alt="صورة توضيحية للخطوة">
+                                        <% } else if(step.mediaType === 'فيديو') { %>
+                                            <video controls>
+                                                <source src="<%= step.mediaUrl %>" type="video/mp4">
+                                            </video>
+                                        <% } else if(step.mediaType === 'صوت') { %>
+                                            <audio controls>
+                                                <source src="<%= step.mediaUrl %>">
+                                            </audio>
+                                        <% } else { %>
+                                            <a href="<%= step.mediaUrl %>" target="_blank" class="btn btn-outline"><i class="fa-solid fa-file-arrow-down"></i> تحميل المرفق التوضيحي</a>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- 5. المنتجات النهائية -->
+            <% if (craft.products && craft.products.length > 0) { %>
+            <div class="content-section">
+                <h2><i class="fa-solid fa-box-open"></i> المنتجات النهائية</h2>
+                <div class="products-showcase">
+                    <% craft.products.forEach((prod) => { %>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <% if(prod.image) { %>
+                                    <img src="<%= prod.image %>" alt="<%= prod.name %>">
+                                <% } else { %>
+                                    <i class="fa-solid fa-box"></i>
+                                <% } %>
+                            </div>
+                            <div class="product-info">
+                                <h3><%= prod.name %></h3>
+                                <div class="product-stats">
+                                    <% if(prod.count !== undefined) { %>
+                                        <div class="stat"><i class="fa-solid fa-cubes-stacked"></i> <span>الكمية: <%= prod.count %></span></div>
+                                    <% } %>
+                                    <% if(prod.price !== undefined) { %>
+                                        <div class="stat"><i class="fa-solid fa-money-bill-wave"></i> <span>السعر/التكلفة: <%= prod.price %></span></div>
+                                    <% } %>
+                                </div>
+                                <% if(prod.marketing) { %>
+                                    <div class="marketing-badge"><i class="fa-solid fa-bullhorn"></i> تسويق: <%= prod.marketing %></div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
+        </div>
+
+        <!-- القائمة الجانبية (يسار) -->
+        <div class="sidebar">
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي / المصدر</h3>
+                <% if (craft.folkloreMaterial && craft.folkloreMaterial.narrator) { %>
+                    <ul class="widget-list">
+                        <li><span>الاسم:</span> <strong>
+                                <%= craft.folkloreMaterial.narrator.name %>
+                            </strong></li>
+                        <li><span>العمر:</span> <strong>
+                                <%= craft.folkloreMaterial.narrator.age ? craft.folkloreMaterial.narrator.age + ' سنة' : '-' %>
+                            </strong></li>
+                        <li><span>المهنة:</span> <strong>
+                                <%= craft.folkloreMaterial.narrator.occupation || '-' %>
+                            </strong></li>
+                        <% if(craft.folkloreMaterial.narrator.status) { %>
+                            <li><span>الحالة:</span> <strong>
+                                    <%= craft.folkloreMaterial.narrator.status %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">بيانات الراوي غير متوفرة</p>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-map-location-dot"></i> البعثة والتوثيق</h3>
+                <% if (craft.folkloreMaterial) { %>
+                    <ul class="widget-list">
+                        <% if (craft.folkloreMaterial.mission) { %>
+                            <li><span>رقم البعثة:</span> <strong>
+                                    <%= craft.folkloreMaterial.mission.missionNumber %>
+                                </strong></li>
+                            <li><span>مكان البعثة:</span> <strong>
+                                    <%= craft.folkloreMaterial.mission.place %>
+                                </strong></li>
+                        <% } %>
+                        <% if (craft.folkloreMaterial.collector) { %>
+                            <li><span>اسم الجامع:</span> <strong>
+                                    <%= craft.folkloreMaterial.collector.name %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-list-check"></i> بيانات الجمع</h3>
+                <% if (craft.folkloreMaterial && craft.folkloreMaterial.collectionData) { %>
+                    <ul class="widget-list">
+                        <li><span>تاريخ الجمع:</span> <strong>
+                                <%= craft.folkloreMaterial.collectionData.collectionDate ? new Date(craft.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
+                            </strong></li>
+                        <li><span>تاريخ التدوين:</span> <strong>
+                                <%= craft.folkloreMaterial.collectionData.documentationDate ? new Date(craft.folkloreMaterial.collectionData.documentationDate).toLocaleDateString('ar-EG') : '-' %>
+                            </strong></li>
+                        <li><span>المحافظة:</span> <strong>
+                                <%= craft.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
+                            </strong></li>
+                        <li><span>المدينة/المركز:</span> <strong>
+                                <%= craft.folkloreMaterial.collectionData.collectionPlace?.city || '-' %>
+                            </strong></li>
+                        <% if(craft.folkloreMaterial.collectionData.collectionPlace?.village) { %>
+                            <li><span>القرية:</span> <strong>
+                                    <%= craft.folkloreMaterial.collectionData.collectionPlace.village %>
+                                </strong></li>
+                        <% } %>
+                        <% if(craft.folkloreMaterial.collectionData.collectionCulturePlace) { %>
+                            <li><span>البيئة الثقافية:</span> <strong>
+                                    <%= craft.folkloreMaterial.collectionData.collectionCulturePlace %>
+                                </strong></li>
+                        <% } %>
+                        <li><span>رقم الأرشيف:</span> <strong>
+                                <%= craft.folkloreMaterial.collectionData.archiveNumber || '-' %>
+                            </strong></li>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">البيانات غير متوفرة</p>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-hard-drive"></i> المصدر الأرشيفي</h3>
+                <% if (craft.folkloreMaterial && craft.folkloreMaterial.dataSource) { %>
+                    <ul class="widget-list">
+                        <li><span>نوع المصدر:</span> <strong>
+                                <%= craft.folkloreMaterial.dataSource.sourceType || '-' %>
+                            </strong></li>
+                        <% if(craft.folkloreMaterial.dataSource.photoNumber) { %>
+                            <li><span>رقم الصورة:</span> <strong>
+                                    <%= craft.folkloreMaterial.dataSource.photoNumber %>
+                                </strong></li>
+                        <% } %>
+                        <% if(craft.folkloreMaterial.dataSource.tapeNumber) { %>
+                            <li><span>رقم الشريط:</span> <strong>
+                                    <%= craft.folkloreMaterial.dataSource.tapeNumber %>
+                                </strong></li>
+                        <% } %>
+                        <% if(craft.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                            <li><span>الملف الرقمي:</span> <strong>
+                                    <%= craft.folkloreMaterial.dataSource.digitalFileLocation %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">البيانات غير متوفرة</p>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget action-widget">
+                <h3>تحديث البيانات</h3>
+                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه الحرفة.</p>
+                <a href="/admin/craft/edit/<%= craft._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الحرفة</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* =========================================
+       Base & Header Styles
+       ========================================= */
+    .craft-header {
+        background: linear-gradient(135deg, var(--color-primary-dark), #2a4c7a);
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 30px 30px;
+        text-align: center;
+    }
+    .meta-tags {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .meta-tags .badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        backdrop-filter: blur(5px);
+    }
+    .craft-header h1 {
+        font-size: 2.8rem;
+        margin: 0 0 20px 0;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .craft-quick-info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        background: rgba(0,0,0,0.15);
+        padding: 15px 30px;
+        border-radius: 30px;
+        display: inline-flex;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .craft-quick-info .info-item {
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .craft-quick-info .info-item i {
+        color: var(--color-secondary, #ffb74d);
+    }
+
+    /* =========================================
+       Grid Layouts
+       ========================================= */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 2.5fr 1fr;
+        gap: 30px;
+    }
+    @media (max-width: 1000px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+        min-width: 0;
+    }
+
+    /* =========================================
+       Content Sections
+       ========================================= */
+    .content-section {
+        background: white;
+        border-radius: 16px;
+        padding: 35px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+    .content-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-secondary, #d7ccc8));
+    }
+    .content-section h2 {
+        color: var(--color-primary-dark);
+        font-size: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--bg-light);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .count-badge {
+        background: var(--color-primary);
+        color: white;
+        font-size: 0.9rem;
+        padding: 2px 12px;
+        border-radius: 20px;
+        margin-right: auto;
+    }
+
+    /* =========================================
+       1. Craftsmen Grid
+       ========================================= */
+    .craftsmen-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .craftsman-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        background: #fafbfc;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s;
+    }
+    .craftsman-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .craftsman-avatar {
+        width: 50px;
+        height: 50px;
+        background: #eefeeb;
+        color: #4caf50;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+    .craftsman-details h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    .craftsman-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .craftsman-meta span i {
+        color: var(--color-primary);
+        width: 16px;
+    }
+
+    /* =========================================
+       2. Raw Materials
+       ========================================= */
+    .materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    .material-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: white;
+        transition: all 0.3s ease;
+    }
+    .material-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    .material-image {
+        height: 160px;
+        width: 100%;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ccc;
+        font-size: 3rem;
+    }
+    .material-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .material-body {
+        padding: 15px;
+    }
+    .material-body h3 {
+        margin: 0 0 15px 0;
+        font-size: 1.1rem;
+        color: var(--color-primary-dark);
+        border-bottom: 1px dashed #eee;
+        padding-bottom: 10px;
+    }
+    .material-details-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    .material-details-list strong {
+        color: #333;
+    }
+
+    /* =========================================
+       3. Tools Grid
+       ========================================= */
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    .tool-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+    }
+    .tool-media {
+        width: 100%;
+        height: 200px;
+        background: #000; /* Black for video */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #555;
+    }
+    .tool-media.empty {
+        background: #f1f3f5;
+        font-size: 3rem;
+    }
+    .tool-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .tool-media video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .tool-body {
+        padding: 20px;
+    }
+    .tool-body h3 {
+        margin: 0 0 12px 0;
+        color: var(--color-primary-dark);
+        font-size: 1.25rem;
+    }
+    .tool-body p {
+        margin: 0 0 8px 0;
+        font-size: 0.95rem;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    /* =========================================
+       4. Work Steps Timeline (The Masterpiece)
+       ========================================= */
+    .timeline-container {
+        position: relative;
+        padding-right: 30px; /* Space for line */
+    }
+    .timeline-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 15px; /* Line position */
+        width: 4px;
+        background: #e9ecef;
+        border-radius: 2px;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 40px;
+    }
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    .timeline-marker {
+        position: absolute;
+        right: -30px;
+        width: 34px;
+        height: 34px;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 0 0 4px white, 0 3px 10px rgba(0,0,0,0.1);
+        z-index: 2;
+    }
+    .timeline-content {
+        background: #fdfbf7;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #e2d9d5;
+        margin-right: 20px; /* Push content away from line */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .timeline-content h3 {
+        margin: 0 0 10px 0;
+        color: var(--color-primary-dark);
+        font-size: 1.3rem;
+    }
+    .timeline-content p {
+        margin: 0;
+        color: #444;
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    .step-media-box {
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: #000;
+        max-width: 100%;
+        display: inline-block; /* Wrap to content width if image */
+    }
+    .step-media-box img {
+        display: block;
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+    .step-media-box video {
+        display: block;
+        width: 100%;
+        max-height: 400px;
+    }
+    .step-media-box audio {
+        display: block;
+        width: 300px;
+        max-width: 100%;
+        background: white; /* Make audio player visible */
+    }
+
+    /* =========================================
+       5. Products Showcase
+       ========================================= */
+    .products-showcase {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px;
+    }
+    .product-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+    }
+    .product-image {
+        height: 220px;
+        width: 100%;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: #ddd;
+    }
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .product-info {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .product-info h3 {
+        margin: 0 0 15px 0;
+        font-size: 1.4rem;
+        color: #333;
+    }
+    .product-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+    .product-stats .stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        color: #555;
+        background: #fdfbf7;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+    .product-stats .stat i {
+        color: var(--color-primary);
+    }
+    .marketing-badge {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.95rem;
+    }
+
+    /* =========================================
+       Sidebar
+       ========================================= */
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+    .sidebar-widget {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+    }
+    .sidebar-widget h3 {
+        font-size: 1.15rem;
+        color: var(--color-primary-dark);
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--bg-light);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .widget-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .widget-list li {
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+        padding-bottom: 8px;
+    }
+    .widget-list li:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .widget-list li span { color: var(--text-muted); }
+    .widget-list li strong {
+        color: var(--color-text);
+        text-align: left;
+        max-width: 60%;
+    }
+    .action-widget {
+        background: linear-gradient(135deg, #fff, #fdfbf7);
+        text-align: center;
+        border: 2px dashed #d7ccc8;
+    }
+    .action-widget h3 {
+        justify-content: center;
+        border-bottom: none;
+        margin-bottom: 10px;
+    }
+    .action-widget p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+</style>

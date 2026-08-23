@@ -1,0 +1,534 @@
+<div class="page-header">
+    <h1>تعديل تفاصيل الحرفة الشعبية</h1>
+    <p>تعديل بيانات: <%= craft.craftName %></p>
+</div>
+
+<form id="craftForm" action="/admin/craft/<%= craft._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+
+    <!-- 1. بيانات الحرفة ومكان العمل -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-hammer"></i> 1. بيانات الحرفة ومكان العمل</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الحرفة <span class="required">*</span></label>
+                <input type="text" name="craftName" class="form-control" required value="<%= craft.craftName %>">
+            </div>
+            <div class="form-group">
+                <label>مكان العمل</label>
+                <select name="workplace" class="form-control">
+                    <option value="">اختر المكان</option>
+                    <option value="المنزل" <%= craft.workplace === 'المنزل' ? 'selected' : '' %>>المنزل</option>
+                    <option value="مكان ملحق بالمنزل" <%= craft.workplace === 'مكان ملحق بالمنزل' ? 'selected' : '' %>>مكان ملحق بالمنزل</option>
+                    <option value="ورشة حرفية" <%= craft.workplace === 'ورشة حرفية' ? 'selected' : '' %>>ورشة حرفية</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ساعات العمل يومياً</label>
+                <input type="number" name="workHoursPerDay" class="form-control" min="1" max="24" value="<%= craft.workHoursPerDay || '' %>">
+            </div>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>نوع الحرفيين</label>
+                <div class="checkbox-group" style="display: flex; gap: 20px; align-items: center; padding: 10px 0;">
+                    <% const ctypes = craft.craftsmenType || []; %>
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="رجال" <%= ctypes.includes('رجال') ? 'checked' : '' %>> رجال</label>
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="نساء" <%= ctypes.includes('نساء') ? 'checked' : '' %>> نساء</label>
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="اطفال" <%= ctypes.includes('اطفال') ? 'checked' : '' %>> أطفال</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. الحرفيون -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-users-gear"></i> 2. بيانات الحرفيين</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد الحرفيين الإجمالي</label>
+            <input type="number" name="craftsmenCount" class="form-control" min="1">
+        </div>
+        
+        <div id="craftsmenContainer"></div>
+        
+        <button type="button" class="btn btn-outline" id="addCraftsmanBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة بيانات حرفي
+        </button>
+    </div>
+
+    <!-- 3. المواد الخام -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-cubes"></i> 3. المواد الخام</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد المواد الخام</label>
+            <input type="number" name="rawMaterialsCount" class="form-control" min="1">
+        </div>
+        <div id="rawMaterialsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addRawMaterialBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة مادة خام
+        </button>
+    </div>
+
+    <!-- 4. الأدوات المستخدمة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-toolbox"></i> 4. الأدوات المستخدمة</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد الأدوات</label>
+            <input type="number" name="toolsCount" class="form-control" min="1">
+        </div>
+        <div id="toolsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addToolBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة أداة جديدة
+        </button>
+    </div>
+
+    <!-- 5. خطوات العمل -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-list-ol"></i> 5. خطوات العمل</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد الخطوات</label>
+            <input type="number" name="workStepsCount" class="form-control" min="1">
+        </div>
+        
+        <div id="workStepsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addWorkStepBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة خطوة عمل
+        </button>
+    </div>
+
+    <!-- 6. المنتجات -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-box-open"></i> 6. المنتجات</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد المنتجات</label>
+            <input type="number" name="productsCount" class="form-control" min="1">
+        </div>
+        <div id="productsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addProductBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة منتج
+        </button>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px; margin-top: 20px; display: flex; gap: 15px; justify-content: flex-end;">
+        <a href="/admin" class="btn btn-outline">إلغاء</a>
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem;">
+            <i class="fa-solid fa-save"></i> حفظ التعديلات
+        </button>
+    </div>
+
+</form>
+
+<script>
+// Serialize existing data from server to JS objects
+const existingData = {
+    craftsmen: <%- JSON.stringify(craft.craftsmen || []) %>,
+    rawMaterials: <%- JSON.stringify(craft.rawMaterials || []) %>,
+    tools: <%- JSON.stringify(craft.tools || []) %>,
+    workSteps: <%- JSON.stringify(craft.workSteps || []) %>,
+    products: <%- JSON.stringify(craft.products || []) %>
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Helper: update Count Input
+    function updateCountInput(countInputId, containerId) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(countInput) {
+            countInput.value = container.children.length;
+        }
+    }
+
+    // Helper: setup Auto Generation (Wait for user manual changes on count)
+    function setupCountInput(countInputId, containerId, addRowFunc) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(!countInput) return;
+
+        countInput.addEventListener('input', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = container.children.length;
+            
+            if (targetCount > currentCount) {
+                for (let i = 0; i < targetCount - currentCount; i++) addRowFunc();
+            } else if (targetCount < currentCount) {
+                for (let i = 0; i < currentCount - targetCount; i++) {
+                    if (container.lastElementChild) container.lastElementChild.remove();
+                }
+            }
+        });
+    }
+
+    // Helper: create a thumbnail HTML if a file exists
+    function getMediaPreviewHtml(url) {
+        if (!url) return '';
+        const ext = url.split('.').pop().toLowerCase();
+        if (['mp4', 'webm', 'ogg'].includes(ext)) {
+            return `<div style="margin-top: 5px;"><video src="${url}" controls style="height: 60px; border-radius: 4px;"></video></div>`;
+        } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
+            return `<div style="margin-top: 5px;"><audio src="${url}" controls style="height: 40px;"></audio></div>`;
+        } else {
+            return `<div style="margin-top: 5px;"><img src="${url}" alt="preview" style="height: 60px; width: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;"></div>`;
+        }
+    }
+
+    // ==========================================
+    // 1. Craftsmen Logic
+    // ==========================================
+    let craftsmanIndex = 0;
+    const craftsmenContainer = document.getElementById("craftsmenContainer");
+    
+    function addCraftsmanRow(data = {}) {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        
+        const exp = data.experience || {};
+        
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الحرفي</label>
+                    <input type="text" name="craftsmen[${craftsmanIndex}][name]" class="form-control" required value="${data.name || ''}">
+                </div>
+                <div class="form-group">
+                    <label>العمر</label>
+                    <input type="number" name="craftsmen[${craftsmanIndex}][age]" class="form-control" min="5" max="120" value="${data.age || ''}">
+                </div>
+                <div class="form-group">
+                    <label>التعليم</label>
+                    <select name="craftsmen[${craftsmanIndex}][education]" class="form-control">
+                        <option value="">اختر</option>
+                        <option value="أمي" ${data.education === 'أمي' ? 'selected' : ''}>أمي</option>
+                        <option value="ابتدائي" ${data.education === 'ابتدائي' ? 'selected' : ''}>ابتدائي</option>
+                        <option value="ثانوي" ${data.education === 'ثانوي' ? 'selected' : ''}>ثانوي</option>
+                        <option value="جامعي" ${data.education === 'جامعي' ? 'selected' : ''}>جامعي</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>المهنة الأصلية</label>
+                    <input type="text" name="craftsmen[${craftsmanIndex}][occupation]" class="form-control" value="${data.occupation || ''}">
+                </div>
+                <div class="form-group">
+                    <label>مصدر الخبرة</label>
+                    <select name="craftsmen[${craftsmanIndex}][experience][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option value="وراثة" ${exp.source === 'وراثة' ? 'selected' : ''}>وراثة</option>
+                        <option value="تعليم" ${exp.source === 'تعليم' ? 'selected' : ''}>تعليم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>سنوات الخبرة</label>
+                    <input type="number" name="craftsmen[${craftsmanIndex}][experience][years]" class="form-control" min="0" value="${exp.years || ''}">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        craftsmenContainer.appendChild(div);
+        craftsmanIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("craftsmenCount", "craftsmenContainer");
+        });
+    }
+    
+    document.getElementById("addCraftsmanBtn").addEventListener("click", function() {
+        addCraftsmanRow();
+        updateCountInput("craftsmenCount", "craftsmenContainer");
+    });
+    setupCountInput("craftsmenCount", "craftsmenContainer", addCraftsmanRow);
+    
+    // Load existing
+    if(existingData.craftsmen.length > 0) {
+        existingData.craftsmen.forEach(c => addCraftsmanRow(c));
+    } else {
+        addCraftsmanRow();
+    }
+    updateCountInput("craftsmenCount", "craftsmenContainer");
+
+
+    // ==========================================
+    // 2. Raw Materials Logic
+    // ==========================================
+    let materialIndex = 0;
+    const rawMaterialsContainer = document.getElementById("rawMaterialsContainer");
+    
+    function addRawMaterialRow(data = {}) {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم المادة الخام</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][name]" class="form-control" value="${data.name || ''}">
+                </div>
+                <div class="form-group">
+                    <label>المصدر</label>
+                    <select name="rawMaterials[${materialIndex}][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option value="محلي" ${data.source === 'محلي' ? 'selected' : ''}>محلي</option>
+                        <option value="خارجي" ${data.source === 'خارجي' ? 'selected' : ''}>خارجي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>طريقة الحصول عليها</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][acquisitionMethod]" class="form-control" placeholder="شراء، جمع، مقايضة..." value="${data.acquisitionMethod || ''}">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>السعر (إن وجد)</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][price]" class="form-control" value="${data.price || ''}">
+                </div>
+                <div class="form-group">
+                    <label>تحديث صورة المادة الخام</label>
+                    <input type="file" name="rawMaterials_${materialIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                    ${getMediaPreviewHtml(data.image)}
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        rawMaterialsContainer.appendChild(div);
+        materialIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("rawMaterialsCount", "rawMaterialsContainer");
+        });
+    }
+    document.getElementById("addRawMaterialBtn").addEventListener("click", function() {
+        addRawMaterialRow();
+        updateCountInput("rawMaterialsCount", "rawMaterialsContainer");
+    });
+    setupCountInput("rawMaterialsCount", "rawMaterialsContainer", addRawMaterialRow);
+
+    if(existingData.rawMaterials.length > 0) {
+        existingData.rawMaterials.forEach(rm => addRawMaterialRow(rm));
+    } else {
+        addRawMaterialRow();
+    }
+    updateCountInput("rawMaterialsCount", "rawMaterialsContainer");
+
+
+    // ==========================================
+    // 3. Tools Logic
+    // ==========================================
+    let toolIndex = 0;
+    const toolsContainer = document.getElementById("toolsContainer");
+    
+    function addToolRow(data = {}) {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][name]" class="form-control" value="${data.name || ''}">
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>وصف الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][description]" class="form-control" value="${data.description || ''}">
+                </div>
+                <div class="form-group">
+                    <label>الاستخدام</label>
+                    <input type="text" name="tools[${toolIndex}][usages]" class="form-control" value="${data.usages || ''}">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>تحديث صورة الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_usageImage" class="form-control" accept="image/*" style="padding: 5px;">
+                    ${getMediaPreviewHtml(data.usageImage)}
+                </div>
+                <div class="form-group">
+                    <label>تحديث فيديو الاستخدام</label>
+                    <input type="file" name="tools_${toolIndex}_usageVideo" class="form-control" accept="video/*" style="padding: 5px;">
+                    ${getMediaPreviewHtml(data.usageVideo)}
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        toolsContainer.appendChild(div);
+        toolIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { 
+            div.remove(); 
+            updateCountInput("toolsCount", "toolsContainer");
+        });
+    }
+    document.getElementById("addToolBtn").addEventListener("click", function() {
+        addToolRow();
+        updateCountInput("toolsCount", "toolsContainer");
+    });
+    setupCountInput("toolsCount", "toolsContainer", addToolRow);
+
+    if(existingData.tools.length > 0) {
+        existingData.tools.forEach(t => addToolRow(t));
+    } else {
+        addToolRow();
+    }
+    updateCountInput("toolsCount", "toolsContainer");
+
+
+    // ==========================================
+    // 4. Work Steps Logic
+    // ==========================================
+    let workStepIndex = 0;
+    const workStepsContainer = document.getElementById("workStepsContainer");
+    
+    function addWorkStepRow(data = {}) {
+        const currentOrder = data.order || (workStepsContainer.children.length + 1);
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group" style="max-width: 80px;">
+                    <label>الترتيب</label>
+                    <input type="number" name="workSteps[${workStepIndex}][order]" class="form-control" value="${currentOrder}" required>
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>وصف الخطوة</label>
+                    <input type="text" name="workSteps[${workStepIndex}][description]" class="form-control" value="${data.description || ''}">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group">
+                    <label>نوع المرفق (إن وجد)</label>
+                    <select name="workSteps[${workStepIndex}][mediaType]" class="form-control step-media-type">
+                        <option value="">لا يوجد مرفق</option>
+                        <option value="نص" ${data.mediaType === 'نص' ? 'selected' : ''}>ملف نصي</option>
+                        <option value="صوت" ${data.mediaType === 'صوت' ? 'selected' : ''}>صوت</option>
+                        <option value="صورة" ${data.mediaType === 'صورة' ? 'selected' : ''}>صورة</option>
+                        <option value="فيديو" ${data.mediaType === 'فيديو' ? 'selected' : ''}>فيديو</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 2;">
+                    <label class="media-upload-label">تحديث المرفق</label>
+                    <input type="file" name="workSteps_${workStepIndex}_mediaUrl" class="form-control" style="padding: 5px;">
+                    ${getMediaPreviewHtml(data.mediaUrl)}
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        workStepsContainer.appendChild(div);
+
+        const selectBox = div.querySelector('.step-media-type');
+        const fileInput = div.querySelector('input[type="file"]');
+        
+        // Initial setup for accept attribute based on existing data
+        if (data.mediaType === 'صورة') fileInput.setAttribute("accept", "image/*");
+        else if (data.mediaType === 'فيديو') fileInput.setAttribute("accept", "video/*");
+        else if (data.mediaType === 'صوت') fileInput.setAttribute("accept", "audio/*");
+
+        selectBox.addEventListener('change', function() {
+            if (this.value === 'صورة') {
+                fileInput.setAttribute("accept", "image/*");
+            } else if (this.value === 'فيديو') {
+                fileInput.setAttribute("accept", "video/*");
+            } else if (this.value === 'صوت') {
+                fileInput.setAttribute("accept", "audio/*");
+            } else {
+                fileInput.removeAttribute("accept");
+            }
+        });
+
+        workStepIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("workStepsCount", "workStepsContainer");
+            // Re-calculate orders for remaining steps
+            const remainingSteps = workStepsContainer.querySelectorAll('.dynamic-row');
+            remainingSteps.forEach((row, idx) => {
+                const orderInput = row.querySelector('input[type="number"]');
+                if (orderInput) orderInput.value = idx + 1;
+            });
+        });
+    }
+    document.getElementById("addWorkStepBtn").addEventListener("click", function() {
+        addWorkStepRow();
+        updateCountInput("workStepsCount", "workStepsContainer");
+    });
+    setupCountInput("workStepsCount", "workStepsContainer", addWorkStepRow);
+    
+    // Load existing
+    const sortedSteps = [...existingData.workSteps].sort((a,b) => a.order - b.order);
+    if(sortedSteps.length > 0) {
+        sortedSteps.forEach(ws => addWorkStepRow(ws));
+    } else {
+        addWorkStepRow();
+    }
+    updateCountInput("workStepsCount", "workStepsContainer");
+
+
+    // ==========================================
+    // 5. Products Logic
+    // ==========================================
+    let productIndex = 0;
+    const productsContainer = document.getElementById("productsContainer");
+    
+    function addProductRow(data = {}) {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" name="products[${productIndex}][name]" class="form-control" value="${data.name || ''}">
+                </div>
+                <div class="form-group" style="max-width: 100px;">
+                    <label>الكمية</label>
+                    <input type="number" name="products[${productIndex}][count]" class="form-control" min="0" value="${data.count !== undefined ? data.count : ''}">
+                </div>
+                <div class="form-group">
+                    <label>السعر / التكلفة</label>
+                    <input type="number" name="products[${productIndex}][price]" class="form-control" min="0" value="${data.price !== undefined ? data.price : ''}">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>التسويق وطرق البيع</label>
+                    <input type="text" name="products[${productIndex}][marketing]" class="form-control" placeholder="محلي، سياحي، أسواق..." value="${data.marketing || ''}">
+                </div>
+                <div class="form-group">
+                    <label>تحديث صورة المنتج</label>
+                    <input type="file" name="products_${productIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                    ${getMediaPreviewHtml(data.image)}
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        productsContainer.appendChild(div);
+        productIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { 
+            div.remove(); 
+            updateCountInput("productsCount", "productsContainer");
+        });
+    }
+    document.getElementById("addProductBtn").addEventListener("click", function() {
+        addProductRow();
+        updateCountInput("productsCount", "productsContainer");
+    });
+    setupCountInput("productsCount", "productsContainer", addProductRow);
+
+    if(existingData.products.length > 0) {
+        existingData.products.forEach(p => addProductRow(p));
+    } else {
+        addProductRow();
+    }
+    updateCountInput("productsCount", "productsContainer");
+
+});
+</script>

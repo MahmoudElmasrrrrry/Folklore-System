@@ -292,6 +292,29 @@ export const renderArchiveTimeline = async (req, res, next) => {
         tags: [d.occasion, d.presentationStyle].filter(Boolean)
       });
     });
+
+    crafts.forEach(c => {
+      if (!c.folkloreMaterial) return;
+      if (category && c.folkloreMaterial.category?._id.toString() !== category) return;
+      if (type && type !== "craft") return;
+      
+      let preview = c.workplace ? `مكان العمل: ${c.workplace} ` : "";
+      if (c.craftsmenCount) preview += `| عدد الحرفيين: ${c.craftsmenCount}`;
+      
+      timelineItems.push({
+        id: c._id,
+        title: c.craftName,
+        type: "craft",
+        typeLabel: "حرفة شعبية",
+        icon: '<i class="fa-solid fa-hammer"></i>',
+        narrator: c.folkloreMaterial.narrator?.name || "مجهول",
+        categoryName: c.folkloreMaterial.category?.name || "غير مصنف",
+        date: c.createdAt,
+        contentPreview: preview,
+        audioUrl: null,
+        tags: c.craftsmenType || []
+      });
+    });
     
     // Apply Search Filter
     if (search && search.trim() !== '') {
@@ -385,6 +408,35 @@ export const renderDanceDetails = async (req, res, next) => {
     res.render("dance/details", {
       title: dance.danceName,
       dance
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── صفحة عرض تفاصيل الحرفة الشعبية ───
+export const renderCraftDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const craft = await Craft.findById(id).populate({
+      path: 'folkloreMaterial',
+      populate: [
+        { path: 'narrator' },
+        { path: 'mission' },
+        { path: 'collector' },
+        { path: 'category' }
+      ]
+    }).lean();
+
+    if (!craft) {
+      const err = new Error("الحرفة غير موجودة");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("craft/details", {
+      title: craft.craftName,
+      craft
     });
   } catch (error) {
     next(error);

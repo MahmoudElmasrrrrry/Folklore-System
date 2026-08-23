@@ -10,12 +10,19 @@
             <a href="/folklore" class="btn btn-primary"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a>
         </div>
 
+        <div class="admin-tabs">
+            <a href="/admin?type=mawwal" class="tab-btn <%= currentType === 'mawwal' ? 'active' : '' %>"><i class="fa-solid fa-music"></i> المواويل</a>
+            <a href="/admin?type=dance" class="tab-btn <%= currentType === 'dance' ? 'active' : '' %>"><i class="fa-solid fa-person-dress"></i> الرقصات الشعبية</a>
+            <a href="/admin?type=craft" class="tab-btn <%= currentType === 'craft' ? 'active' : '' %>"><i class="fa-solid fa-hammer"></i> الحرف الشعبية</a>
+            <a href="/admin?type=wali" class="tab-btn <%= currentType === 'wali' ? 'active' : '' %>"><i class="fa-solid fa-mosque"></i> الأولياء</a>
+        </div>
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>اسم الموال</th>
+                        <th>اسم العنصر</th>
                         <th>النوع</th>
                         <th>الراوي</th>
                         <th>تاريخ الإضافة</th>
@@ -28,13 +35,17 @@
                             <tr>
                                 <td><%= index + 1 %></td>
                                 <td class="font-weight-bold text-primary">
-                                    <%= item.itemType === 'mawwal' ? item.mawwalName : item.danceName %>
+                                    <%= item.itemName %>
                                 </td>
                                 <td>
                                     <% if (item.itemType === 'mawwal') { %>
                                         <span class="badge-type" style="background: rgba(29, 53, 87, 0.1); color: var(--secondary-color);"><i class="fa-solid fa-music"></i> موال</span>
                                     <% } else if (item.itemType === 'dance') { %>
                                         <span class="badge-type" style="background: rgba(230, 57, 70, 0.1); color: #e63946;"><i class="fa-solid fa-person-dress"></i> رقصة شعبية</span>
+                                    <% } else if (item.itemType === 'craft') { %>
+                                        <span class="badge-type" style="background: rgba(121, 85, 72, 0.1); color: #795548;"><i class="fa-solid fa-hammer"></i> حرفة شعبية</span>
+                                    <% } else if (item.itemType === 'wali') { %>
+                                        <span class="badge-type" style="background: rgba(76, 175, 80, 0.1); color: #4CAF50;"><i class="fa-solid fa-mosque"></i> ولي</span>
                                     <% } %>
                                 </td>
                                 <td><%= item.folkloreMaterial?.narrator?.name || "مجهول" %></td>
@@ -61,13 +72,13 @@
         <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
             <div class="pagination">
                 <% if (currentPage > 1) { %>
-                    <a href="/admin?page=<%= currentPage - 1 %>" class="btn btn-outline">&laquo; السابق</a>
+                    <a href="/admin?type=<%= currentType %>&page=<%= currentPage - 1 %>" class="btn btn-outline">&laquo; السابق</a>
                 <% } %>
                 
                 <span class="page-info">صفحة <%= currentPage %> من <%= totalPages %></span>
                 
                 <% if (currentPage < totalPages) { %>
-                    <a href="/admin?page=<%= currentPage + 1 %>" class="btn btn-outline">التالي &raquo;</a>
+                    <a href="/admin?type=<%= currentType %>&page=<%= currentPage + 1 %>" class="btn btn-outline">التالي &raquo;</a>
                 <% } %>
             </div>
         <% } %>
@@ -137,6 +148,37 @@
     margin: 0;
     color: var(--secondary-color);
     font-size: 1.4rem;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 15px;
+    padding: 15px 25px;
+    background: #fdfbf7;
+    border-bottom: 1px solid var(--border-color);
+}
+.tab-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    background: white;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.tab-btn:hover {
+    background: var(--bg-light);
+    color: var(--color-primary);
+}
+.tab-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 10px rgba(26, 82, 118, 0.3);
 }
 
 .table-responsive {

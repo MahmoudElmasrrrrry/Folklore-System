@@ -1,11 +1,11 @@
 import express from "express";
-import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails, renderAddCraft } from "../controller/pages.controller.js";
+import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails, renderAddCraft, renderCraftDetails } from "../controller/pages.controller.js";
 import { createFolkloreMaterial } from "../controller/folklerMaterial.controller.js";
 import { createMawwal } from "../controller/mawwal.controller.js";
 import { createDance } from "../controller/dance.controller.js";
 import { createCraft } from "../controller/craft.controller.js";
 import { uploadAudio, uploadMedia } from "../middleware/upload.middleware.js";
-import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance } from "../controller/admin.controller.js";
+import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance, renderEditCraft, updateCraft, deleteCraft } from "../controller/admin.controller.js";
 
 const router = express.Router();
 
@@ -34,6 +34,7 @@ router.get("/archive/dance/:id", renderDanceDetails);
 // ─── الحرف الشعبية ───
 router.get("/craft/add", renderAddCraft);
 router.post("/craft/add", uploadMedia.any(), createCraft);
+router.get("/archive/craft/:id", renderCraftDetails);
 
 // ─── لوحة التحكم (الإدارة) ───
 router.get("/admin", renderDashboard);
@@ -47,5 +48,10 @@ router.delete("/admin/mawwal/:id", deleteMawwal);
 router.get("/admin/dance/edit/:id", renderEditDance);
 router.put("/admin/dance/:id", uploadMedia.any(), updateDance);
 router.delete("/admin/dance/:id", deleteDance);
+
+// إدارة الحرفة الشعبية
+router.get("/admin/craft/edit/:id", renderEditCraft);
+router.put("/admin/craft/:id", uploadMedia.any(), updateCraft);
+router.delete("/admin/craft/:id", deleteCraft);
 
 export default router;
