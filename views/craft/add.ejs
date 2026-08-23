@@ -59,6 +59,10 @@
     <!-- 3. المواد الخام -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-cubes"></i> 3. المواد الخام</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد المواد الخام</label>
+            <input type="number" name="rawMaterialsCount" class="form-control" min="1">
+        </div>
         <div id="rawMaterialsContainer"></div>
         <button type="button" class="btn btn-outline" id="addRawMaterialBtn" style="margin-top: 10px;">
             <i class="fa-solid fa-plus"></i> إضافة مادة خام
@@ -68,6 +72,10 @@
     <!-- 4. الأدوات المستخدمة -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-toolbox"></i> 4. الأدوات المستخدمة</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد الأدوات</label>
+            <input type="number" name="toolsCount" class="form-control" min="1">
+        </div>
         <div id="toolsContainer"></div>
         <button type="button" class="btn btn-outline" id="addToolBtn" style="margin-top: 10px;">
             <i class="fa-solid fa-plus"></i> إضافة أداة جديدة
@@ -77,6 +85,11 @@
     <!-- 5. خطوات العمل -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-list-ol"></i> 5. خطوات العمل</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد الخطوات</label>
+            <input type="number" name="workStepsCount" class="form-control" min="1">
+        </div>
+        
         <div id="workStepsContainer"></div>
         <button type="button" class="btn btn-outline" id="addWorkStepBtn" style="margin-top: 10px;">
             <i class="fa-solid fa-plus"></i> إضافة خطوة عمل
@@ -86,6 +99,10 @@
     <!-- 6. المنتجات -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-box-open"></i> 6. المنتجات</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>إجمالي عدد المنتجات</label>
+            <input type="number" name="productsCount" class="form-control" min="1">
+        </div>
         <div id="productsContainer"></div>
         <button type="button" class="btn btn-outline" id="addProductBtn" style="margin-top: 10px;">
             <i class="fa-solid fa-plus"></i> إضافة منتج
@@ -250,10 +267,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
         div.querySelector('.btn-delete-row').addEventListener('click', function() {
             div.remove();
+            updateCountInput("rawMaterialsCount", "rawMaterialsContainer");
         });
     }
-    document.getElementById("addRawMaterialBtn").addEventListener("click", addRawMaterialRow);
+    document.getElementById("addRawMaterialBtn").addEventListener("click", function() {
+        addRawMaterialRow();
+        updateCountInput("rawMaterialsCount", "rawMaterialsContainer");
+    });
+    setupCountInput("rawMaterialsCount", "rawMaterialsContainer", addRawMaterialRow);
+
     addRawMaterialRow(); // إظهار صف افتراضي للمواد الخام
+    document.querySelector('input[name="rawMaterialsCount"]').value = 1;
 
 
     // ==========================================
@@ -297,10 +321,19 @@ document.addEventListener("DOMContentLoaded", function() {
         toolsContainer.appendChild(div);
         toolIndex++;
 
-        div.querySelector('.btn-delete-row').addEventListener('click', function() { div.remove(); });
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { 
+            div.remove(); 
+            updateCountInput("toolsCount", "toolsContainer");
+        });
     }
-    document.getElementById("addToolBtn").addEventListener("click", addToolRow);
+    document.getElementById("addToolBtn").addEventListener("click", function() {
+        addToolRow();
+        updateCountInput("toolsCount", "toolsContainer");
+    });
+    setupCountInput("toolsCount", "toolsContainer", addToolRow);
+
     addToolRow(); // إظهار صف افتراضي للأدوات
+    document.querySelector('input[name="toolsCount"]').value = 1;
 
 
     // ==========================================
@@ -315,82 +348,75 @@ document.addEventListener("DOMContentLoaded", function() {
         div.className = "dynamic-row";
         div.innerHTML = `
             <div class="form-row">
-                <div class="form-group" style="max-width: 100px;">
+                <div class="form-group" style="max-width: 80px;">
                     <label>الترتيب</label>
                     <input type="number" name="workSteps[${workStepIndex}][order]" class="form-control" value="${currentOrder}" required>
                 </div>
-                <div class="form-group" style="flex:3;">
+                <div class="form-group" style="flex:2;">
                     <label>وصف الخطوة</label>
                     <input type="text" name="workSteps[${workStepIndex}][description]" class="form-control">
                 </div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
                 <div class="form-group">
-                    <label>نوع المرفق</label>
+                    <label>نوع المرفق (إن وجد)</label>
                     <select name="workSteps[${workStepIndex}][mediaType]" class="form-control step-media-type">
                         <option value="">لا يوجد مرفق</option>
-                        <option value="نص">ملف نصي (نص)</option>
+                        <option value="نص">ملف نصي</option>
                         <option value="صوت">صوت</option>
                         <option value="صورة">صورة</option>
                         <option value="فيديو">فيديو</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-row media-upload-row" style="margin-top:10px; display:none;">
-                <div class="form-group" style="flex:1;">
-                    <label class="media-upload-label">رفع المرفق</label>
+                <div class="form-group" style="flex: 2;">
+                    <label class="media-upload-label">الملف المرفق</label>
                     <input type="file" name="workSteps_${workStepIndex}_mediaUrl" class="form-control" style="padding: 5px;">
                 </div>
                 <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
                     <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
-            <div class="form-row no-media-row" style="margin-top:10px; display:flex; justify-content:flex-end;">
-                 <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i> إزالة</button>
-            </div>
         `;
         workStepsContainer.appendChild(div);
 
-        // Handle File Type Change Dynamically
+        // Optional: dynamic accept attribute
         const selectBox = div.querySelector('.step-media-type');
-        const uploadRow = div.querySelector('.media-upload-row');
-        const noMediaRow = div.querySelector('.no-media-row');
-        const fileInput = uploadRow.querySelector('input[type="file"]');
-        const fileLabel = uploadRow.querySelector('.media-upload-label');
-
+        const fileInput = div.querySelector('input[type="file"]');
         selectBox.addEventListener('change', function() {
-            if (this.value === "") {
-                uploadRow.style.display = 'none';
-                noMediaRow.style.display = 'flex';
-                fileInput.removeAttribute("accept");
+            if (this.value === 'صورة') {
+                fileInput.setAttribute("accept", "image/*");
+            } else if (this.value === 'فيديو') {
+                fileInput.setAttribute("accept", "video/*");
+            } else if (this.value === 'صوت') {
+                fileInput.setAttribute("accept", "audio/*");
             } else {
-                uploadRow.style.display = 'flex';
-                noMediaRow.style.display = 'none';
-                if (this.value === 'صورة') {
-                    fileInput.setAttribute("accept", "image/*");
-                    fileLabel.innerText = "رفع صورة";
-                } else if (this.value === 'فيديو') {
-                    fileInput.setAttribute("accept", "video/*");
-                    fileLabel.innerText = "رفع فيديو";
-                } else if (this.value === 'صوت') {
-                    fileInput.setAttribute("accept", "audio/*");
-                    fileLabel.innerText = "رفع ملف صوتي";
-                } else {
-                    fileInput.removeAttribute("accept");
-                    fileLabel.innerText = "رفع ملف نصي";
-                }
+                fileInput.removeAttribute("accept");
             }
         });
 
         workStepIndex++;
 
-        // Delete handlers for both views
         div.querySelectorAll('.btn-delete-row').forEach(btn => {
             btn.addEventListener('click', function() {
                 div.remove();
+                updateCountInput("workStepsCount", "workStepsContainer");
+                // Re-calculate orders for remaining steps
+                const remainingSteps = workStepsContainer.querySelectorAll('.dynamic-row');
+                remainingSteps.forEach((row, idx) => {
+                    const orderInput = row.querySelector('input[type="number"]');
+                    if (orderInput) orderInput.value = idx + 1;
+                });
             });
         });
     }
-    document.getElementById("addWorkStepBtn").addEventListener("click", addWorkStepRow);
+    document.getElementById("addWorkStepBtn").addEventListener("click", function() {
+        addWorkStepRow();
+        updateCountInput("workStepsCount", "workStepsContainer");
+    });
+    setupCountInput("workStepsCount", "workStepsContainer", addWorkStepRow);
+    
     addWorkStepRow(); // Add first step automatically
+    document.querySelector('input[name="workStepsCount"]').value = 1;
 
 
     // ==========================================
@@ -434,10 +460,19 @@ document.addEventListener("DOMContentLoaded", function() {
         productsContainer.appendChild(div);
         productIndex++;
 
-        div.querySelector('.btn-delete-row').addEventListener('click', function() { div.remove(); });
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { 
+            div.remove(); 
+            updateCountInput("productsCount", "productsContainer");
+        });
     }
-    document.getElementById("addProductBtn").addEventListener("click", addProductRow);
+    document.getElementById("addProductBtn").addEventListener("click", function() {
+        addProductRow();
+        updateCountInput("productsCount", "productsContainer");
+    });
+    setupCountInput("productsCount", "productsContainer", addProductRow);
+
     addProductRow(); // إظهار صف افتراضي للمنتجات
+    document.querySelector('input[name="productsCount"]').value = 1;
 
 });
 </script>
