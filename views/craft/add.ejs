@@ -1,0 +1,466 @@
+<div class="page-header">
+    <h1>إضافة تفاصيل الحرفة الشعبية</h1>
+    <p>يرجى استكمال البيانات التفصيلية الخاصة بعنصر الحرفة الشعبية</p>
+</div>
+
+<form id="craftForm" action="/craft/add" method="POST" enctype="multipart/form-data">
+    <!-- ربط الحرفة بالمادة الفلكلورية الأساسية -->
+    <input type="hidden" name="folkloreMaterial" value="<%= folkloreId %>">
+
+    <!-- 1. بيانات الحرفة ومكان العمل -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-hammer"></i> 1. بيانات الحرفة ومكان العمل</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>اسم الحرفة <span class="required">*</span></label>
+                <input type="text" name="craftName" class="form-control" required placeholder="مثال: صناعة الفخار">
+            </div>
+            <div class="form-group">
+                <label>مكان العمل</label>
+                <select name="workplace" class="form-control">
+                    <option value="">اختر المكان</option>
+                    <option>المنزل</option>
+                    <option>مكان ملحق بالمنزل</option>
+                    <option>ورشة حرفية</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ساعات العمل يومياً</label>
+                <input type="number" name="workHoursPerDay" class="form-control" min="1" max="24" placeholder="مثال: 8">
+            </div>
+        </div>
+        <div class="form-row" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>نوع الحرفيين</label>
+                <div class="checkbox-group" style="display: flex; gap: 20px; align-items: center; padding: 10px 0;">
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="رجال"> رجال</label>
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="نساء"> نساء</label>
+                    <label style="font-weight: normal; margin-bottom: 0;"><input type="checkbox" name="craftsmenType" value="اطفال"> أطفال</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. الحرفيون -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-users-gear"></i> 2. بيانات الحرفيين</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد الحرفيين الإجمالي</label>
+            <input type="number" name="craftsmenCount" class="form-control" min="1">
+        </div>
+        
+        <div id="craftsmenContainer"></div>
+        
+        <button type="button" class="btn btn-outline" id="addCraftsmanBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة بيانات حرفي
+        </button>
+    </div>
+
+    <!-- 3. المواد الخام -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-cubes"></i> 3. المواد الخام</h2>
+        <div id="rawMaterialsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addRawMaterialBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة مادة خام
+        </button>
+    </div>
+
+    <!-- 4. الأدوات المستخدمة -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-toolbox"></i> 4. الأدوات المستخدمة</h2>
+        <div id="toolsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addToolBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة أداة جديدة
+        </button>
+    </div>
+
+    <!-- 5. خطوات العمل -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-list-ol"></i> 5. خطوات العمل</h2>
+        <div id="workStepsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addWorkStepBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة خطوة عمل
+        </button>
+    </div>
+
+    <!-- 6. المنتجات -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-box-open"></i> 6. المنتجات</h2>
+        <div id="productsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addProductBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة منتج
+        </button>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem;">
+            <i class="fa-solid fa-save"></i> حفظ بيانات الحرفة
+        </button>
+    </div>
+
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Helper: setup Count Input Auto Generation
+    function setupCountInput(countInputId, containerId, addRowFunc) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(!countInput) return;
+
+        countInput.addEventListener('input', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = container.children.length;
+            
+            if (targetCount > currentCount) {
+                for (let i = 0; i < targetCount - currentCount; i++) addRowFunc();
+            } else if (targetCount < currentCount) {
+                for (let i = 0; i < currentCount - targetCount; i++) {
+                    if (container.lastElementChild) container.lastElementChild.remove();
+                }
+            }
+        });
+    }
+
+    function updateCountInput(countInputId, containerId) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(countInput && countInput.value > 0) {
+            countInput.value = container.children.length;
+        }
+    }
+
+    // ==========================================
+    // 1. Craftsmen Logic
+    // ==========================================
+    let craftsmanIndex = 0;
+    const craftsmenContainer = document.getElementById("craftsmenContainer");
+    
+    function addCraftsmanRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الحرفي</label>
+                    <input type="text" name="craftsmen[${craftsmanIndex}][name]" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>العمر</label>
+                    <input type="number" name="craftsmen[${craftsmanIndex}][age]" class="form-control" min="5" max="120">
+                </div>
+                <div class="form-group">
+                    <label>التعليم</label>
+                    <select name="craftsmen[${craftsmanIndex}][education]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>أمي</option>
+                        <option>ابتدائي</option>
+                        <option>ثانوي</option>
+                        <option>جامعي</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>المهنة الأصلية</label>
+                    <input type="text" name="craftsmen[${craftsmanIndex}][occupation]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>مصدر الخبرة</label>
+                    <select name="craftsmen[${craftsmanIndex}][experience][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>وراثة</option>
+                        <option>تعليم</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>سنوات الخبرة</label>
+                    <input type="number" name="craftsmen[${craftsmanIndex}][experience][years]" class="form-control" min="0">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        craftsmenContainer.appendChild(div);
+        craftsmanIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("craftsmenCount", "craftsmenContainer");
+        });
+    }
+    
+    document.getElementById("addCraftsmanBtn").addEventListener("click", function() {
+        addCraftsmanRow();
+        updateCountInput("craftsmenCount", "craftsmenContainer");
+    });
+    setupCountInput("craftsmenCount", "craftsmenContainer", addCraftsmanRow);
+    
+    // Add default row
+    addCraftsmanRow();
+    document.querySelector('input[name="craftsmenCount"]').value = 1;
+
+
+    // ==========================================
+    // 2. Raw Materials Logic
+    // ==========================================
+    let materialIndex = 0;
+    const rawMaterialsContainer = document.getElementById("rawMaterialsContainer");
+    
+    function addRawMaterialRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم المادة الخام</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][name]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>المصدر</label>
+                    <select name="rawMaterials[${materialIndex}][source]" class="form-control">
+                        <option value="">اختر</option>
+                        <option>محلي</option>
+                        <option>خارجي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>طريقة الحصول عليها</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][acquisitionMethod]" class="form-control" placeholder="شراء، جمع، مقايضة...">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>السعر (إن وجد)</label>
+                    <input type="text" name="rawMaterials[${materialIndex}][price]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>صورة المادة الخام</label>
+                    <input type="file" name="rawMaterials_${materialIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        rawMaterialsContainer.appendChild(div);
+        materialIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+        });
+    }
+    document.getElementById("addRawMaterialBtn").addEventListener("click", addRawMaterialRow);
+    addRawMaterialRow(); // إظهار صف افتراضي للمواد الخام
+
+
+    // ==========================================
+    // 3. Tools Logic
+    // ==========================================
+    let toolIndex = 0;
+    const toolsContainer = document.getElementById("toolsContainer");
+    
+    function addToolRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][name]" class="form-control">
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>وصف الأداة</label>
+                    <input type="text" name="tools[${toolIndex}][description]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>الاستخدام</label>
+                    <input type="text" name="tools[${toolIndex}][usages]" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>صورة الأداة</label>
+                    <input type="file" name="tools_${toolIndex}_usageImage" class="form-control" accept="image/*" style="padding: 5px;">
+                </div>
+                <div class="form-group">
+                    <label>فيديو الاستخدام</label>
+                    <input type="file" name="tools_${toolIndex}_usageVideo" class="form-control" accept="video/*" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        toolsContainer.appendChild(div);
+        toolIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { div.remove(); });
+    }
+    document.getElementById("addToolBtn").addEventListener("click", addToolRow);
+    addToolRow(); // إظهار صف افتراضي للأدوات
+
+
+    // ==========================================
+    // 4. Work Steps Logic
+    // ==========================================
+    let workStepIndex = 0;
+    const workStepsContainer = document.getElementById("workStepsContainer");
+    
+    function addWorkStepRow() {
+        const currentOrder = workStepsContainer.children.length + 1;
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group" style="max-width: 100px;">
+                    <label>الترتيب</label>
+                    <input type="number" name="workSteps[${workStepIndex}][order]" class="form-control" value="${currentOrder}" required>
+                </div>
+                <div class="form-group" style="flex:3;">
+                    <label>وصف الخطوة</label>
+                    <input type="text" name="workSteps[${workStepIndex}][description]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>نوع المرفق</label>
+                    <select name="workSteps[${workStepIndex}][mediaType]" class="form-control step-media-type">
+                        <option value="">لا يوجد مرفق</option>
+                        <option value="نص">ملف نصي (نص)</option>
+                        <option value="صوت">صوت</option>
+                        <option value="صورة">صورة</option>
+                        <option value="فيديو">فيديو</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row media-upload-row" style="margin-top:10px; display:none;">
+                <div class="form-group" style="flex:1;">
+                    <label class="media-upload-label">رفع المرفق</label>
+                    <input type="file" name="workSteps_${workStepIndex}_mediaUrl" class="form-control" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="form-row no-media-row" style="margin-top:10px; display:flex; justify-content:flex-end;">
+                 <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i> إزالة</button>
+            </div>
+        `;
+        workStepsContainer.appendChild(div);
+
+        // Handle File Type Change Dynamically
+        const selectBox = div.querySelector('.step-media-type');
+        const uploadRow = div.querySelector('.media-upload-row');
+        const noMediaRow = div.querySelector('.no-media-row');
+        const fileInput = uploadRow.querySelector('input[type="file"]');
+        const fileLabel = uploadRow.querySelector('.media-upload-label');
+
+        selectBox.addEventListener('change', function() {
+            if (this.value === "") {
+                uploadRow.style.display = 'none';
+                noMediaRow.style.display = 'flex';
+                fileInput.removeAttribute("accept");
+            } else {
+                uploadRow.style.display = 'flex';
+                noMediaRow.style.display = 'none';
+                if (this.value === 'صورة') {
+                    fileInput.setAttribute("accept", "image/*");
+                    fileLabel.innerText = "رفع صورة";
+                } else if (this.value === 'فيديو') {
+                    fileInput.setAttribute("accept", "video/*");
+                    fileLabel.innerText = "رفع فيديو";
+                } else if (this.value === 'صوت') {
+                    fileInput.setAttribute("accept", "audio/*");
+                    fileLabel.innerText = "رفع ملف صوتي";
+                } else {
+                    fileInput.removeAttribute("accept");
+                    fileLabel.innerText = "رفع ملف نصي";
+                }
+            }
+        });
+
+        workStepIndex++;
+
+        // Delete handlers for both views
+        div.querySelectorAll('.btn-delete-row').forEach(btn => {
+            btn.addEventListener('click', function() {
+                div.remove();
+            });
+        });
+    }
+    document.getElementById("addWorkStepBtn").addEventListener("click", addWorkStepRow);
+    addWorkStepRow(); // Add first step automatically
+
+
+    // ==========================================
+    // 5. Products Logic
+    // ==========================================
+    let productIndex = 0;
+    const productsContainer = document.getElementById("productsContainer");
+    
+    function addProductRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" name="products[${productIndex}][name]" class="form-control">
+                </div>
+                <div class="form-group" style="max-width: 100px;">
+                    <label>الكمية</label>
+                    <input type="number" name="products[${productIndex}][count]" class="form-control" min="0">
+                </div>
+                <div class="form-group">
+                    <label>السعر / التكلفة</label>
+                    <input type="number" name="products[${productIndex}][price]" class="form-control" min="0">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>التسويق وطرق البيع</label>
+                    <input type="text" name="products[${productIndex}][marketing]" class="form-control" placeholder="محلي، سياحي، أسواق...">
+                </div>
+                <div class="form-group">
+                    <label>صورة المنتج</label>
+                    <input type="file" name="products_${productIndex}_image" class="form-control" accept="image/*" style="padding: 5px;">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        productsContainer.appendChild(div);
+        productIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() { div.remove(); });
+    }
+    document.getElementById("addProductBtn").addEventListener("click", addProductRow);
+    addProductRow(); // إظهار صف افتراضي للمنتجات
+
+});
+</script>
+
+<style>
+.dynamic-row {
+    background: #fdfbf7;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    position: relative;
+}
+.btn-delete-row {
+    background: #e63946; 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    height: 45px;
+}
+.btn-delete-row:hover {
+    background: #d62828;
+}
+</style>

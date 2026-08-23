@@ -179,6 +179,26 @@ export const renderAddMawwal = async (req, res, next) => {
   }
 };
 
+export const renderAddCraft = async (req, res, next) => {
+  try {
+    const { folkloreId } = req.query;
+    if (!folkloreId) {
+      return res.redirect("/");
+    }
+    const material = await folkloreMaterialModel.findById(folkloreId).lean();
+    if (!material) {
+      return res.redirect("/");
+    }
+
+    res.render("craft/add", {
+      title: "إضافة حرفة شعبية",
+      folkloreId,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─── صفحة إضافة الرقصة الشعبية ───
 export const renderAddDance = async (req, res, next) => {
   try {

@@ -1,8 +1,9 @@
 import express from "express";
-import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails } from "../controller/pages.controller.js";
+import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails, renderAddCraft } from "../controller/pages.controller.js";
 import { createFolkloreMaterial } from "../controller/folklerMaterial.controller.js";
 import { createMawwal } from "../controller/mawwal.controller.js";
 import { createDance } from "../controller/dance.controller.js";
+import { createCraft } from "../controller/craft.controller.js";
 import { uploadAudio, uploadMedia } from "../middleware/upload.middleware.js";
 import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance } from "../controller/admin.controller.js";
 
@@ -29,6 +30,10 @@ router.get("/archive/mawwal/:id", renderMawwalDetails);
 router.get("/dance/add", renderAddDance);
 router.post("/dance/add", uploadMedia.any(), createDance);
 router.get("/archive/dance/:id", renderDanceDetails);
+
+// ─── الحرف الشعبية ───
+router.get("/craft/add", renderAddCraft);
+router.post("/craft/add", uploadMedia.any(), createCraft);
 
 // ─── لوحة التحكم (الإدارة) ───
 router.get("/admin", renderDashboard);
