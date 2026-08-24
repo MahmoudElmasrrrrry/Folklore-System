@@ -227,6 +227,26 @@ export const renderAddDance = async (req, res, next) => {
   }
 };
 
+export const renderAddWali = async (req, res, next) => {
+  try {
+    const { folkloreId } = req.query;
+    if (!folkloreId) {
+      return res.redirect("/");
+    }
+    const material = await folkloreMaterialModel.findById(folkloreId).lean();
+    if (!material) {
+      return res.redirect("/");
+    }
+
+    res.render("wali/add", {
+      title: "إضافة ولي",
+      folkloreId,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─── صفحة الأرشيف (الجدول الزمني - Timeline) ───
 export const renderArchiveTimeline = async (req, res, next) => {
   try {
@@ -313,6 +333,29 @@ export const renderArchiveTimeline = async (req, res, next) => {
         contentPreview: preview,
         audioUrl: null,
         tags: c.craftsmenType || []
+      });
+    });
+
+    walis.forEach(w => {
+      if (!w.folkloreMaterial) return;
+      if (category && w.folkloreMaterial.category?._id.toString() !== category) return;
+      if (type && type !== "wali") return;
+      
+      let preview = w.title ? `اللقب: ${w.title} ` : "";
+      if (w.lifeSummary) preview += `| ${w.lifeSummary.length > 100 ? w.lifeSummary.substring(0, 100) + "..." : w.lifeSummary}`;
+      
+      timelineItems.push({
+        id: w._id,
+        title: w.name,
+        type: "wali",
+        typeLabel: "أولياء وصالحين",
+        icon: '<i class="fa-solid fa-mosque"></i>',
+        narrator: w.folkloreMaterial.narrator?.name || "مجهول",
+        categoryName: w.folkloreMaterial.category?.name || "غير مصنف",
+        date: w.createdAt,
+        contentPreview: preview,
+        audioUrl: null,
+        tags: w.birthPlace ? [w.birthPlace] : []
       });
     });
     
@@ -437,6 +480,35 @@ export const renderCraftDetails = async (req, res, next) => {
     res.render("craft/details", {
       title: craft.craftName,
       craft
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── عرض تفاصيل الولي ───
+export const renderWaliDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const wali = await Wali.findById(id).populate({
+      path: "folkloreMaterial",
+      populate: [
+        { path: "narrator" },
+        { path: "mission" },
+        { path: "collector" },
+        { path: 'category' }
+      ]
+    }).lean();
+
+    if (!wali) {
+      const err = new Error("الولي غير موجود");
+      err.statusCode = 404;
+      throw err;
+    }
+
+    res.render("wali/details", {
+      title: `تفاصيل الولي: ${wali.name}`,
+      wali
     });
   } catch (error) {
     next(error);

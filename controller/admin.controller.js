@@ -1,6 +1,7 @@
 import Mawwal from "../models/mawwal.model.js";
 import Dance from "../models/dance.model.js";
 import Craft from "../models/craft.model.js";
+import Wali from "../models/wali.model.js";
 import FolkloreMaterial from "../models/FolkloreMaterial.model.js";
 import Narrator from "../models/narrator.model.js";
 import Mission from "../models/mission.model.js";
@@ -96,6 +97,13 @@ export const renderDashboard = async (req, res, next) => {
       }).lean();
       items = items.map(i => ({ ...i, itemType: 'craft', itemName: i.craftName }));
       totalItems = await Craft.countDocuments();
+    } else if (type === 'wali') {
+      items = await Wali.find().sort({ createdAt: -1 }).skip(skip).limit(limit).populate({
+        path: "folkloreMaterial",
+        populate: [{ path: "narrator" }]
+      }).lean();
+      items = items.map(i => ({ ...i, itemType: 'wali', itemName: i.name }));
+      totalItems = await Wali.countDocuments();
     }
 
     const totalPages = Math.ceil(totalItems / limit);
@@ -565,6 +573,130 @@ export const updateCraft = async (req, res, next) => {
     await Craft.findByIdAndUpdate(id, updatedData);
 
     res.redirect("/admin?type=craft&success=updated");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const renderEditWali = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const wali = await Wali.findById(id).lean();
+    if (!wali) {
+      return res.status(404).send("الولي غير موجود");
+    }
+
+    res.render("wali/edit", {
+      title: "تعديل بيانات الولي",
+      wali
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateWali = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const {
+      name, title, thesaurusNumber, birthDate, birthPlace, lineage,
+      childhood, education, lifeSummary, sufismEntry, miracles, deathDate, deathPlace,
+      mawlids, shrines, sufiOrders
+    } = req.body;
+
+    const wali = await Wali.findById(id);
+    if (!wali) {
+      return res.status(404).send("الولي غير موجود");
+    }
+
+    const parseStringToArray = (str) => {
+      if (!str) return [];
+      if (Array.isArray(str)) return str;
+      return str.split("-").map(s => s.trim()).filter(s => s);
+    };
+
+    const cleanMawlids = Array.isArray(mawlids) ? mawlids.map(m => {
+      if (!m.date && !m.place && !m.description) return null;
+      return {
+        date: m.date || undefined,
+        place: m.place || undefined,
+        durationDays: m.durationDays ? Number(m.durationDays) : undefined,
+        schedule: {
+          weekdays: parseStringToArray(m.scheduleWeekdays),
+          hours: parseStringToArray(m.scheduleHours),
+          times: parseStringToArray(m.scheduleTimes)
+        },
+        description: m.description || undefined
+      };
+    }).filter(Boolean) : [];
+
+    const cleanShrines = Array.isArray(shrines) ? shrines.map(s => {
+      if (!s.builder && !s.buildStory && !s.description) return null;
+      return {
+        buildDate: s.buildDate || undefined,
+        builder: s.builder || undefined,
+        buildStory: s.buildStory || undefined,
+        description: s.description || undefined
+      };
+    }).filter(Boolean) : [];
+
+    const cleanSufiOrders = Array.isArray(sufiOrders) ? sufiOrders.map(o => {
+      if (!o.name && !o.emblem) return null;
+      return {
+        name: o.name || undefined,
+        nameMeaning: o.nameMeaning || undefined,
+        emblem: o.emblem || undefined,
+        awradCount: o.awradCount || undefined,
+        awradText: o.awradText || undefined,
+        oathText: o.oathText || undefined,
+        oathConditions: parseStringToArray(o.oathConditions),
+        oathBreachConsequence: o.oathBreachConsequence || undefined,
+        returnToOrder: o.returnToOrder || undefined,
+        branchOrders: parseStringToArray(o.branchOrders)
+      };
+    }).filter(Boolean) : [];
+
+    const updatedData = {
+      name,
+      title,
+      thesaurusNumber,
+      birthDate: birthDate || undefined,
+      birthPlace,
+      lineage,
+      childhood,
+      education,
+      lifeSummary,
+      sufismEntry,
+      miracles,
+      deathDate: deathDate || undefined,
+      deathPlace,
+      mawlids: cleanMawlids,
+      shrines: cleanShrines,
+      sufiOrders: cleanSufiOrders
+    };
+
+    await Wali.findByIdAndUpdate(id, updatedData);
+
+    res.redirect("/admin?type=wali&success=updated");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteWali = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const wali = await Wali.findById(id);
+    if (!wali) {
+      return res.status(404).send("الولي غير موجود");
+    }
+
+    if (wali.folkloreMaterial) {
+      await deleteBasicData(wali.folkloreMaterial);
+    }
+
+    await Wali.findByIdAndDelete(id);
+    res.redirect("/admin?type=wali&success=deleted");
   } catch (error) {
     next(error);
   }

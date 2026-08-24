@@ -1,0 +1,348 @@
+<div class="page-header">
+    <h1>إضافة تفاصيل الولي</h1>
+    <p>يرجى استكمال البيانات التفصيلية الخاصة بالولي</p>
+</div>
+
+<form id="waliForm" action="/wali/add" method="POST">
+    <!-- ربط الولي بالمادة الفلكلورية الأساسية -->
+    <input type="hidden" name="folkloreMaterial" value="<%= folkloreId %>">
+
+    <!-- 1. البيانات الأساسية للولي -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-id-card"></i> 1. البيانات الأساسية</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>الاسم <span class="required">*</span></label>
+                <input type="text" name="name" class="form-control" required placeholder="مثال: السيد البدوي">
+            </div>
+            <div class="form-group">
+                <label>اللقب</label>
+                <input type="text" name="title" class="form-control" placeholder="مثال: شيخ العرب">
+            </div>
+            <div class="form-group">
+                <label>رقم المكنز</label>
+                <input type="text" name="thesaurusNumber" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-row" style="margin-top:15px;">
+            <div class="form-group">
+                <label>تاريخ الميلاد</label>
+                <input type="date" name="birthDate" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>مكان الميلاد</label>
+                <input type="text" name="birthPlace" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>النسب</label>
+                <input type="text" name="lineage" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-row" style="margin-top:15px;">
+            <div class="form-group">
+                <label>تاريخ الوفاة</label>
+                <input type="date" name="deathDate" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>مكان الوفاة</label>
+                <input type="text" name="deathPlace" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. السيرة الذاتية والصوفية -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-book-open"></i> 2. السيرة الذاتية والصوفية</h2>
+        <div class="form-group">
+            <label>مرحلة الطفولة</label>
+            <textarea name="childhood" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group" style="margin-top:15px;">
+            <label>التعليم</label>
+            <textarea name="education" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group" style="margin-top:15px;">
+            <label>ملخص السيرة</label>
+            <textarea name="lifeSummary" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group" style="margin-top:15px;">
+            <label>الدخول في التصوف</label>
+            <textarea name="sufismEntry" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group" style="margin-top:15px;">
+            <label>الكرامات والمعجزات</label>
+            <textarea name="miracles" class="form-control" rows="4"></textarea>
+        </div>
+    </div>
+
+    <!-- 3. الموالد (Mawlids) -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-calendar-star"></i> 3. الموالد (الاحتفالات السنوية)</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد الموالد</label>
+            <input type="number" name="mawlidsCount" class="form-control" min="0">
+        </div>
+        <div id="mawlidsContainer"></div>
+        <button type="button" class="btn btn-outline" id="addMawlidBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة مولد
+        </button>
+    </div>
+
+    <!-- 4. الأضرحة (Shrines) -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-mosque"></i> 4. الأضرحة</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد الأضرحة</label>
+            <input type="number" name="shrinesCount" class="form-control" min="0">
+        </div>
+        <div id="shrinesContainer"></div>
+        <button type="button" class="btn btn-outline" id="addShrineBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة ضريح
+        </button>
+    </div>
+
+    <!-- 5. الطرق الصوفية (Sufi Orders) -->
+    <div class="form-section">
+        <h2 class="form-section-title"><i class="fa-solid fa-star-and-crescent"></i> 5. الطرق الصوفية</h2>
+        <div class="form-group" style="margin-bottom: 15px; max-width: 200px;">
+            <label>عدد الطرق</label>
+            <input type="number" name="sufiOrdersCount" class="form-control" min="0">
+        </div>
+        <div id="sufiOrdersContainer"></div>
+        <button type="button" class="btn btn-outline" id="addSufiOrderBtn" style="margin-top: 10px;">
+            <i class="fa-solid fa-plus"></i> إضافة طريقة صوفية
+        </button>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 40px; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="padding: 15px 40px; font-size: 1.1rem; background-color: #2E7D32; border-color: #2E7D32;">
+            <i class="fa-solid fa-save"></i> حفظ بيانات الولي
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Helper: setup Count Input Auto Generation
+    function setupCountInput(countInputId, containerId, addRowFunc) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(!countInput) return;
+
+        countInput.addEventListener('input', function() {
+            const targetCount = parseInt(this.value) || 0;
+            const currentCount = container.children.length;
+            
+            if (targetCount > currentCount) {
+                for (let i = 0; i < targetCount - currentCount; i++) addRowFunc();
+            } else if (targetCount < currentCount) {
+                for (let i = 0; i < currentCount - targetCount; i++) {
+                    if (container.lastElementChild) container.lastElementChild.remove();
+                }
+            }
+        });
+    }
+
+    function updateCountInput(countInputId, containerId) {
+        const countInput = document.querySelector(`input[name="${countInputId}"]`);
+        const container = document.getElementById(containerId);
+        if(countInput) {
+            countInput.value = container.children.length;
+        }
+    }
+
+    // ==========================================
+    // 3. Mawlids Logic
+    // ==========================================
+    let mawlidIndex = 0;
+    const mawlidsContainer = document.getElementById("mawlidsContainer");
+    
+    function addMawlidRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>تاريخ المولد</label>
+                    <input type="date" name="mawlids[${mawlidIndex}][date]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>مكان المولد</label>
+                    <input type="text" name="mawlids[${mawlidIndex}][place]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>المدة (بالأيام)</label>
+                    <input type="number" name="mawlids[${mawlidIndex}][durationDays]" class="form-control" min="1">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>أيام الأسبوع المجدولة (مفصولة بـ -)</label>
+                    <input type="text" name="mawlids[${mawlidIndex}][scheduleWeekdays]" class="form-control" placeholder="الخميس - الجمعة">
+                </div>
+                <div class="form-group">
+                    <label>الساعات المجدولة (مفصولة بـ -)</label>
+                    <input type="text" name="mawlids[${mawlidIndex}][scheduleHours]" class="form-control" placeholder="مساءً - صباحاً">
+                </div>
+                <div class="form-group">
+                    <label>المواعيد (مفصولة بـ -)</label>
+                    <input type="text" name="mawlids[${mawlidIndex}][scheduleTimes]" class="form-control" placeholder="بعد صلاة العصر - بعد العشاء">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group" style="flex:2;">
+                    <label>الوصف</label>
+                    <textarea name="mawlids[${mawlidIndex}][description]" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        mawlidsContainer.appendChild(div);
+        mawlidIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("mawlidsCount", "mawlidsContainer");
+        });
+    }
+    
+    document.getElementById("addMawlidBtn").addEventListener("click", function() {
+        addMawlidRow();
+        updateCountInput("mawlidsCount", "mawlidsContainer");
+    });
+    setupCountInput("mawlidsCount", "mawlidsContainer", addMawlidRow);
+    
+
+    // ==========================================
+    // 4. Shrines Logic
+    // ==========================================
+    let shrineIndex = 0;
+    const shrinesContainer = document.getElementById("shrinesContainer");
+    
+    function addShrineRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>تاريخ البناء</label>
+                    <input type="date" name="shrines[${shrineIndex}][buildDate]" class="form-control">
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>اسم الباني / المُشيد</label>
+                    <input type="text" name="shrines[${shrineIndex}][builder]" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>قصة البناء</label>
+                    <textarea name="shrines[${shrineIndex}][buildStory]" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>وصف الضريح</label>
+                    <textarea name="shrines[${shrineIndex}][description]" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        shrinesContainer.appendChild(div);
+        shrineIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("shrinesCount", "shrinesContainer");
+        });
+    }
+    
+    document.getElementById("addShrineBtn").addEventListener("click", function() {
+        addShrineRow();
+        updateCountInput("shrinesCount", "shrinesContainer");
+    });
+    setupCountInput("shrinesCount", "shrinesContainer", addShrineRow);
+
+
+    // ==========================================
+    // 5. Sufi Orders Logic
+    // ==========================================
+    let sufiOrderIndex = 0;
+    const sufiOrdersContainer = document.getElementById("sufiOrdersContainer");
+    
+    function addSufiOrderRow() {
+        const div = document.createElement("div");
+        div.className = "dynamic-row";
+        div.innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الطريقة</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][name]" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>معنى الاسم</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][nameMeaning]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>الشعار</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][emblem]" class="form-control">
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>عدد الأوراد</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][awradCount]" class="form-control">
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>نص الأوراد</label>
+                    <textarea name="sufiOrders[${sufiOrderIndex}][awradText]" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>نص العهد</label>
+                    <textarea name="sufiOrders[${sufiOrderIndex}][oathText]" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>شروط العهد (مفصولة بـ -)</label>
+                    <textarea name="sufiOrders[${sufiOrderIndex}][oathConditions]" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>الطرق الفرعية (مفصولة بـ -)</label>
+                    <textarea name="sufiOrders[${sufiOrderIndex}][branchOrders]" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:10px;">
+                <div class="form-group">
+                    <label>عاقبة نقض العهد</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][oathBreachConsequence]" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>العودة للطريقة</label>
+                    <input type="text" name="sufiOrders[${sufiOrderIndex}][returnToOrder]" class="form-control">
+                </div>
+                <div class="form-group" style="display:flex; align-items:flex-end; max-width:80px;">
+                    <button type="button" class="btn btn-delete-row"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+        sufiOrdersContainer.appendChild(div);
+        sufiOrderIndex++;
+
+        div.querySelector('.btn-delete-row').addEventListener('click', function() {
+            div.remove();
+            updateCountInput("sufiOrdersCount", "sufiOrdersContainer");
+        });
+    }
+    
+    document.getElementById("addSufiOrderBtn").addEventListener("click", function() {
+        addSufiOrderRow();
+        updateCountInput("sufiOrdersCount", "sufiOrdersContainer");
+    });
+    setupCountInput("sufiOrdersCount", "sufiOrdersContainer", addSufiOrderRow);
+});
+</script>

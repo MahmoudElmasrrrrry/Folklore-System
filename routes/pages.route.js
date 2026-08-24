@@ -1,11 +1,12 @@
 import express from "express";
-import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails, renderAddCraft, renderCraftDetails } from "../controller/pages.controller.js";
+import { renderHome, renderFolkloreMaterial, renderAddMawwal, renderArchiveTimeline, renderMawwalDetails, renderAddDance, renderDanceDetails, renderAddCraft, renderCraftDetails, renderAddWali, renderWaliDetails } from "../controller/pages.controller.js";
 import { createFolkloreMaterial } from "../controller/folklerMaterial.controller.js";
 import { createMawwal } from "../controller/mawwal.controller.js";
 import { createDance } from "../controller/dance.controller.js";
 import { createCraft } from "../controller/craft.controller.js";
+import { createWali } from "../controller/wali.controller.js";
 import { uploadAudio, uploadMedia } from "../middleware/upload.middleware.js";
-import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance, renderEditCraft, updateCraft, deleteCraft } from "../controller/admin.controller.js";
+import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance, renderEditCraft, updateCraft, deleteCraft, renderEditWali, updateWali, deleteWali } from "../controller/admin.controller.js";
 
 const router = express.Router();
 
@@ -36,6 +37,11 @@ router.get("/craft/add", renderAddCraft);
 router.post("/craft/add", uploadMedia.any(), createCraft);
 router.get("/archive/craft/:id", renderCraftDetails);
 
+// ─── الأولياء ───
+router.get("/wali/add", renderAddWali);
+router.post("/wali/add", createWali);
+router.get("/archive/wali/:id", renderWaliDetails);
+
 // ─── لوحة التحكم (الإدارة) ───
 router.get("/admin", renderDashboard);
 
@@ -53,5 +59,10 @@ router.delete("/admin/dance/:id", deleteDance);
 router.get("/admin/craft/edit/:id", renderEditCraft);
 router.put("/admin/craft/:id", uploadMedia.any(), updateCraft);
 router.delete("/admin/craft/:id", deleteCraft);
+
+// إدارة الأولياء
+router.get("/admin/wali/edit/:id", renderEditWali);
+router.put("/admin/wali/:id", updateWali);
+router.delete("/admin/wali/:id", deleteWali);
 
 export default router;

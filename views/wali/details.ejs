@@ -1,0 +1,687 @@
+<style>
+    /* تصميم إسلامي / صوفي مخصص للأولياء */
+    :root {
+        --wali-primary: #1b5e20; /* أخضر غامق */
+        --wali-secondary: #cddc39; /* ذهبي / أصفر مخضر */
+        --wali-accent: #d4af37; /* ذهبي أصيل */
+        --wali-bg: #f9fbf9; 
+    }
+
+    .wali-header {
+        background: linear-gradient(135deg, var(--wali-primary), #0a3311);
+        color: white;
+        padding: 60px 20px;
+        text-align: center;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 5px solid var(--wali-accent);
+    }
+
+    .wali-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(212,175,55,0.05)"/></svg>');
+        opacity: 0.8;
+    }
+
+    .wali-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .wali-subtitle {
+        font-size: 1.5rem;
+        color: var(--wali-secondary);
+        position: relative;
+        z-index: 1;
+        margin-bottom: 20px;
+    }
+
+    .wali-meta-pills {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wali-pill {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(212,175,55, 0.3);
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .wali-pill i {
+        color: var(--wali-accent);
+    }
+
+    .wali-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        border-top: 4px solid var(--wali-primary);
+    }
+
+    .wali-section h3 {
+        color: var(--wali-primary);
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 2px dashed #eee;
+        padding-bottom: 15px;
+    }
+    
+    .wali-section h3 i {
+        color: var(--wali-accent);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        background: var(--wali-bg);
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: #f1f8f1;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .info-label {
+        color: var(--wali-primary);
+        font-size: 0.95rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-label i {
+        color: var(--wali-accent);
+        font-size: 1.1rem;
+    }
+
+    .info-value {
+        color: #333;
+        font-size: 1.15rem;
+        font-weight: bold;
+        line-height: 1.5;
+        padding-right: 25px; /* align with text, skip icon */
+    }
+
+    .story-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #444;
+        text-align: justify;
+    }
+
+    /* Cards for Arrays */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .wali-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wali-card:hover {
+        box-shadow: 0 8px 25px rgba(27, 94, 32, 0.1);
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+        color: var(--wali-primary);
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .card-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .card-meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .card-meta-item i {
+        color: var(--wali-accent);
+        margin-top: 4px;
+    }
+    .card-meta-text strong {
+        display: block;
+        color: #555;
+        font-size: 0.85rem;
+    }
+
+</style>
+
+<div class="wali-header">
+    <h1 class="wali-title"><%= wali.name %></h1>
+    <% if (wali.title) { %>
+        <div class="wali-subtitle">« <%= wali.title %> »</div>
+    <% } %>
+    
+    <div class="wali-meta-pills">
+        <% if (wali.birthPlace) { %>
+            <div class="wali-pill">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>الميلاد: <%= wali.birthPlace %></span>
+            </div>
+        <% } %>
+        <% if (wali.birthDate) { %>
+            <div class="wali-pill">
+                <i class="fa-solid fa-calendar-day"></i>
+                <span>تاريخ الميلاد: <%= new Date(wali.birthDate).getFullYear() %></span>
+            </div>
+        <% } %>
+        <% if (wali.deathDate) { %>
+            <div class="wali-pill">
+                <i class="fa-solid fa-moon"></i>
+                <span>تاريخ الوفاة: <%= new Date(wali.deathDate).getFullYear() %></span>
+            </div>
+        <% } %>
+        <% if (wali.thesaurusNumber) { %>
+            <div class="wali-pill">
+                <i class="fa-solid fa-barcode"></i>
+                <span>مكنز: <%= wali.thesaurusNumber %></span>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 40px; margin-bottom: 60px;">
+    <div class="details-grid">
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            <!-- 1. البطاقة الشخصية -->
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-address-card"></i> البطاقة الشخصية والنسب</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label"><i class="fa-solid fa-user-large"></i> الاسم بالكامل</div>
+                <div class="info-value"><%= wali.name || 'غير متوفر' %></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label"><i class="fa-solid fa-certificate"></i> اللقب</div>
+                <div class="info-value"><%= wali.title || 'غير متوفر' %></div>
+            </div>
+            <% if (wali.lineage) { %>
+            <div class="info-item" style="grid-column: 1 / -1;">
+                <div class="info-label"><i class="fa-solid fa-sitemap"></i> النسب الشريف</div>
+                <div class="info-value" style="color: var(--wali-primary);"><%= wali.lineage %></div>
+            </div>
+            <% } %>
+            <% if (wali.birthPlace) { %>
+            <div class="info-item">
+                <div class="info-label"><i class="fa-solid fa-location-dot"></i> مكان الميلاد</div>
+                <div class="info-value"><%= wali.birthPlace %></div>
+            </div>
+            <% } %>
+            <% if (wali.deathPlace) { %>
+            <div class="info-item">
+                <div class="info-label"><i class="fa-solid fa-bed"></i> مكان الوفاة / المقام</div>
+                <div class="info-value"><%= wali.deathPlace %></div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- 2. السيرة الذاتية -->
+    <% if (wali.childhood || wali.education || wali.lifeSummary) { %>
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-book-open-reader"></i> السيرة الذاتية</h3>
+        
+        <% if (wali.childhood) { %>
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الطفولة:</h4>
+                <p class="story-text"><%= wali.childhood %></p>
+            </div>
+        <% } %>
+
+        <% if (wali.education) { %>
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">التعليم:</h4>
+                <p class="story-text"><%= wali.education %></p>
+            </div>
+        <% } %>
+
+        <% if (wali.lifeSummary) { %>
+            <div>
+                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">ملخص السيرة:</h4>
+                <p class="story-text"><%= wali.lifeSummary %></p>
+            </div>
+        <% } %>
+    </div>
+    <% } %>
+
+    <!-- 3. الحياة الروحية والكرامات -->
+    <% if (wali.sufismEntry || wali.miracles) { %>
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-hands-praying"></i> الحياة الروحية والكرامات</h3>
+        
+        <% if (wali.sufismEntry) { %>
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الدخول في التصوف:</h4>
+                <p class="story-text"><%= wali.sufismEntry %></p>
+            </div>
+        <% } %>
+
+        <% if (wali.miracles) { %>
+            <div>
+                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الكرامات والمعجزات:</h4>
+                <p class="story-text"><%= wali.miracles %></p>
+            </div>
+        <% } %>
+    </div>
+    <% } %>
+
+    <!-- 4. الموالد (Mawlids) -->
+    <% if (wali.mawlids && wali.mawlids.length > 0) { %>
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-calendar-star"></i> الموالد والاحتفالات</h3>
+        <div class="cards-grid">
+            <% wali.mawlids.forEach(mawlid => { %>
+                <div class="wali-card">
+                    <div class="card-title"><%= mawlid.place || 'احتفال' %></div>
+                    <div class="card-meta">
+                        <% if (mawlid.date) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-regular fa-calendar"></i>
+                                <div class="card-meta-text">
+                                    <strong>تاريخ المولد:</strong>
+                                    <%= new Date(mawlid.date).toLocaleDateString('ar-EG') %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (mawlid.durationDays) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <div class="card-meta-text">
+                                    <strong>المدة:</strong>
+                                    <%= mawlid.durationDays %> أيام
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (mawlid.schedule && (mawlid.schedule.weekdays?.length || mawlid.schedule.hours?.length || mawlid.schedule.times?.length)) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-calendar-week"></i>
+                                <div class="card-meta-text">
+                                    <strong>مواعيد الجدولة:</strong>
+                                    <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 0.85rem; color: #555;">
+                                        <% if(mawlid.schedule.weekdays && mawlid.schedule.weekdays.length > 0) { %>
+                                            <li>الأيام: <%= mawlid.schedule.weekdays.join(' - ') %></li>
+                                        <% } %>
+                                        <% if(mawlid.schedule.hours && mawlid.schedule.hours.length > 0) { %>
+                                            <li>الساعات: <%= mawlid.schedule.hours.join(' - ') %></li>
+                                        <% } %>
+                                        <% if(mawlid.schedule.times && mawlid.schedule.times.length > 0) { %>
+                                            <li>الفترات: <%= mawlid.schedule.times.join(' - ') %></li>
+                                        <% } %>
+                                    </ul>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (mawlid.description) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-info-circle"></i>
+                                <div class="card-meta-text">
+                                    <strong>الوصف:</strong>
+                                    <%= mawlid.description %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- 5. الأضرحة (Shrines) -->
+    <% if (wali.shrines && wali.shrines.length > 0) { %>
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-mosque"></i> الأضرحة والمقامات</h3>
+        <div class="cards-grid">
+            <% wali.shrines.forEach(shrine => { %>
+                <div class="wali-card">
+                    <div class="card-title">بيانات الضريح</div>
+                    <div class="card-meta">
+                        <% if (shrine.builder) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-person-digging"></i>
+                                <div class="card-meta-text">
+                                    <strong>الباني / المُشيد:</strong>
+                                    <%= shrine.builder %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (shrine.buildDate) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                <div class="card-meta-text">
+                                    <strong>تاريخ البناء:</strong>
+                                    <%= new Date(shrine.buildDate).getFullYear() %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (shrine.buildStory) { %>
+                            <div class="card-meta-item" style="margin-top: 10px;">
+                                <i class="fa-solid fa-book"></i>
+                                <div class="card-meta-text">
+                                    <strong>قصة البناء:</strong>
+                                    <%= shrine.buildStory %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (shrine.description) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-align-right"></i>
+                                <div class="card-meta-text">
+                                    <strong>الوصف:</strong>
+                                    <%= shrine.description %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- 6. الطرق الصوفية (Sufi Orders) -->
+    <% if (wali.sufiOrders && wali.sufiOrders.length > 0) { %>
+    <div class="wali-section">
+        <h3><i class="fa-solid fa-star-and-crescent"></i> الطرق الصوفية</h3>
+        <div class="cards-grid">
+            <% wali.sufiOrders.forEach(order => { %>
+                <div class="wali-card">
+                    <div class="card-title"><%= order.name %></div>
+                    <div class="card-meta">
+                        <% if (order.nameMeaning) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-quote-right"></i>
+                                <div class="card-meta-text">
+                                    <strong>معنى الاسم:</strong>
+                                    <%= order.nameMeaning %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.emblem) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-flag"></i>
+                                <div class="card-meta-text">
+                                    <strong>الشعار:</strong>
+                                    <%= order.emblem %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.awradText) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-book-quran"></i>
+                                <div class="card-meta-text">
+                                    <strong>الأوراد (<%= order.awradCount || '-' %> ورد):</strong>
+                                    <%= order.awradText %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.oathText) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-handshake"></i>
+                                <div class="card-meta-text">
+                                    <strong>نص العهد:</strong>
+                                    <%= order.oathText %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.oathConditions && order.oathConditions.length > 0) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-list-check"></i>
+                                <div class="card-meta-text">
+                                    <strong>شروط العهد:</strong>
+                                    <%= order.oathConditions.join(' - ') %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.oathBreachConsequence) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <div class="card-meta-text">
+                                    <strong>عاقبة نقض العهد:</strong>
+                                    <%= order.oathBreachConsequence %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.returnToOrder) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                <div class="card-meta-text">
+                                    <strong>كيفية العودة للطريقة:</strong>
+                                    <%= order.returnToOrder %>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (order.branchOrders && order.branchOrders.length > 0) { %>
+                            <div class="card-meta-item">
+                                <i class="fa-solid fa-code-branch"></i>
+                                <div class="card-meta-text">
+                                    <strong>الطرق الفرعية:</strong>
+                                    <%= order.branchOrders.join(' - ') %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+        </div> <!-- End main-content -->
+
+        <!-- القائمة الجانبية (البيانات الأساسية) -->
+        <div class="sidebar">
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي / المصدر</h3>
+                <% if (wali.folkloreMaterial && wali.folkloreMaterial.narrator) { %>
+                    <ul class="widget-list">
+                        <li><span>الاسم:</span> <strong>
+                                <%= wali.folkloreMaterial.narrator.name %>
+                            </strong></li>
+                        <li><span>العمر:</span> <strong>
+                                <%= wali.folkloreMaterial.narrator.age ? wali.folkloreMaterial.narrator.age + ' سنة' : '-' %>
+                            </strong></li>
+                        <li><span>المهنة:</span> <strong>
+                                <%= wali.folkloreMaterial.narrator.occupation || '-' %>
+                            </strong></li>
+                        <% if(wali.folkloreMaterial.narrator.status) { %>
+                            <li><span>الحالة:</span> <strong>
+                                    <%= wali.folkloreMaterial.narrator.status %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">بيانات الراوي غير متوفرة</p>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-map-location-dot"></i> البعثة والتوثيق</h3>
+                <% if (wali.folkloreMaterial) { %>
+                    <ul class="widget-list">
+                        <% if (wali.folkloreMaterial.mission) { %>
+                            <li><span>رقم البعثة:</span> <strong>
+                                    <%= wali.folkloreMaterial.mission.missionNumber %>
+                                </strong></li>
+                            <li><span>مكان البعثة:</span> <strong>
+                                    <%= wali.folkloreMaterial.mission.place %>
+                                </strong></li>
+                        <% } %>
+                        <% if (wali.folkloreMaterial.collector) { %>
+                            <li><span>اسم الجامع:</span> <strong>
+                                    <%= wali.folkloreMaterial.collector.name %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-list-check"></i> بيانات الجمع</h3>
+                <% if (wali.folkloreMaterial && wali.folkloreMaterial.collectionData) { %>
+                    <ul class="widget-list">
+                        <li><span>تاريخ الجمع:</span> <strong>
+                                <%= wali.folkloreMaterial.collectionData.collectionDate ? new Date(wali.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
+                            </strong></li>
+                        <li><span>تاريخ التدوين:</span> <strong>
+                                <%= wali.folkloreMaterial.collectionData.documentationDate ? new Date(wali.folkloreMaterial.collectionData.documentationDate).toLocaleDateString('ar-EG') : '-' %>
+                            </strong></li>
+                        <li><span>المحافظة:</span> <strong>
+                                <%= wali.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
+                            </strong></li>
+                        <li><span>المدينة/المركز:</span> <strong>
+                                <%= wali.folkloreMaterial.collectionData.collectionPlace?.city || '-' %>
+                            </strong></li>
+                        <% if(wali.folkloreMaterial.collectionData.collectionPlace?.village) { %>
+                            <li><span>القرية:</span> <strong>
+                                    <%= wali.folkloreMaterial.collectionData.collectionPlace.village %>
+                                </strong></li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-muted">البيانات غير متوفرة</p>
+                <% } %>
+            </div>
+
+            <div class="sidebar-widget action-widget">
+                <h3>تحديث البيانات</h3>
+                <p>يمكن للباحثين المعتمدين تحديث بيانات هذا الولي.</p>
+                <a href="/admin/wali/edit/<%= wali._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الولي</a>
+            </div>
+        </div>
+    </div> <!-- End details-grid -->
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/archive" class="btn btn-outline"><i class="fa-solid fa-arrow-right"></i> العودة للأرشيف</a>
+    </div>
+</div>
+
+<style>
+    /* Grid Layouts */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 2.5fr 1fr;
+        gap: 30px;
+    }
+    @media (max-width: 1000px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+        min-width: 0;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+    .sidebar-widget {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        border: 1px solid #eee;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+    }
+    .sidebar-widget h3 {
+        font-size: 1.15rem;
+        color: var(--wali-primary);
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f9fbf9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .widget-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .widget-list li {
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+        padding-bottom: 8px;
+    }
+    .widget-list li:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .widget-list li span {
+        color: #666;
+    }
+    .widget-list li strong {
+        color: #333;
+        text-align: left;
+    }
+    .action-widget {
+        text-align: center;
+        background: #fdfbf7;
+    }
+    .action-widget p {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 15px;
+    }
+</style>
