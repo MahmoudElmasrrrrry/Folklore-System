@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import expressLayouts from "express-ejs-layouts";
 import methodOverride from "method-override";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 
@@ -51,12 +52,19 @@ app.use(express.urlencoded({ limit: "500mb", extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// إعدادات الجلسة (Session)
+// إعدادات الجلسة (Session) مع التخزين في MongoDB
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "super_secret_mawwal_key_123",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: MONGO_URI,
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 يوم
+    },
   })
 );
 
