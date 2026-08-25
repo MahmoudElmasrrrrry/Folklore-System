@@ -1,0 +1,62 @@
+<div class="page-header">
+    <h1><i class="fa-solid fa-lock"></i> تسجيل الدخول للمشرف</h1>
+    <p>يرجى إدخال بيانات الدخول لإدارة محتوى الأرشيف</p>
+</div>
+
+<div class="form-section" style="max-width: 500px; margin: 0 auto;">
+    <% if (typeof banned !== 'undefined' && banned) { %>
+        <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: center; font-weight: bold;">
+            <i class="fa-solid fa-ban"></i> تم حظر تسجيل الدخول مؤقتاً.<br>
+            الرجاء المحاولة بعد: <span id="countdownTimer" style="font-size: 1.2rem; color: #e74c3c;"><%= remainingTime %></span> ثانية.
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let timeLeft = <%= remainingTime %>;
+                const timerEl = document.getElementById('countdownTimer');
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        window.location.reload();
+                    } else {
+                        let m = Math.floor(timeLeft / 60);
+                        let s = Math.floor(timeLeft % 60);
+                        timerEl.innerText = m + ":" + (s < 10 ? '0' : '') + s;
+                    }
+                }, 1000);
+            });
+        </script>
+    <% } %>
+
+    <% if (error && (typeof banned === 'undefined' || !banned)) { %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: '<%= error %>',
+                    confirmButtonText: 'حسناً',
+                    confirmButtonColor: '#e74c3c',
+                    background: '#fff',
+                    color: '#333'
+                });
+            });
+        </script>
+    <% } %>
+
+    <form action="/login" method="POST">
+        <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" name="username" class="form-control" required placeholder="أدخل اسم المستخدم" <%= typeof banned !== 'undefined' && banned ? 'disabled' : '' %>>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>كلمة المرور</label>
+            <input type="password" name="password" class="form-control" required placeholder="أدخل كلمة المرور" <%= typeof banned !== 'undefined' && banned ? 'disabled' : '' %>>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1.1rem;" <%= typeof banned !== 'undefined' && banned ? 'disabled' : '' %>>
+                <i class="fa-solid fa-right-to-bracket"></i> دخول
+            </button>
+        </div>
+    </form>
+</div>

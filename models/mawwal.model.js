@@ -28,7 +28,6 @@ const mawwalSchema = new Schema(
 
     thematicClassification: {
       type: [String],
-      enum: ["بطولة", "غزل", "ملحمي", "متعدد القيم"],
       default: [],
     },
 
@@ -82,7 +81,6 @@ const mawwalSchema = new Schema(
 
     rhetoricalImagery: {
       type: [String],
-      enum: ["تشبيه", "استعارة", "كناية"],
       default: [],
     },
 
@@ -90,7 +88,6 @@ const mawwalSchema = new Schema(
 
     storyStructure: {
       type: [String],
-      enum: ["بداية", "عقدة", "ذروة", "تفاعل جمهور", "خاتمة"],
       default: [],
     },
 
@@ -98,7 +95,6 @@ const mawwalSchema = new Schema(
     socialFunction: {
       //الوظيفة الاجتماعية للموال
       type: [String],
-      enum: ["تسلية", "وعظ", "توثيق تاريخي", "تعبير وجداني"],
       default: [],
     },
 
@@ -114,7 +110,6 @@ const mawwalSchema = new Schema(
     //  5 الأداء والتداول 
     occasion: {
       type: [String],
-      enum: ["فرح", "سيرة", "سمر", "كوسم"],
       default: [],
     },
 

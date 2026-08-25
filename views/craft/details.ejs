@@ -304,6 +304,11 @@
                                     <%= craft.folkloreMaterial.dataSource.tapeNumber %>
                                 </strong></li>
                         <% } %>
+                        <% if(craft.folkloreMaterial.dataSource.sideNumber) { %>
+                            <li><span>رقم الوجه:</span> <strong>
+                                    <%= craft.folkloreMaterial.dataSource.sideNumber %>
+                                </strong></li>
+                        <% } %>
                         <% if(craft.folkloreMaterial.dataSource.digitalFileLocation) { %>
                             <li><span>الملف الرقمي:</span> <strong>
                                     <%= craft.folkloreMaterial.dataSource.digitalFileLocation %>
@@ -315,11 +320,13 @@
                 <% } %>
             </div>
 
+            <% if (typeof user !== 'undefined' && user) { %>
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
                 <p>يمكن للباحثين المعتمدين تحديث بيانات هذه الحرفة.</p>
                 <a href="/admin/craft/edit/<%= craft._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الحرفة</a>
             </div>
+            <% } %>
         </div>
 
     </div>

@@ -6,6 +6,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import expressLayouts from "express-ejs-layouts";
 import methodOverride from "method-override";
+import session from "express-session";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 
 // Routes
 import mawwalRoutes from "./routes/mawwal.route.js";
@@ -32,10 +35,36 @@ app.use(expressLayouts);
 app.set("layout", "layout");
 
 // ─── Middleware ───
+// إخفاء معلومات السيرفر وحماية الـ Headers الأساسية
+// تم تعطيل CSP مؤقتاً لتجنب حظر سكربتات EJS و SweetAlert
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
+
+// تنظيف المدخلات لحماية السيرفر من ثغرات NoSQL Injection
+app.use(mongoSanitize());
+
 app.use(express.json({ limit: "500mb" }));
 app.use(express.urlencoded({ limit: "500mb", extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+// إعدادات الجلسة (Session)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "super_secret_mawwal_key_123",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// جعل بيانات المستخدم متاحة لجميع واجهات EJS
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
 // ─── Page Routes (EJS) ───
 app.use("/", pagesRoutes);

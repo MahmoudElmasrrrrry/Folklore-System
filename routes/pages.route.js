@@ -7,19 +7,27 @@ import { createCraft } from "../controller/craft.controller.js";
 import { createWali } from "../controller/wali.controller.js";
 import { uploadAudio, uploadMedia } from "../middleware/upload.middleware.js";
 import { renderDashboard, deleteMawwal, renderEditMawwal, updateMawwal, renderEditDance, updateDance, deleteDance, renderEditCraft, updateCraft, deleteCraft, renderEditWali, updateWali, deleteWali } from "../controller/admin.controller.js";
+import { renderLogin, login, logout } from "../controller/auth.controller.js";
+import { requireAuth, requireGuest } from "../middleware/auth.middleware.js";
+import { loginLimiter } from "../middleware/rateLimiter.middleware.js";
 
 const router = express.Router();
+
+// ─── نظام تسجيل الدخول ───
+router.get("/login", requireGuest, renderLogin);
+router.post("/login", requireGuest, loginLimiter, login);
+router.get("/logout", requireAuth, logout);
 
 // الصفحة الرئيسية
 router.get("/", renderHome);
 
 // صفحة الإضافة
-router.get("/folklore", renderFolkloreMaterial);
-router.post("/folklore", createFolkloreMaterial);
+router.get("/folklore", requireAuth, renderFolkloreMaterial);
+router.post("/folklore", requireAuth, createFolkloreMaterial);
 
 // صفحة إضافة الموال
-router.get("/mawwal/add", renderAddMawwal);
-router.post("/mawwal/add", uploadAudio.single("audioFile"), createMawwal);
+router.get("/mawwal/add", requireAuth, renderAddMawwal);
+router.post("/mawwal/add", requireAuth, uploadAudio.single("audioFile"), createMawwal);
 
 // صفحة الأرشيف (التايم لاين)
 router.get("/archive", renderArchiveTimeline);
@@ -28,41 +36,41 @@ router.get("/archive", renderArchiveTimeline);
 router.get("/archive/mawwal/:id", renderMawwalDetails);
 
 // ─── الرقصة الشعبية ───
-router.get("/dance/add", renderAddDance);
-router.post("/dance/add", uploadMedia.any(), createDance);
+router.get("/dance/add", requireAuth, renderAddDance);
+router.post("/dance/add", requireAuth, uploadMedia.any(), createDance);
 router.get("/archive/dance/:id", renderDanceDetails);
 
 // ─── الحرف الشعبية ───
-router.get("/craft/add", renderAddCraft);
-router.post("/craft/add", uploadMedia.any(), createCraft);
+router.get("/craft/add", requireAuth, renderAddCraft);
+router.post("/craft/add", requireAuth, uploadMedia.any(), createCraft);
 router.get("/archive/craft/:id", renderCraftDetails);
 
 // ─── الأولياء ───
-router.get("/wali/add", renderAddWali);
-router.post("/wali/add", createWali);
+router.get("/wali/add", requireAuth, renderAddWali);
+router.post("/wali/add", requireAuth, createWali);
 router.get("/archive/wali/:id", renderWaliDetails);
 
 // ─── لوحة التحكم (الإدارة) ───
-router.get("/admin", renderDashboard);
+router.get("/admin", requireAuth, renderDashboard);
 
 // إدارة الموال
-router.get("/admin/mawwal/edit/:id", renderEditMawwal);
-router.put("/admin/mawwal/:id", uploadAudio.single("audioFile"), updateMawwal);
-router.delete("/admin/mawwal/:id", deleteMawwal);
+router.get("/admin/mawwal/edit/:id", requireAuth, renderEditMawwal);
+router.put("/admin/mawwal/:id", requireAuth, uploadAudio.single("audioFile"), updateMawwal);
+router.delete("/admin/mawwal/:id", requireAuth, deleteMawwal);
 
 // إدارة الرقصة
-router.get("/admin/dance/edit/:id", renderEditDance);
-router.put("/admin/dance/:id", uploadMedia.any(), updateDance);
-router.delete("/admin/dance/:id", deleteDance);
+router.get("/admin/dance/edit/:id", requireAuth, renderEditDance);
+router.put("/admin/dance/:id", requireAuth, uploadMedia.any(), updateDance);
+router.delete("/admin/dance/:id", requireAuth, deleteDance);
 
 // إدارة الحرفة الشعبية
-router.get("/admin/craft/edit/:id", renderEditCraft);
-router.put("/admin/craft/:id", uploadMedia.any(), updateCraft);
-router.delete("/admin/craft/:id", deleteCraft);
+router.get("/admin/craft/edit/:id", requireAuth, renderEditCraft);
+router.put("/admin/craft/:id", requireAuth, uploadMedia.any(), updateCraft);
+router.delete("/admin/craft/:id", requireAuth, deleteCraft);
 
 // إدارة الأولياء
-router.get("/admin/wali/edit/:id", renderEditWali);
-router.put("/admin/wali/:id", updateWali);
-router.delete("/admin/wali/:id", deleteWali);
+router.get("/admin/wali/edit/:id", requireAuth, renderEditWali);
+router.put("/admin/wali/:id", requireAuth, updateWali);
+router.delete("/admin/wali/:id", requireAuth, deleteWali);
 
 export default router;

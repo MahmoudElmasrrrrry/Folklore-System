@@ -7,6 +7,7 @@ const dataSourceSchema = new Schema(
     },
     photoNumber: String,
     tapeNumber: String,
+    sideNumber: String,
     partNumber: String,
     tapeCopyNumber: String,
     digitalFileLocation: String,
@@ -38,6 +39,7 @@ const collectionDataSchema = new Schema(
       type: Date,
       required: true,
     },
+    documentationDate: Date,
     collectionPlace: {
       governorate: {
         type: String,

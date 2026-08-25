@@ -593,11 +593,13 @@
                 <% } %>
             </div>
 
+            <% if (typeof user !== 'undefined' && user) { %>
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
                 <p>يمكن للباحثين المعتمدين تحديث بيانات هذا الولي.</p>
                 <a href="/admin/wali/edit/<%= wali._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الولي</a>
             </div>
+            <% } %>
         </div>
     </div> <!-- End details-grid -->
 

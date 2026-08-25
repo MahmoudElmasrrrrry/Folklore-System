@@ -288,6 +288,11 @@
                                             <%= mawwal.folkloreMaterial.dataSource.tapeNumber %>
                                         </strong></li>
                                     <% } %>
+                                <% if(mawwal.folkloreMaterial.dataSource.sideNumber) { %>
+                                    <li><span>رقم الوجه:</span> <strong>
+                                            <%= mawwal.folkloreMaterial.dataSource.sideNumber %>
+                                        </strong></li>
+                                    <% } %>
                                         <% if(mawwal.folkloreMaterial.dataSource.digitalFileLocation) { %>
                                             <li><span>الملف الرقمي:</span> <strong>
                                                     <%= mawwal.folkloreMaterial.dataSource.digitalFileLocation %>
@@ -299,12 +304,14 @@
                         <% } %>
             </div>
 
+            <% if (typeof user !== 'undefined' && user) { %>
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
                 <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
-                <button class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل
-                    المادة</button>
+                <a href="/admin/mawwal/edit/<%= mawwal._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل
+                    المادة</a>
             </div>
+            <% } %>
         </div>
 
     </div>
