@@ -66,7 +66,7 @@ const mawwalSchema = new Schema(
     //  3 سرد الموال 
     narrationTime: {
       type: String,
-      enum: ["قديم", "غير محدد", "غير مجدد"],
+      enum: ["قديم", "غير محدد", "حديث"],
     },
 
     narrationPlace: {
@@ -121,7 +121,6 @@ const mawwalSchema = new Schema(
     prosodicMeter: {
       type: String,
       enum: ["أعرج", "هزج"],
-      default: [],
     },
 
     melodyAndMaqam: {

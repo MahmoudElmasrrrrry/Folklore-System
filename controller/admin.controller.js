@@ -2,31 +2,65 @@ import Mawwal from "../models/mawwal.model.js";
 import Dance from "../models/dance.model.js";
 import Craft from "../models/craft.model.js";
 import Wali from "../models/wali.model.js";
-import FolkloreMaterial from "../models/FolkloreMaterial.model.js";
+import FolkloreMaterial from "../models/folkloreMaterial.model.js";
 import Narrator from "../models/narrator.model.js";
 import Mission from "../models/mission.model.js";
 import Collector from "../models/collector.model.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import cloudinary from "../config/cloudinary.js";
 
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Helper function to safely delete local files
-const deleteLocalFile = (fileUrl) => {
-  if (fileUrl && fileUrl.startsWith("/uploads/")) {
-    const filePath = path.join(__dirname, "..", "public", fileUrl);
-    if (fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-        console.log(`Deleted local file: ${filePath}`);
-      } catch (err) {
-        console.error("Error deleting file:", err);
-      }
-    }
+/**
+ * استخراج الـ public_id من رابط Cloudinary لحذف الملف
+ * مثال: https://res.cloudinary.com/xxx/video/upload/v123/folklore/audio/abc123.mp3
+ * → public_id: folklore/audio/abc123
+ */
+const extractPublicId = (url) => {
+  if (!url || !url.includes("cloudinary.com")) return null;
+  try {
+    // استخراج الجزء بعد /upload/ وإزالة الـ version والـ extension
+    const parts = url.split("/upload/");
+    if (parts.length < 2) return null;
+    let path = parts[1];
+    // إزالة version prefix (v123456789/)
+    path = path.replace(/^v\d+\//, "");
+    // إزالة الـ file extension
+    path = path.replace(/\.[^/.]+$/, "");
+    return path;
+  } catch {
+    return null;
   }
+};
+
+/**
+ * حذف ملف من Cloudinary بأمان
+ * يحدد نوع المورد تلقائياً (صورة / فيديو-صوت)
+ */
+const deleteCloudinaryFile = async (fileUrl) => {
+  const publicId = extractPublicId(fileUrl);
+  if (!publicId) return;
+
+  try {
+    // تحديد نوع المورد: الصوتيات والفيديو = video، الباقي = image
+    const isVideoOrAudio = /\.(mp3|wav|ogg|m4a|mp4|webm|avi)$/i.test(fileUrl) ||
+                           fileUrl.includes("/video/upload/");
+    const resourceType = isVideoOrAudio ? "video" : "image";
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+    console.log(`☁️  Cloudinary delete [${resourceType}]: ${publicId} → ${result.result}`);
+  } catch (err) {
+    console.error("⚠️  خطأ في حذف ملف Cloudinary:", err.message);
+  }
+};
+
+/**
+ * حذف مجموعة ملفات من Cloudinary بالتوازي (بدلاً من واحد تلو الآخر)
+ * هذا يقلل وقت الحذف بشكل كبير
+ */
+const deleteCloudinaryFiles = async (urls) => {
+  const validUrls = urls.filter(Boolean);
+  if (validUrls.length === 0) return;
+  await Promise.all(validUrls.map(url => deleteCloudinaryFile(url)));
 };
 
 // Helper function to safely delete FolkloreMaterial and its unused references
@@ -128,18 +162,16 @@ export const deleteMawwal = async (req, res, next) => {
       return res.status(404).send("الموال غير موجود");
     }
 
-    // Delete associated FolkloreMaterial and unused basic data
-    if (mawwal.folkloreMaterial) {
-      await deleteBasicData(mawwal.folkloreMaterial);
-    }
+    // حذف من DB فوراً
+    await Promise.all([
+      mawwal.folkloreMaterial ? deleteBasicData(mawwal.folkloreMaterial) : Promise.resolve(),
+      Mawwal.findByIdAndDelete(id)
+    ]);
 
-    // Clean up local audio file if it exists
-    if (mawwal.melodyAndMaqam && mawwal.melodyAndMaqam.audioUrl) {
-      deleteLocalFile(mawwal.melodyAndMaqam.audioUrl);
+    // حذف ملفات Cloudinary في الخلفية (fire-and-forget) — بدون انتظار
+    if (mawwal.melodyAndMaqam?.audioUrl) {
+      deleteCloudinaryFile(mawwal.melodyAndMaqam.audioUrl).catch(() => {});
     }
-
-    // Delete the Mawwal document
-    await Mawwal.findByIdAndDelete(id);
 
     req.session.flashSuccess = "تم حذف الموال بنجاح!";
     res.redirect("/admin?type=mawwal");
@@ -195,6 +227,7 @@ export const updateMawwal = async (req, res, next) => {
       prosodicMeter,
       maqamName,
       audioUrl,
+      audioFile,
       accompanyingInstruments,
       mawwalPresentation,
       elementDescription,
@@ -217,18 +250,16 @@ export const updateMawwal = async (req, res, next) => {
     const existingMawwal = await Mawwal.findById(id);
     if (!existingMawwal) return res.status(404).send("الموال غير موجود");
 
-    // Handle audio file replacement
+    // Handle audio URL replacement
     let newAudioUrl = existingMawwal.melodyAndMaqam?.audioUrl;
-    if (req.file) {
-      // Delete old file if user uploads a new one (will only delete local files)
-      deleteLocalFile(newAudioUrl);
-      newAudioUrl = req.file.path;
-    } else if (audioUrl !== undefined && audioUrl.trim() !== newAudioUrl) {
-      // If user provided a URL that is different from the current one, or cleared it
-      if (newAudioUrl && newAudioUrl.startsWith("/uploads/")) {
-        deleteLocalFile(newAudioUrl);
+    const incomingAudioUrl = audioFile || (audioUrl !== undefined ? audioUrl.trim() : undefined);
+    
+    if (incomingAudioUrl !== undefined && incomingAudioUrl !== (newAudioUrl || '')) {
+      // حذف الملف القديم من Cloudinary في الخلفية
+      if (newAudioUrl && incomingAudioUrl) {
+         deleteCloudinaryFile(newAudioUrl).catch(() => {});
       }
-      newAudioUrl = audioUrl.trim();
+      newAudioUrl = incomingAudioUrl || undefined;
     }
 
     const updatedData = {
@@ -291,26 +322,23 @@ export const deleteDance = async (req, res, next) => {
       return res.status(404).send("الرقصة غير موجودة");
     }
 
-    if (dance.folkloreMaterial) {
-      await deleteBasicData(dance.folkloreMaterial);
-    }
-    
-    if (dance.description) {
-      if (dance.description.videoUrl) deleteLocalFile(dance.description.videoUrl);
-      if (dance.description.images) dance.description.images.forEach(img => deleteLocalFile(img));
-    }
-    if (dance.costumes?.women?.image) deleteLocalFile(dance.costumes.women.image);
-    if (dance.costumes?.men?.image) deleteLocalFile(dance.costumes.men.image);
-    if (dance.music?.audioUrl) deleteLocalFile(dance.music.audioUrl);
-    if (dance.music?.lyricsFileUrl) deleteLocalFile(dance.music.lyricsFileUrl);
-    if (dance.tools) {
-      dance.tools.forEach(t => {
-        if (t.image) deleteLocalFile(t.image);
-        if (t.video) deleteLocalFile(t.video);
-      });
-    }
+    // حذف من DB فوراً
+    await Promise.all([
+      dance.folkloreMaterial ? deleteBasicData(dance.folkloreMaterial) : Promise.resolve(),
+      Dance.findByIdAndDelete(id)
+    ]);
 
-    await Dance.findByIdAndDelete(id);
+    // حذف ملفات Cloudinary في الخلفية (fire-and-forget)
+    const filesToDelete = [
+      dance.description?.videoUrl,
+      ...(dance.description?.images || []),
+      dance.costumes?.women?.image,
+      dance.costumes?.men?.image,
+      dance.music?.audioUrl,
+      dance.music?.lyricsFileUrl,
+      ...(dance.tools || []).flatMap(t => [t.image, t.video])
+    ];
+    deleteCloudinaryFiles(filesToDelete).catch(() => {});
 
     req.session.flashSuccess = "تم حذف الرقصة بنجاح!";
     res.redirect("/admin?type=dance");
@@ -352,38 +380,48 @@ export const updateDance = async (req, res, next) => {
 
     // Helper functions for files
     const getFile = (fieldname) => {
-      if (!req.files) return undefined;
-      const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? file.path : undefined;
+      const field = req.body[fieldname];
+      return Array.isArray(field) ? field[0] : field;
     };
 
     const getFiles = (fieldname) => {
-      if (!req.files) return [];
-      const files = req.files.filter(f => f.fieldname === fieldname);
-      return files.length > 0 ? files.map(f => f.path) : undefined;
+      const field = req.body[fieldname];
+      if (!field) return [];
+      return Array.isArray(field) ? field : [field];
     };
 
-    // Safely delete old files only if replaced
-    const checkAndReplace = (oldUrl, newUrl) => {
-      if (newUrl && oldUrl) deleteLocalFile(oldUrl);
-      return newUrl || oldUrl;
-    };
+    // حذف الملفات القديمة من Cloudinary عند الاستبدال — بالتوازي
+    const checkAndReplace = (oldUrl, newUrl) => ({
+      oldUrl: (newUrl && oldUrl) ? oldUrl : null,
+      result: newUrl || oldUrl
+    });
 
-    const newAudioUrl = checkAndReplace(dance.music?.audioUrl, getFile("audioFile"));
-    const newLyricsUrl = checkAndReplace(dance.music?.lyricsFileUrl, getFile("lyricsFileUrl"));
-    const newVideoUrl = checkAndReplace(dance.description?.videoUrl, getFile("descriptionVideo"));
-    const newWomenImage = checkAndReplace(dance.costumes?.women?.image, getFile("costumeWomenImage"));
-    const newMenImage = checkAndReplace(dance.costumes?.men?.image, getFile("costumeMenImage"));
+    const audioCheck = checkAndReplace(dance.music?.audioUrl, getFile("audioFile"));
+    const lyricsCheck = checkAndReplace(dance.music?.lyricsFileUrl, getFile("lyricsFileUrl"));
+    const videoCheck = checkAndReplace(dance.description?.videoUrl, getFile("descriptionVideo"));
+    const womenImgCheck = checkAndReplace(dance.costumes?.women?.image, getFile("costumeWomenImage"));
+    const menImgCheck = checkAndReplace(dance.costumes?.men?.image, getFile("costumeMenImage"));
 
-    // For multiple images, we'll just append them for now or replace them if requested.
-    // Let's replace them if new ones are uploaded.
+    // استبدال الصور لو تم رفع صور جديدة
     let newDescriptionImages = dance.description?.images || [];
     const uploadedDescImages = getFiles("descriptionImages");
+    let oldDescImages = [];
     if (uploadedDescImages && uploadedDescImages.length > 0) {
-      // Delete old ones
-      newDescriptionImages.forEach(img => deleteLocalFile(img));
+      oldDescImages = [...newDescriptionImages];
       newDescriptionImages = uploadedDescImages;
     }
+
+    // تجميع كل الملفات القديمة لحذفها بالتوازي لاحقاً
+    const filesToCleanup = [
+      audioCheck.oldUrl, lyricsCheck.oldUrl, videoCheck.oldUrl,
+      womenImgCheck.oldUrl, menImgCheck.oldUrl, ...oldDescImages
+    ];
+
+    const newAudioUrl = audioCheck.result;
+    const newLyricsUrl = lyricsCheck.result;
+    const newVideoUrl = videoCheck.result;
+    const newWomenImage = womenImgCheck.result;
+    const newMenImage = menImgCheck.result;
 
     const cleanPerformers = Array.isArray(performers) ? performers.filter(p => p.age || p.education || p.occupation || p.gender).map(p => {
       if (p.gender === "") delete p.gender;
@@ -392,20 +430,28 @@ export const updateDance = async (req, res, next) => {
       return p;
     }) : [];
     
-    const cleanTools = Array.isArray(tools) ? tools.map((t, index) => {
-      if (!t.name && !t.description) return null;
-      // Get existing tool from DB to preserve its images/videos if not replaced
-      const existingTool = dance.tools && dance.tools[index] ? dance.tools[index] : null;
-      
-      const newToolImage = checkAndReplace(existingTool?.image, getFile(`tools_${index}_image`));
-      const newToolVideo = checkAndReplace(existingTool?.video, getFile(`tools_${index}_video`));
+    const cleanTools = [];
+    if (Array.isArray(tools)) {
+      for (let index = 0; index < tools.length; index++) {
+        const t = tools[index];
+        if (!t.name && !t.description) continue;
+        const existingTool = dance.tools && dance.tools[index] ? dance.tools[index] : null;
+        
+        const toolImgCheck = checkAndReplace(existingTool?.image, getFile(`tools_${index}_image`));
+        const toolVidCheck = checkAndReplace(existingTool?.video, getFile(`tools_${index}_video`));
+        if (toolImgCheck.oldUrl) filesToCleanup.push(toolImgCheck.oldUrl);
+        if (toolVidCheck.oldUrl) filesToCleanup.push(toolVidCheck.oldUrl);
 
-      return {
-        ...t,
-        image: newToolImage,
-        video: newToolVideo
-      };
-    }).filter(Boolean) : [];
+        cleanTools.push({
+          ...t,
+          image: toolImgCheck.result,
+          video: toolVidCheck.result
+        });
+      }
+    }
+
+    // حذف كل الملفات القديمة في الخلفية (fire-and-forget)
+    deleteCloudinaryFiles(filesToCleanup).catch(() => {});
 
     const updatedData = {
       danceName,
@@ -449,28 +495,21 @@ export const deleteCraft = async (req, res, next) => {
       return res.status(404).send("الحرفة غير موجودة");
     }
 
-    if (craft.folkloreMaterial) {
-      await deleteBasicData(craft.folkloreMaterial);
-    }
-    
-    // Delete files
-    if (craft.rawMaterials) {
-      craft.rawMaterials.forEach(rm => { if(rm.image) deleteLocalFile(rm.image) });
-    }
-    if (craft.tools) {
-      craft.tools.forEach(t => { 
-        if(t.usageImage) deleteLocalFile(t.usageImage);
-        if(t.usageVideo) deleteLocalFile(t.usageVideo);
-      });
-    }
-    if (craft.workSteps) {
-      craft.workSteps.forEach(ws => { if(ws.mediaUrl) deleteLocalFile(ws.mediaUrl) });
-    }
-    if (craft.products) {
-      craft.products.forEach(p => { if(p.image) deleteLocalFile(p.image) });
-    }
+    // حذف من DB فوراً
+    await Promise.all([
+      craft.folkloreMaterial ? deleteBasicData(craft.folkloreMaterial) : Promise.resolve(),
+      Craft.findByIdAndDelete(id)
+    ]);
 
-    await Craft.findByIdAndDelete(id);
+    // حذف ملفات Cloudinary في الخلفية (fire-and-forget)
+    const filesToDelete = [
+      ...(craft.rawMaterials || []).map(rm => rm.image),
+      ...(craft.tools || []).flatMap(t => [t.usageImage, t.usageVideo]),
+      ...(craft.workSteps || []).map(ws => ws.mediaUrl),
+      ...(craft.products || []).map(p => p.image)
+    ];
+    deleteCloudinaryFiles(filesToDelete).catch(() => {});
+
     req.session.flashSuccess = "تم حذف الحرفة بنجاح!";
     res.redirect("/admin?type=craft");
   } catch (error) {
@@ -510,15 +549,17 @@ export const updateCraft = async (req, res, next) => {
 
     // Helper functions for files
     const getFile = (fieldname) => {
-      if (!req.files) return undefined;
-      const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? file.path : undefined;
+      const field = req.body[fieldname];
+      return Array.isArray(field) ? field[0] : field;
     };
     
-    const checkAndReplace = (oldUrl, newUrl) => {
-      if (newUrl && oldUrl) deleteLocalFile(oldUrl);
-      return newUrl || oldUrl;
-    };
+    const checkAndReplace = (oldUrl, newUrl) => ({
+      oldUrl: (newUrl && oldUrl) ? oldUrl : null,
+      result: newUrl || oldUrl
+    });
+
+    // تجميع كل الملفات القديمة المطلوب حذفها
+    const oldFilesToDelete = [];
 
     const cleanCraftsmen = Array.isArray(craftsmen) ? craftsmen.filter(c => c.name).map(c => {
       if (c.age === "") delete c.age;
@@ -528,39 +569,67 @@ export const updateCraft = async (req, res, next) => {
       return c;
     }) : [];
 
-    const cleanRawMaterials = Array.isArray(rawMaterials) ? rawMaterials.filter(rm => rm.name).map((rm, index) => {
-      if (rm.source === "") delete rm.source;
-      const existingRM = craft.rawMaterials && craft.rawMaterials[index] ? craft.rawMaterials[index] : null;
-      const newImage = checkAndReplace(existingRM?.image, getFile(`rawMaterials_${index}_image`));
-      return { ...rm, image: newImage };
-    }) : [];
+    const cleanRawMaterials = [];
+    if (Array.isArray(rawMaterials)) {
+      for (let index = 0; index < rawMaterials.length; index++) {
+        const rm = rawMaterials[index];
+        if (!rm.name) continue;
+        if (rm.source === "") delete rm.source;
+        const existingRM = craft.rawMaterials && craft.rawMaterials[index] ? craft.rawMaterials[index] : null;
+        const check = checkAndReplace(existingRM?.image, getFile(`rawMaterials_${index}_image`));
+        if (check.oldUrl) oldFilesToDelete.push(check.oldUrl);
+        cleanRawMaterials.push({ ...rm, image: check.result });
+      }
+    }
 
-    const cleanTools = Array.isArray(tools) ? tools.filter(t => t.name).map((t, index) => {
-      const existingTool = craft.tools && craft.tools[index] ? craft.tools[index] : null;
-      const newUsageImage = checkAndReplace(existingTool?.usageImage, getFile(`tools_${index}_usageImage`));
-      const newUsageVideo = checkAndReplace(existingTool?.usageVideo, getFile(`tools_${index}_usageVideo`));
-      return { ...t, usageImage: newUsageImage, usageVideo: newUsageVideo };
-    }) : [];
+    const cleanTools = [];
+    if (Array.isArray(tools)) {
+      for (let index = 0; index < tools.length; index++) {
+        const t = tools[index];
+        if (!t.name) continue;
+        const existingTool = craft.tools && craft.tools[index] ? craft.tools[index] : null;
+        const imgCheck = checkAndReplace(existingTool?.usageImage, getFile(`tools_${index}_usageImage`));
+        const vidCheck = checkAndReplace(existingTool?.usageVideo, getFile(`tools_${index}_usageVideo`));
+        if (imgCheck.oldUrl) oldFilesToDelete.push(imgCheck.oldUrl);
+        if (vidCheck.oldUrl) oldFilesToDelete.push(vidCheck.oldUrl);
+        cleanTools.push({ ...t, usageImage: imgCheck.result, usageVideo: vidCheck.result });
+      }
+    }
 
-    const cleanWorkSteps = Array.isArray(workSteps) ? workSteps.filter(ws => ws.order && ws.description).map((ws, index) => {
-      if (ws.mediaType === "") delete ws.mediaType;
-      const existingStep = craft.workSteps && craft.workSteps[index] ? craft.workSteps[index] : null;
-      const newMediaUrl = checkAndReplace(existingStep?.mediaUrl, getFile(`workSteps_${index}_mediaUrl`));
-      return { ...ws, order: Number(ws.order), mediaUrl: newMediaUrl };
-    }) : [];
+    const cleanWorkSteps = [];
+    if (Array.isArray(workSteps)) {
+      for (let index = 0; index < workSteps.length; index++) {
+        const ws = workSteps[index];
+        if (!ws.order || !ws.description) continue;
+        if (ws.mediaType === "") delete ws.mediaType;
+        const existingStep = craft.workSteps && craft.workSteps[index] ? craft.workSteps[index] : null;
+        const check = checkAndReplace(existingStep?.mediaUrl, getFile(`workSteps_${index}_mediaUrl`));
+        if (check.oldUrl) oldFilesToDelete.push(check.oldUrl);
+        cleanWorkSteps.push({ ...ws, order: Number(ws.order), mediaUrl: check.result });
+      }
+    }
 
-    const cleanProducts = Array.isArray(products) ? products.filter(p => p.name).map((p, index) => {
-      if (p.count === "") delete p.count;
-      if (p.price === "") delete p.price;
-      const existingProduct = craft.products && craft.products[index] ? craft.products[index] : null;
-      const newImage = checkAndReplace(existingProduct?.image, getFile(`products_${index}_image`));
-      return { 
-        ...p, 
-        count: p.count ? Number(p.count) : undefined, 
-        price: p.price ? Number(p.price) : undefined, 
-        image: newImage 
-      };
-    }) : [];
+    const cleanProducts = [];
+    if (Array.isArray(products)) {
+      for (let index = 0; index < products.length; index++) {
+        const p = products[index];
+        if (!p.name) continue;
+        if (p.count === "") delete p.count;
+        if (p.price === "") delete p.price;
+        const existingProduct = craft.products && craft.products[index] ? craft.products[index] : null;
+        const check = checkAndReplace(existingProduct?.image, getFile(`products_${index}_image`));
+        if (check.oldUrl) oldFilesToDelete.push(check.oldUrl);
+        cleanProducts.push({ 
+          ...p, 
+          count: p.count ? Number(p.count) : undefined, 
+          price: p.price ? Number(p.price) : undefined, 
+          image: check.result 
+        });
+      }
+    }
+
+    // حذف كل الملفات القديمة في الخلفية (fire-and-forget)
+    deleteCloudinaryFiles(oldFilesToDelete).catch(() => {});
 
     const updatedData = {
       craftName,
@@ -698,12 +767,12 @@ export const deleteWali = async (req, res, next) => {
       return res.status(404).send("الولي غير موجود");
     }
 
-    if (wali.folkloreMaterial) {
-      await deleteBasicData(wali.folkloreMaterial);
-    }
+    // حذف من DB فوراً
+    await Promise.all([
+      wali.folkloreMaterial ? deleteBasicData(wali.folkloreMaterial) : Promise.resolve(),
+      Wali.findByIdAndDelete(id)
+    ]);
 
-    await Wali.findByIdAndDelete(id);
-    
     req.session.flashSuccess = "تم حذف مادة الولي بنجاح!";
     res.redirect("/admin?type=wali");
   } catch (error) {

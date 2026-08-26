@@ -29,6 +29,7 @@ export const createMawwal = async (req, res, next) => {
       prosodicMeter,
       maqamName,
       audioUrl,
+      audioFile,
       accompanyingInstruments,
       mawwalPresentation,
       elementDescription,
@@ -78,7 +79,7 @@ export const createMawwal = async (req, res, next) => {
       prosodicMeter: prosodicMeter || undefined,
       melodyAndMaqam: {
         maqamName: maqamName || undefined,
-        audioUrl: req.file ? req.file.path : (audioUrl || undefined),
+        audioUrl: audioFile || audioUrl || undefined,
       },
       accompanyingInstruments: parseArray(accompanyingInstruments),
       mawwalPresentation,

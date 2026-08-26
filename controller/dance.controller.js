@@ -22,15 +22,15 @@ export const createDance = async (req, res, next) => {
 
     // Helper function to get a single file path by fieldname
     const getFile = (fieldname) => {
-      if (!req.files) return undefined;
-      const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? file.path : undefined;
+      const field = req.body[fieldname];
+      return Array.isArray(field) ? field[0] : field;
     };
 
     // Helper function to get multiple file paths by fieldname
     const getFiles = (fieldname) => {
-      if (!req.files) return [];
-      return req.files.filter(f => f.fieldname === fieldname).map(f => f.path);
+      const field = req.body[fieldname];
+      if (!field) return [];
+      return Array.isArray(field) ? field : [field];
     };
 
     // Filter and enrich tools with media

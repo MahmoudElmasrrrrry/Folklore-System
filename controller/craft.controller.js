@@ -25,9 +25,8 @@ export const createCraft = async (req, res, next) => {
 
     // Helper functions for files
     const getFile = (fieldname) => {
-      if (!req.files) return undefined;
-      const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? file.path : undefined;
+      const field = req.body[fieldname];
+      return Array.isArray(field) ? field[0] : field;
     };
 
     // Clean Arrays

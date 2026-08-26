@@ -22,6 +22,9 @@
 
     <%- include('partials/footer') %>
 
+    <!-- Cloudinary Direct Upload Script -->
+    <script src="/js/cloudinaryUpload.js"></script>
+
     <script>
         // Mobile nav toggle
         const navToggle = document.querySelector('.nav-toggle');
@@ -31,30 +34,6 @@
                 navMenu.classList.toggle('open');
             });
         }
-
-        // إظهار شاشة تحميل عند إرسال أي فورم لتجنب إحساس تأخر الرفع
-        document.addEventListener('DOMContentLoaded', function() {
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    // إذا كان الفورم غير صالح (Validation فشل)، لا تظهر شاشة التحميل
-                    if (!form.checkValidity()) {
-                        return;
-                    }
-                    
-                    Swal.fire({
-                        title: 'جاري رفع وحفظ البيانات...',
-                        html: 'يرجى الانتظار وعدم إغلاق الصفحة.<br><b>قد يستغرق ذلك بعض الوقت للملفات الكبيرة.</b>',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                });
-            });
-        });
     </script>
     
     <% if (typeof flashError !== 'undefined' && flashError) { %>

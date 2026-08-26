@@ -5,7 +5,7 @@ import Mawwal from "../models/mawwal.model.js";
 import Dance from "../models/dance.model.js";
 import Craft from "../models/craft.model.js";
 import Wali from "../models/wali.model.js";
-import folkloreMaterialModel from "../models/FolkloreMaterial.model.js";
+import folkloreMaterialModel from "../models/folkloreMaterial.model.js";
 import {
   CATEGORY_ELEMENT_MAP,
   CATEGORY_ICONS,
@@ -249,34 +249,76 @@ export const renderAddWali = async (req, res, next) => {
 
 // ─── صفحة الأرشيف (الجدول الزمني - Timeline) ───
 export const renderArchiveTimeline = async (req, res, next) => {
+  const renderEmptyArchive = (req, res, page, category, type, search) => {
+    res.render("archive/timeline", {
+      title: "الأرشيف - الخط الزمني",
+      timelineItems: [],
+      currentCategory: category || null,
+      currentType: type || null,
+      searchQuery: search || '',
+      currentPage: parseInt(page) || 1,
+      totalPages: 0,
+      totalItems: 0
+    });
+  };
+
   try {
     const { category, type, search, page } = req.query;
     
-    const [mawwals, dances, crafts, walis] = await Promise.all([
-      Mawwal.find().populate({
+      let materialIds = null;
+      if (category) {
+        const materials = await folkloreMaterialModel.find({ category }).select('_id').lean();
+        materialIds = materials.map(m => m._id);
+        // إذا لم توجد مواد لهذا التصنيف، نعيد مصفوفات فارغة فوراً
+        if (materialIds.length === 0) {
+          return renderEmptyArchive(req, res, page, category, type, search);
+        }
+      }
+
+      const baseQuery = materialIds ? { folkloreMaterial: { $in: materialIds } } : {};
+      
+      const populateOpts = {
         path: "folkloreMaterial",
-        populate: [{ path: "narrator" }, { path: "category" }]
-      }).lean(),
-      Dance.find().populate({
-        path: "folkloreMaterial",
-        populate: [{ path: "narrator" }, { path: "category" }]
-      }).lean(),
-      Craft.find().populate({
-        path: "folkloreMaterial",
-        populate: [{ path: "narrator" }, { path: "category" }]
-      }).lean(),
-      Wali.find().populate({
-        path: "folkloreMaterial",
-        populate: [{ path: "narrator" }, { path: "category" }]
-      }).lean(),
-    ]);
+        select: "narrator category",
+        populate: [
+          { path: "narrator", select: "name" },
+          { path: "category", select: "name" }
+        ]
+      };
+
+      const promises = [];
+      const fetchAll = !type;
+
+      if (fetchAll || type === "mawwal") {
+        promises.push(Mawwal.find(baseQuery)
+          .select("mawwalName createdAt fullText melodyAndMaqam.audioUrl thematicClassification folkloreMaterial")
+          .populate(populateOpts).lean());
+      } else { promises.push(Promise.resolve([])); }
+
+      if (fetchAll || type === "dance") {
+        promises.push(Dance.find(baseQuery)
+          .select("danceName createdAt description.text music.audioUrl occasion presentationStyle folkloreMaterial")
+          .populate(populateOpts).lean());
+      } else { promises.push(Promise.resolve([])); }
+
+      if (fetchAll || type === "craft") {
+        promises.push(Craft.find(baseQuery)
+          .select("craftName createdAt workplace craftsmenCount craftsmenType folkloreMaterial")
+          .populate(populateOpts).lean());
+      } else { promises.push(Promise.resolve([])); }
+
+      if (fetchAll || type === "wali") {
+        promises.push(Wali.find(baseQuery)
+          .select("name createdAt title lifeSummary birthPlace folkloreMaterial")
+          .populate(populateOpts).lean());
+      } else { promises.push(Promise.resolve([])); }
+
+      const [mawwals, dances, crafts, walis] = await Promise.all(promises);
 
     let timelineItems = [];
 
     mawwals.forEach(m => {
       if (!m.folkloreMaterial) return;
-      if (category && m.folkloreMaterial.category?._id.toString() !== category) return;
-      if (type && type !== "mawwal") return;
       
       timelineItems.push({
         id: m._id,
@@ -295,8 +337,6 @@ export const renderArchiveTimeline = async (req, res, next) => {
 
     dances.forEach(d => {
       if (!d.folkloreMaterial) return;
-      if (category && d.folkloreMaterial.category?._id.toString() !== category) return;
-      if (type && type !== "dance") return;
       
       timelineItems.push({
         id: d._id,
@@ -315,8 +355,6 @@ export const renderArchiveTimeline = async (req, res, next) => {
 
     crafts.forEach(c => {
       if (!c.folkloreMaterial) return;
-      if (category && c.folkloreMaterial.category?._id.toString() !== category) return;
-      if (type && type !== "craft") return;
       
       let preview = c.workplace ? `مكان العمل: ${c.workplace} ` : "";
       if (c.craftsmenCount) preview += `| عدد الحرفيين: ${c.craftsmenCount}`;
@@ -338,8 +376,6 @@ export const renderArchiveTimeline = async (req, res, next) => {
 
     walis.forEach(w => {
       if (!w.folkloreMaterial) return;
-      if (category && w.folkloreMaterial.category?._id.toString() !== category) return;
-      if (type && type !== "wali") return;
       
       let preview = w.title ? `اللقب: ${w.title} ` : "";
       if (w.lifeSummary) preview += `| ${w.lifeSummary.length > 100 ? w.lifeSummary.substring(0, 100) + "..." : w.lifeSummary}`;

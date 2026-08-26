@@ -1,4 +1,5 @@
 import categoryModel from "../models/category.model.js";
+import folkloreMaterialModel from "../models/folkloreMaterial.model.js";
 
 export const createCategory = async (req, res, next) => {
   try {
@@ -122,14 +123,14 @@ export const deleteCategory = async (req, res, next) => {
       });
     }
 
-    // Prevent deleting a category that still has subcategories
-    const subcategoryExists = await subcategoryModel.findOne({
+    // منع حذف تصنيف لا يزال مرتبطاً بمواد فلكلورية
+    const linkedMaterials = await folkloreMaterialModel.countDocuments({
       category: id,
     });
 
-    if (subcategoryExists) {
+    if (linkedMaterials > 0) {
       return res.status(400).json({
-        message: "Cannot delete category because it has subcategories",
+        message: `لا يمكن حذف التصنيف لأنه مرتبط بـ ${linkedMaterials} مادة فلكلورية`,
       });
     }
 
