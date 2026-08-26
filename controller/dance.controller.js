@@ -24,13 +24,13 @@ export const createDance = async (req, res, next) => {
     const getFile = (fieldname) => {
       if (!req.files) return undefined;
       const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? `/uploads/media/${file.filename}` : undefined;
+      return file ? file.path : undefined;
     };
 
     // Helper function to get multiple file paths by fieldname
     const getFiles = (fieldname) => {
       if (!req.files) return [];
-      return req.files.filter(f => f.fieldname === fieldname).map(f => `/uploads/media/${f.filename}`);
+      return req.files.filter(f => f.fieldname === fieldname).map(f => f.path);
     };
 
     // Filter and enrich tools with media
@@ -85,7 +85,8 @@ export const createDance = async (req, res, next) => {
       }
     });
 
-    return res.redirect("/?success=true");
+    req.session.flashSuccess = "تمت إضافة الرقصة الشعبية بنجاح!";
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }

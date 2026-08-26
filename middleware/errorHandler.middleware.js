@@ -1,29 +1,32 @@
 export const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Error Handler caught:", err.message);
 
-  let statusCode = err.statusCode || 500;
-  let status = err.status || "error";
-  let message = err.message || "Internal Server Error";
+  let message = err.message || "حدث خطأ غير متوقع في الخادم.";
 
+  // معالجة أخطاء التحقق من Mongoose
   if (err.name === "ValidationError") {
-  statusCode = 400;
-  status = "fail";
+    const errors = [];
+    Object.keys(err.errors).forEach((field) => {
+      errors.push(err.errors[field].message);
+    });
+    message = "خطأ في البيانات المدخلة: " + errors.join(" ، ");
+  }
 
-  const errors = {};
+  // معالجة أخطاء Multer (حجم الملف)
+  if (err.code === "LIMIT_FILE_SIZE") {
+    message = "حجم الملف كبير جداً، يرجى رفع ملف بحجم أقل.";
+  }
 
-  Object.keys(err.errors).forEach((field) => {
-    errors[field] = err.errors[field].message;
-  });
+  // إذا كان الطلب من واجهة المتصفح (ليس API)
+  if (req.session) {
+    req.session.flashError = message;
+    const referer = req.get("Referrer") || "/";
+    return res.redirect(referer);
+  }
 
-  return res.status(statusCode).json({
-    status,
-    message: "Validation failed",
-    errors,
-  });
-}
-
-  res.status(statusCode).json({
-    status,
+  // في حالة كان الطلب API ولا يوجد Session
+  res.status(err.statusCode || 500).json({
+    status: "error",
     message,
   });
 };

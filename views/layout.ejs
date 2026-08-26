@@ -31,6 +31,60 @@
                 navMenu.classList.toggle('open');
             });
         }
+
+        // إظهار شاشة تحميل عند إرسال أي فورم لتجنب إحساس تأخر الرفع
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    // إذا كان الفورم غير صالح (Validation فشل)، لا تظهر شاشة التحميل
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+                    
+                    Swal.fire({
+                        title: 'جاري رفع وحفظ البيانات...',
+                        html: 'يرجى الانتظار وعدم إغلاق الصفحة.<br><b>قد يستغرق ذلك بعض الوقت للملفات الكبيرة.</b>',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                });
+            });
+        });
     </script>
+    
+    <% if (typeof flashError !== 'undefined' && flashError) { %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: '<%= flashError %>',
+                    confirmButtonText: 'حسناً',
+                    confirmButtonColor: '#e74c3c'
+                });
+            });
+        </script>
+    <% } %>
+
+    <% if (typeof flashSuccess !== 'undefined' && flashSuccess) { %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'نجاح',
+                    text: '<%= flashSuccess %>',
+                    confirmButtonText: 'حسناً',
+                    confirmButtonColor: '#2ecc71',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+        </script>
+    <% } %>
 </body>
 </html>

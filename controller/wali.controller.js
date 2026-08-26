@@ -92,7 +92,8 @@ export const createWali = async (req, res, next) => {
 
     await newWali.save();
 
-    res.redirect("/archive?type=wali&success=added");
+    req.session.flashSuccess = "تمت إضافة مادة الأولياء بنجاح!";
+    res.redirect("/archive?type=wali");
   } catch (error) {
     next(error);
   }

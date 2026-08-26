@@ -78,7 +78,7 @@ export const createMawwal = async (req, res, next) => {
       prosodicMeter: prosodicMeter || undefined,
       melodyAndMaqam: {
         maqamName: maqamName || undefined,
-        audioUrl: req.file ? `/uploads/audio/${req.file.filename}` : (audioUrl || undefined),
+        audioUrl: req.file ? req.file.path : (audioUrl || undefined),
       },
       accompanyingInstruments: parseArray(accompanyingInstruments),
       mawwalPresentation,
@@ -93,8 +93,9 @@ export const createMawwal = async (req, res, next) => {
       currentStatus,
     });
 
-    // بعد نجاح إضافة الموال، توجيه المستخدم للرئيسية بنجاح
-    return res.redirect("/?success=true");
+    // بعد نجاح إضافة الموال، توجيه المستخدم للرئيسية مع رسالة نجاح
+    req.session.flashSuccess = "تمت إضافة الموال بنجاح!";
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }

@@ -141,7 +141,8 @@ export const deleteMawwal = async (req, res, next) => {
     // Delete the Mawwal document
     await Mawwal.findByIdAndDelete(id);
 
-    res.redirect("/admin?success=deleted");
+    req.session.flashSuccess = "تم حذف الموال بنجاح!";
+    res.redirect("/admin?type=mawwal");
   } catch (error) {
     next(error);
   }
@@ -219,9 +220,9 @@ export const updateMawwal = async (req, res, next) => {
     // Handle audio file replacement
     let newAudioUrl = existingMawwal.melodyAndMaqam?.audioUrl;
     if (req.file) {
-      // Delete old file if user uploads a new one
+      // Delete old file if user uploads a new one (will only delete local files)
       deleteLocalFile(newAudioUrl);
-      newAudioUrl = `/uploads/audio/${req.file.filename}`;
+      newAudioUrl = req.file.path;
     } else if (audioUrl !== undefined && audioUrl.trim() !== newAudioUrl) {
       // If user provided a URL that is different from the current one, or cleared it
       if (newAudioUrl && newAudioUrl.startsWith("/uploads/")) {
@@ -275,7 +276,8 @@ export const updateMawwal = async (req, res, next) => {
 
     await Mawwal.findByIdAndUpdate(id, updatedData);
 
-    res.redirect("/admin?success=updated");
+    req.session.flashSuccess = "تم تعديل الموال بنجاح!";
+    res.redirect("/admin?type=mawwal");
   } catch (error) {
     next(error);
   }
@@ -310,7 +312,8 @@ export const deleteDance = async (req, res, next) => {
 
     await Dance.findByIdAndDelete(id);
 
-    res.redirect("/admin?success=deleted");
+    req.session.flashSuccess = "تم حذف الرقصة بنجاح!";
+    res.redirect("/admin?type=dance");
   } catch (error) {
     next(error);
   }
@@ -351,13 +354,13 @@ export const updateDance = async (req, res, next) => {
     const getFile = (fieldname) => {
       if (!req.files) return undefined;
       const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? `/uploads/media/${file.filename}` : undefined;
+      return file ? file.path : undefined;
     };
 
     const getFiles = (fieldname) => {
       if (!req.files) return [];
       const files = req.files.filter(f => f.fieldname === fieldname);
-      return files.length > 0 ? files.map(f => `/uploads/media/${f.filename}`) : undefined;
+      return files.length > 0 ? files.map(f => f.path) : undefined;
     };
 
     // Safely delete old files only if replaced
@@ -431,7 +434,8 @@ export const updateDance = async (req, res, next) => {
 
     await Dance.findByIdAndUpdate(id, updatedData);
 
-    res.redirect("/admin?success=updated");
+    req.session.flashSuccess = "تم تعديل الرقصة بنجاح!";
+    res.redirect("/admin?type=dance");
   } catch (error) {
     next(error);
   }
@@ -467,7 +471,8 @@ export const deleteCraft = async (req, res, next) => {
     }
 
     await Craft.findByIdAndDelete(id);
-    res.redirect("/admin?type=craft&success=deleted");
+    req.session.flashSuccess = "تم حذف الحرفة بنجاح!";
+    res.redirect("/admin?type=craft");
   } catch (error) {
     next(error);
   }
@@ -507,7 +512,7 @@ export const updateCraft = async (req, res, next) => {
     const getFile = (fieldname) => {
       if (!req.files) return undefined;
       const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? `/uploads/media/${file.filename}` : undefined;
+      return file ? file.path : undefined;
     };
     
     const checkAndReplace = (oldUrl, newUrl) => {
@@ -572,7 +577,8 @@ export const updateCraft = async (req, res, next) => {
 
     await Craft.findByIdAndUpdate(id, updatedData);
 
-    res.redirect("/admin?type=craft&success=updated");
+    req.session.flashSuccess = "تم تعديل الحرفة بنجاح!";
+    res.redirect("/admin?type=craft");
   } catch (error) {
     next(error);
   }
@@ -677,7 +683,8 @@ export const updateWali = async (req, res, next) => {
 
     await Wali.findByIdAndUpdate(id, updatedData);
 
-    res.redirect("/admin?type=wali&success=updated");
+    req.session.flashSuccess = "تم تعديل مادة الولي بنجاح!";
+    res.redirect("/admin?type=wali");
   } catch (error) {
     next(error);
   }
@@ -696,7 +703,9 @@ export const deleteWali = async (req, res, next) => {
     }
 
     await Wali.findByIdAndDelete(id);
-    res.redirect("/admin?type=wali&success=deleted");
+    
+    req.session.flashSuccess = "تم حذف مادة الولي بنجاح!";
+    res.redirect("/admin?type=wali");
   } catch (error) {
     next(error);
   }

@@ -27,7 +27,7 @@ export const createCraft = async (req, res, next) => {
     const getFile = (fieldname) => {
       if (!req.files) return undefined;
       const file = req.files.find(f => f.fieldname === fieldname);
-      return file ? `/uploads/media/${file.filename}` : undefined;
+      return file ? file.path : undefined;
     };
 
     // Clean Arrays
@@ -87,7 +87,8 @@ export const createCraft = async (req, res, next) => {
 
     await newCraft.save();
 
-    return res.redirect("/?success=true");
+    req.session.flashSuccess = "تمت إضافة الحرفة الشعبية بنجاح!";
+    return res.redirect("/");
   } catch (error) {
     next(error);
   }

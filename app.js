@@ -68,9 +68,17 @@ app.use(
   })
 );
 
-// جعل بيانات المستخدم متاحة لجميع واجهات EJS
+// جعل بيانات المستخدم ورسائل الخطأ (Flash Messages) متاحة لجميع واجهات EJS
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
+  
+  // نقل الرسائل المنبثقة من الجلسة إلى المتغيرات المحلية ثم مسحها
+  res.locals.flashError = req.session.flashError || null;
+  res.locals.flashSuccess = req.session.flashSuccess || null;
+  
+  req.session.flashError = null;
+  req.session.flashSuccess = null;
+  
   next();
 });
 
