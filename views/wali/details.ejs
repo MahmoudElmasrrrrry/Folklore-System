@@ -8,15 +8,14 @@
     }
 
     .wali-header {
-        background: linear-gradient(135deg, var(--wali-primary), #0a3311);
+        background: linear-gradient(135deg, var(--color-primary-dark), #2a4c7a);
         color: white;
         padding: 60px 20px;
         text-align: center;
-        border-radius: 15px;
+        border-radius: 0 0 30px 30px;
         margin-bottom: 40px;
         position: relative;
         overflow: hidden;
-        border-bottom: 5px solid var(--wali-accent);
     }
 
     .wali-header::before {
@@ -38,7 +37,7 @@
     
     .wali-subtitle {
         font-size: 1.5rem;
-        color: var(--wali-secondary);
+        color: rgba(255, 255, 255, 0.8);
         position: relative;
         z-index: 1;
         margin-bottom: 20px;
@@ -66,7 +65,7 @@
     }
 
     .wali-pill i {
-        color: var(--wali-accent);
+        color: white;
     }
 
     .wali-section {
@@ -75,22 +74,22 @@
         padding: 30px;
         margin-bottom: 30px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        border-top: 4px solid var(--wali-primary);
+        border: 1px solid var(--border-color);
     }
 
     .wali-section h3 {
-        color: var(--wali-primary);
+        color: var(--color-primary-dark);
         font-size: 1.6rem;
         margin-bottom: 25px;
         display: flex;
         align-items: center;
         gap: 12px;
-        border-bottom: 2px dashed #eee;
+        border-bottom: 2px solid var(--bg-light);
         padding-bottom: 15px;
     }
     
     .wali-section h3 i {
-        color: var(--wali-accent);
+        color: var(--color-primary-dark);
     }
 
     .info-grid {
@@ -100,7 +99,7 @@
     }
 
     .info-item {
-        background: var(--wali-bg);
+        background: var(--bg-light);
         padding: 20px;
         border-radius: 10px;
         display: flex;
@@ -116,7 +115,7 @@
     }
 
     .info-label {
-        color: var(--wali-primary);
+        color: var(--color-primary-dark);
         font-size: 0.95rem;
         font-weight: 700;
         display: flex;
@@ -125,7 +124,7 @@
     }
 
     .info-label i {
-        color: var(--wali-accent);
+        color: var(--color-primary);
         font-size: 1.1rem;
     }
 
@@ -168,7 +167,7 @@
 
     .card-title {
         font-size: 1.3rem;
-        color: var(--wali-primary);
+        color: var(--color-primary-dark);
         margin-bottom: 15px;
         font-weight: bold;
     }
@@ -184,7 +183,7 @@
         gap: 10px;
     }
     .card-meta-item i {
-        color: var(--wali-accent);
+        color: var(--color-primary);
         margin-top: 4px;
     }
     .card-meta-text strong {
@@ -248,7 +247,7 @@
             <% if (wali.lineage) { %>
             <div class="info-item" style="grid-column: 1 / -1;">
                 <div class="info-label"><i class="fa-solid fa-sitemap"></i> النسب الشريف</div>
-                <div class="info-value" style="color: var(--wali-primary);"><%= wali.lineage %></div>
+                <div class="info-value" style="color: var(--color-primary-dark);"><%= wali.lineage %></div>
             </div>
             <% } %>
             <% if (wali.birthPlace) { %>
@@ -273,21 +272,21 @@
         
         <% if (wali.childhood) { %>
             <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الطفولة:</h4>
+                <h4 style="color: var(--color-primary-dark); margin-bottom: 10px;">الطفولة:</h4>
                 <p class="story-text"><%= wali.childhood %></p>
             </div>
         <% } %>
 
         <% if (wali.education) { %>
             <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">التعليم:</h4>
+                <h4 style="color: var(--color-primary-dark); margin-bottom: 10px;">التعليم:</h4>
                 <p class="story-text"><%= wali.education %></p>
             </div>
         <% } %>
 
         <% if (wali.lifeSummary) { %>
             <div>
-                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">ملخص السيرة:</h4>
+                <h4 style="color: var(--color-primary-dark); margin-bottom: 10px;">ملخص السيرة:</h4>
                 <p class="story-text"><%= wali.lifeSummary %></p>
             </div>
         <% } %>
@@ -301,14 +300,14 @@
         
         <% if (wali.sufismEntry) { %>
             <div style="margin-bottom: 20px;">
-                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الدخول في التصوف:</h4>
+                <h4 style="color: var(--color-primary-dark); margin-bottom: 10px;">الدخول في التصوف:</h4>
                 <p class="story-text"><%= wali.sufismEntry %></p>
             </div>
         <% } %>
 
         <% if (wali.miracles) { %>
             <div>
-                <h4 style="color: var(--wali-primary); margin-bottom: 10px;">الكرامات والمعجزات:</h4>
+                <h4 style="color: var(--color-primary-dark); margin-bottom: 10px;">الكرامات والمعجزات:</h4>
                 <p class="story-text"><%= wali.miracles %></p>
             </div>
         <% } %>
@@ -519,30 +518,30 @@
 
         </div> <!-- End main-content -->
 
-        <!-- القائمة الجانبية (البيانات الأساسية) -->
+        <!-- القائمة الجانبية (يسار) -->
         <div class="sidebar">
             <div class="sidebar-widget">
-                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي / المصدر</h3>
+                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي</h3>
                 <% if (wali.folkloreMaterial && wali.folkloreMaterial.narrator) { %>
                     <ul class="widget-list">
                         <li><span>الاسم:</span> <strong>
                                 <%= wali.folkloreMaterial.narrator.name %>
                             </strong></li>
                         <li><span>العمر:</span> <strong>
-                                <%= wali.folkloreMaterial.narrator.age ? wali.folkloreMaterial.narrator.age + ' سنة' : '-' %>
+                                <%= wali.folkloreMaterial.narrator.age %> سنة
                             </strong></li>
                         <li><span>المهنة:</span> <strong>
-                                <%= wali.folkloreMaterial.narrator.occupation || '-' %>
+                                <%= wali.folkloreMaterial.narrator.occupation %>
                             </strong></li>
                         <% if(wali.folkloreMaterial.narrator.status) { %>
                             <li><span>الحالة:</span> <strong>
                                     <%= wali.folkloreMaterial.narrator.status %>
                                 </strong></li>
-                        <% } %>
+                            <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">بيانات الراوي غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">بيانات الراوي غير متوفرة</p>
+                        <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -556,14 +555,14 @@
                             <li><span>مكان البعثة:</span> <strong>
                                     <%= wali.folkloreMaterial.mission.place %>
                                 </strong></li>
-                        <% } %>
-                        <% if (wali.folkloreMaterial.collector) { %>
-                            <li><span>اسم الجامع:</span> <strong>
-                                    <%= wali.folkloreMaterial.collector.name %>
-                                </strong></li>
-                        <% } %>
+                            <% } %>
+                                <% if (wali.folkloreMaterial.collector) { %>
+                                    <li><span>اسم الجامع:</span> <strong>
+                                            <%= wali.folkloreMaterial.collector.name %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
-                <% } %>
+                    <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -572,9 +571,6 @@
                     <ul class="widget-list">
                         <li><span>تاريخ الجمع:</span> <strong>
                                 <%= wali.folkloreMaterial.collectionData.collectionDate ? new Date(wali.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
-                            </strong></li>
-                        <li><span>تاريخ التدوين:</span> <strong>
-                                <%= wali.folkloreMaterial.collectionData.documentationDate ? new Date(wali.folkloreMaterial.collectionData.documentationDate).toLocaleDateString('ar-EG') : '-' %>
                             </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= wali.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
@@ -586,18 +582,56 @@
                             <li><span>القرية:</span> <strong>
                                     <%= wali.folkloreMaterial.collectionData.collectionPlace.village %>
                                 </strong></li>
-                        <% } %>
+                            <% } %>
+                                <% if(wali.folkloreMaterial.collectionData.collectionCulturePlace) { %>
+                                    <li><span>البيئة الثقافية:</span> <strong>
+                                            <%= wali.folkloreMaterial.collectionData.collectionCulturePlace %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">البيانات غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3><i class="fa-solid fa-hard-drive"></i> المصدر الأرشيفي</h3>
+                <% if (wali.folkloreMaterial && wali.folkloreMaterial.dataSource) { %>
+                    <ul class="widget-list">
+                        <li><span>نوع المصدر:</span> <strong>
+                                <%= wali.folkloreMaterial.dataSource.sourceType || '-' %>
+                            </strong></li>
+                        <% if(wali.folkloreMaterial.dataSource.photoNumber) { %>
+                            <li><span>رقم الصورة:</span> <strong>
+                                    <%= wali.folkloreMaterial.dataSource.photoNumber %>
+                                </strong></li>
+                            <% } %>
+                                <% if(wali.folkloreMaterial.dataSource.tapeNumber) { %>
+                                    <li><span>رقم الشريط:</span> <strong>
+                                            <%= wali.folkloreMaterial.dataSource.tapeNumber %>
+                                        </strong></li>
+                                    <% } %>
+                                <% if(wali.folkloreMaterial.dataSource.sideNumber) { %>
+                                    <li><span>رقم الوجه:</span> <strong>
+                                            <%= wali.folkloreMaterial.dataSource.sideNumber %>
+                                        </strong></li>
+                                    <% } %>
+                                        <% if(wali.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                                            <li><span>الملف الرقمي:</span> <strong>
+                                                    <%= wali.folkloreMaterial.dataSource.digitalFileLocation %>
+                                                </strong></li>
+                                            <% } %>
+                    </ul>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
             </div>
 
             <% if (typeof user !== 'undefined' && user) { %>
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
-                <p>يمكن للباحثين المعتمدين تحديث بيانات هذا الولي.</p>
-                <a href="/admin/wali/edit/<%= wali._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الولي</a>
+                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
+                <a href="/admin/wali/edit/<%= wali._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
             </div>
             <% } %>
         </div>
@@ -643,7 +677,7 @@
     }
     .sidebar-widget h3 {
         font-size: 1.15rem;
-        color: var(--wali-primary);
+        color: var(--color-primary-dark);
         margin-top: 0;
         margin-bottom: 20px;
         padding-bottom: 12px;

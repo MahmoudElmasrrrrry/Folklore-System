@@ -39,13 +39,13 @@
                                 </td>
                                 <td>
                                     <% if (item.itemType === 'mawwal') { %>
-                                        <span class="badge-type" style="background: rgba(29, 53, 87, 0.1); color: var(--secondary-color);"><i class="fa-solid fa-music"></i> موال</span>
+                                        <span class="badge-type item-type type-mawwal"><i class="fa-solid fa-music"></i> موال</span>
                                     <% } else if (item.itemType === 'dance') { %>
-                                        <span class="badge-type" style="background: rgba(230, 57, 70, 0.1); color: #e63946;"><i class="fa-solid fa-person-dress"></i> رقصة شعبية</span>
+                                        <span class="badge-type item-type type-dance"><i class="fa-solid fa-person-dress"></i> رقصة شعبية</span>
                                     <% } else if (item.itemType === 'craft') { %>
-                                        <span class="badge-type" style="background: rgba(121, 85, 72, 0.1); color: #795548;"><i class="fa-solid fa-hammer"></i> حرفة شعبية</span>
+                                        <span class="badge-type item-type type-craft"><i class="fa-solid fa-hammer"></i> حرفة شعبية</span>
                                     <% } else if (item.itemType === 'wali') { %>
-                                        <span class="badge-type" style="background: rgba(76, 175, 80, 0.1); color: #4CAF50;"><i class="fa-solid fa-mosque"></i> ولي</span>
+                                        <span class="badge-type item-type type-wali"><i class="fa-solid fa-mosque"></i> ولي</span>
                                     <% } %>
                                 </td>
                                 <td><%= item.folkloreMaterial?.narrator?.name || "مجهول" %></td>

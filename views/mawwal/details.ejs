@@ -325,6 +325,17 @@
         margin-bottom: 30px;
         border-radius: 0 0 30px 30px;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .details-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(255,255,255,0.05)"/></svg>');
+        opacity: 0.8;
+        pointer-events: none;
     }
 
     .meta-tags {
@@ -446,19 +457,20 @@
     }
 
     .data-item {
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        border-right: 3px solid var(--color-primary-light);
+        background: var(--bg-light);
+        padding: 20px;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        transition: all 0.2s ease;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
     }
 
     .data-item:hover {
-        background: var(--bg-light);
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .data-item span {

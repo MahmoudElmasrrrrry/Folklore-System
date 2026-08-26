@@ -208,27 +208,27 @@
         <!-- القائمة الجانبية (يسار) -->
         <div class="sidebar">
             <div class="sidebar-widget">
-                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي / المصدر</h3>
+                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي</h3>
                 <% if (craft.folkloreMaterial && craft.folkloreMaterial.narrator) { %>
                     <ul class="widget-list">
                         <li><span>الاسم:</span> <strong>
                                 <%= craft.folkloreMaterial.narrator.name %>
                             </strong></li>
                         <li><span>العمر:</span> <strong>
-                                <%= craft.folkloreMaterial.narrator.age ? craft.folkloreMaterial.narrator.age + ' سنة' : '-' %>
+                                <%= craft.folkloreMaterial.narrator.age %> سنة
                             </strong></li>
                         <li><span>المهنة:</span> <strong>
-                                <%= craft.folkloreMaterial.narrator.occupation || '-' %>
+                                <%= craft.folkloreMaterial.narrator.occupation %>
                             </strong></li>
                         <% if(craft.folkloreMaterial.narrator.status) { %>
                             <li><span>الحالة:</span> <strong>
                                     <%= craft.folkloreMaterial.narrator.status %>
                                 </strong></li>
-                        <% } %>
+                            <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">بيانات الراوي غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">بيانات الراوي غير متوفرة</p>
+                        <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -242,14 +242,14 @@
                             <li><span>مكان البعثة:</span> <strong>
                                     <%= craft.folkloreMaterial.mission.place %>
                                 </strong></li>
-                        <% } %>
-                        <% if (craft.folkloreMaterial.collector) { %>
-                            <li><span>اسم الجامع:</span> <strong>
-                                    <%= craft.folkloreMaterial.collector.name %>
-                                </strong></li>
-                        <% } %>
+                            <% } %>
+                                <% if (craft.folkloreMaterial.collector) { %>
+                                    <li><span>اسم الجامع:</span> <strong>
+                                            <%= craft.folkloreMaterial.collector.name %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
-                <% } %>
+                    <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -258,9 +258,6 @@
                     <ul class="widget-list">
                         <li><span>تاريخ الجمع:</span> <strong>
                                 <%= craft.folkloreMaterial.collectionData.collectionDate ? new Date(craft.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
-                            </strong></li>
-                        <li><span>تاريخ التدوين:</span> <strong>
-                                <%= craft.folkloreMaterial.collectionData.documentationDate ? new Date(craft.folkloreMaterial.collectionData.documentationDate).toLocaleDateString('ar-EG') : '-' %>
                             </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= craft.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
@@ -272,19 +269,16 @@
                             <li><span>القرية:</span> <strong>
                                     <%= craft.folkloreMaterial.collectionData.collectionPlace.village %>
                                 </strong></li>
-                        <% } %>
-                        <% if(craft.folkloreMaterial.collectionData.collectionCulturePlace) { %>
-                            <li><span>البيئة الثقافية:</span> <strong>
-                                    <%= craft.folkloreMaterial.collectionData.collectionCulturePlace %>
-                                </strong></li>
-                        <% } %>
-                        <li><span>رقم الأرشيف:</span> <strong>
-                                <%= craft.folkloreMaterial.collectionData.archiveNumber || '-' %>
-                            </strong></li>
+                            <% } %>
+                                <% if(craft.folkloreMaterial.collectionData.collectionCulturePlace) { %>
+                                    <li><span>البيئة الثقافية:</span> <strong>
+                                            <%= craft.folkloreMaterial.collectionData.collectionCulturePlace %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">البيانات غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
             </div>
 
             <div class="sidebar-widget">
@@ -298,33 +292,33 @@
                             <li><span>رقم الصورة:</span> <strong>
                                     <%= craft.folkloreMaterial.dataSource.photoNumber %>
                                 </strong></li>
-                        <% } %>
-                        <% if(craft.folkloreMaterial.dataSource.tapeNumber) { %>
-                            <li><span>رقم الشريط:</span> <strong>
-                                    <%= craft.folkloreMaterial.dataSource.tapeNumber %>
-                                </strong></li>
-                        <% } %>
-                        <% if(craft.folkloreMaterial.dataSource.sideNumber) { %>
-                            <li><span>رقم الوجه:</span> <strong>
-                                    <%= craft.folkloreMaterial.dataSource.sideNumber %>
-                                </strong></li>
-                        <% } %>
-                        <% if(craft.folkloreMaterial.dataSource.digitalFileLocation) { %>
-                            <li><span>الملف الرقمي:</span> <strong>
-                                    <%= craft.folkloreMaterial.dataSource.digitalFileLocation %>
-                                </strong></li>
-                        <% } %>
+                            <% } %>
+                                <% if(craft.folkloreMaterial.dataSource.tapeNumber) { %>
+                                    <li><span>رقم الشريط:</span> <strong>
+                                            <%= craft.folkloreMaterial.dataSource.tapeNumber %>
+                                        </strong></li>
+                                    <% } %>
+                                <% if(craft.folkloreMaterial.dataSource.sideNumber) { %>
+                                    <li><span>رقم الوجه:</span> <strong>
+                                            <%= craft.folkloreMaterial.dataSource.sideNumber %>
+                                        </strong></li>
+                                    <% } %>
+                                        <% if(craft.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                                            <li><span>الملف الرقمي:</span> <strong>
+                                                    <%= craft.folkloreMaterial.dataSource.digitalFileLocation %>
+                                                </strong></li>
+                                            <% } %>
                     </ul>
-                <% } else { %>
-                    <p class="text-muted">البيانات غير متوفرة</p>
-                <% } %>
+                    <% } else { %>
+                        <p class="text-muted">البيانات غير متوفرة</p>
+                        <% } %>
             </div>
 
             <% if (typeof user !== 'undefined' && user) { %>
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
-                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه الحرفة.</p>
-                <a href="/admin/craft/edit/<%= craft._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل الحرفة</a>
+                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
+                <a href="/admin/craft/edit/<%= craft._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
             </div>
             <% } %>
         </div>
@@ -343,6 +337,16 @@
         margin-bottom: 30px;
         border-radius: 0 0 30px 30px;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .craft-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(255,255,255,0.05)"/></svg>');
+        opacity: 0.8;
+        pointer-events: none;
     }
     .meta-tags {
         margin-bottom: 20px;

@@ -46,7 +46,7 @@
                             <span class="post-date"><i class="fa-regular fa-calendar-days"></i> <%= new Date(item.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span>
                         </div>
                         <div class="post-tag">
-                            <span class="badge-type"><%- item.icon %> <%= item.typeLabel %></span>
+                            <span class="badge-type item-type type-<%= item.type %>"><%- item.icon %> <%= item.typeLabel %></span>
                         </div>
                     </div>
                     

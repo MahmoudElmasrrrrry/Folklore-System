@@ -200,7 +200,7 @@
         <!-- القائمة الجانبية (يسار) -->
         <div class="sidebar">
             <div class="sidebar-widget">
-                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي / المصدر</h3>
+                <h3><i class="fa-solid fa-microphone-lines"></i> بيانات الراوي</h3>
                 <% if (dance.folkloreMaterial && dance.folkloreMaterial.narrator) { %>
                     <ul class="widget-list">
                         <li><span>الاسم:</span> <strong>
@@ -251,9 +251,6 @@
                         <li><span>تاريخ الجمع:</span> <strong>
                                 <%= dance.folkloreMaterial.collectionData.collectionDate ? new Date(dance.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
                             </strong></li>
-                        <li><span>تاريخ التدوين:</span> <strong>
-                                <%= dance.folkloreMaterial.collectionData.documentationDate ? new Date(dance.folkloreMaterial.collectionData.documentationDate).toLocaleDateString('ar-EG') : '-' %>
-                            </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= dance.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
                             </strong></li>
@@ -264,15 +261,12 @@
                             <li><span>القرية:</span> <strong>
                                     <%= dance.folkloreMaterial.collectionData.collectionPlace.village %>
                                 </strong></li>
-                        <% } %>
-                        <% if(dance.folkloreMaterial.collectionData.collectionCulturePlace) { %>
-                            <li><span>البيئة الثقافية:</span> <strong>
-                                    <%= dance.folkloreMaterial.collectionData.collectionCulturePlace %>
-                                </strong></li>
-                        <% } %>
-                        <li><span>رقم الأرشيف:</span> <strong>
-                                <%= dance.folkloreMaterial.collectionData.archiveNumber %>
-                            </strong></li>
+                            <% } %>
+                                <% if(dance.folkloreMaterial.collectionData.collectionCulturePlace) { %>
+                                    <li><span>البيئة الثقافية:</span> <strong>
+                                            <%= dance.folkloreMaterial.collectionData.collectionCulturePlace %>
+                                        </strong></li>
+                                    <% } %>
                     </ul>
                     <% } else { %>
                         <p class="text-muted">البيانات غير متوفرة</p>
@@ -316,7 +310,7 @@
             <div class="sidebar-widget action-widget">
                 <h3>تحديث البيانات</h3>
                 <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
-                <a href="/admin/dance/edit/<%= dance._id %>" class="btn btn-outline" style="width: 100%; display: block; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
+                <a href="/admin/dance/edit/<%= dance._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
             </div>
             <% } %>
         </div>
@@ -335,6 +329,16 @@
         margin-bottom: 30px;
         border-radius: 0 0 30px 30px;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .details-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(255,255,255,0.05)"/></svg>');
+        opacity: 0.8;
+        pointer-events: none;
     }
     .meta-tags {
         margin-bottom: 20px;
@@ -472,18 +476,19 @@
         gap: 20px;
     }
     .data-item {
-        background: #fafbfc;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        border-right: 3px solid var(--color-primary-light);
+        background: var(--bg-light);
+        padding: 20px;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        transition: all 0.2s ease;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
     }
     .data-item:hover {
-        background: #fdfbf7;
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
     .data-item span {
         font-size: 0.85rem;

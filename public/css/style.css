@@ -24,6 +24,12 @@
   --color-text-light: #7f8c8d;
   --color-text-white: #ecf0f1;
   --color-border: #dee2e6;
+  
+  /* Folklore Elements Colors */
+  --color-mawwal: #27ae60;      /* Green */
+  --color-dance: #e63946;       /* Red */
+  --color-craft: #d35400;       /* Orange/Brown */
+  --color-wali: #8e44ad;        /* Purple */
 
   --font-main: "Tajawal", sans-serif;
   --radius-sm: 8px;
@@ -455,10 +461,10 @@ main.container {
   margin-bottom: 12px;
 }
 
-.item-type.type-mawwal { background: #eaf2f8; color: #2471a3; }
-.item-type.type-dance { background: #fdf2e9; color: #ca6f1e; }
-.item-type.type-craft { background: #e8f8f5; color: #1e8449; }
-.item-type.type-wali { background: #f4ecf7; color: #7d3c98; }
+.item-type.type-mawwal { background: rgba(39, 174, 96, 0.1); color: var(--color-mawwal); }
+.item-type.type-dance { background: rgba(230, 57, 70, 0.1); color: var(--color-dance); }
+.item-type.type-craft { background: rgba(211, 84, 0, 0.1); color: var(--color-craft); }
+.item-type.type-wali { background: rgba(142, 68, 173, 0.1); color: var(--color-wali); }
 
 .item-card h3 {
   font-size: 1.1rem;
