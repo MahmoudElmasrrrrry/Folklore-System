@@ -11,12 +11,11 @@ import User from "../models/user.model.js";
  * التشغيل:  node utils/seedAdmin.js
  */
 
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mawwal_db";
+const MONGO_URI = process.env.MONGO_URI;
 
 const DEFAULT_ADMIN = {
-  username: process.env.ADMIN_USERNAME || "admin",
-  password: process.env.ADMIN_PASSWORD || "admin123",
+  username: process.env.ADMIN_USERNAME,
+  password: process.env.ADMIN_PASSWORD,
   role: "admin",
 };
 

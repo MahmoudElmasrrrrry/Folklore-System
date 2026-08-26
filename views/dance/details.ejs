@@ -10,10 +10,12 @@
                 <span class="badge"><i class="fa-solid fa-folder"></i>
                     <%= dance.folkloreMaterial.category.name %>
                 </span>
-            <% } %>
+                <% } %>
         </div>
 
-        <h1><%= dance.danceName %></h1>
+        <h1>
+            <%= dance.danceName %>
+        </h1>
 
         <% if (dance.music && dance.music.audioUrl) { %>
             <div class="hero-audio">
@@ -22,15 +24,16 @@
                     متصفحك لا يدعم مشغل الصوت.
                 </audio>
             </div>
-        <% } %>
-        
-        <% if (dance.music && dance.music.lyricsFileUrl) { %>
-            <div style="margin-top: 20px; text-align: center;">
-                <a href="<%= dance.music.lyricsFileUrl %>" target="_blank" class="btn" style="background: rgba(255,255,255,0.2); color: white; border-radius: 25px; padding: 10px 25px; font-size: 1.1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
-                    <i class="fa-solid fa-file-lines"></i> عرض ملف الكلمات (Lyrics)
-                </a>
-            </div>
-        <% } %>
+            <% } %>
+
+                <% if (dance.music && dance.music.lyricsFileUrl) { %>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <a href="<%= dance.music.lyricsFileUrl.startsWith('http') || dance.music.lyricsFileUrl.startsWith('/') ? dance.music.lyricsFileUrl : '/' + dance.music.lyricsFileUrl %>" target="_blank" class="btn"
+                            style="background: rgba(255,255,255,0.2); color: white; border-radius: 25px; padding: 10px 25px; font-size: 1.1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
+                            <i class="fa-solid fa-file-lines"></i> عرض ملف الكلمات (Lyrics)
+                        </a>
+                    </div>
+                    <% } %>
     </div>
 </div>
 
@@ -44,7 +47,7 @@
             <% if ((dance.description && dance.description.text) || dance.description?.videoUrl) { %>
                 <div class="content-section">
                     <h2><i class="fa-solid fa-align-right"></i> الوصف الحركي للرقصة</h2>
-                    
+
                     <% if (dance.description?.videoUrl) { %>
                         <div class="main-video-container">
                             <video controls>
@@ -52,148 +55,189 @@
                                 متصفحك لا يدعم مشغل الفيديو.
                             </video>
                         </div>
-                    <% } %>
+                        <% } %>
 
-                    <% if (dance.description && dance.description.text) { %>
-                        <div class="text-block">
-                            <p><%= dance.description.text %></p>
-                        </div>
-                    <% } %>
-                </div>
-            <% } %>
-
-            <!-- معرض الصور -->
-            <% if (dance.description?.images && dance.description.images.length > 0) { %>
-                <div class="content-section">
-                    <h2><i class="fa-solid fa-images"></i> صور مرتبطة</h2>
-                    <div class="gallery-grid">
-                        <% dance.description.images.forEach(img => { %>
-                            <div class="gallery-item">
-                                <img src="<%= img %>" alt="صورة الرقصة">
-                            </div>
-                        <% }) %>
-                    </div>
-                </div>
-            <% } %>
-
-            <!-- تفاصيل الرقصة والموسيقى -->
-            <div class="content-section">
-                <h2><i class="fa-solid fa-info-circle"></i> بيانات الرقصة والموسيقى</h2>
-                <div class="data-grid">
-                    <% if(dance.occasion) { %>
-                        <div class="data-item"><span>المناسبة</span><strong><%= dance.occasion %></strong></div>
-                    <% } %>
-                    <% if(dance.presentationStyle) { %>
-                        <div class="data-item"><span>أسلوب التقديم</span><strong><%= dance.presentationStyle %></strong></div>
-                    <% } %>
-                    <% if(dance.mediumType) { %>
-                        <div class="data-item"><span>نوع الوسيط</span><strong><%= dance.mediumType %></strong></div>
-                    <% } %>
-                    <% if(dance.music && dance.music.accompanimentType) { %>
-                        <div class="data-item"><span>المصاحبة الموسيقية</span><strong><%= dance.music.accompanimentType %></strong></div>
-                    <% } %>
-                    <% if(dance.music && dance.music.songName) { %>
-                        <div class="data-item"><span>الأغنية</span><strong><%= dance.music.songName %></strong></div>
-                    <% } %>
-                </div>
-            </div>
-
-            <!-- الأزياء -->
-            <% if ((dance.costumes?.women?.name) || (dance.costumes?.men?.name)) { %>
-            <div class="content-section">
-                <h2><i class="fa-solid fa-shirt"></i> الأزياء المرتبطة</h2>
-                <div class="costumes-container">
-                    <% if(dance.costumes?.women?.name) { %>
-                        <div class="costume-card">
-                            <div class="costume-header women">زي النساء</div>
-                            <% if(dance.costumes.women.image) { %>
-                                <div class="costume-image">
-                                    <img src="<%= dance.costumes.women.image %>" alt="زي النساء">
+                            <% if (dance.description && dance.description.text) { %>
+                                <div class="text-block">
+                                    <p>
+                                        <%= dance.description.text %>
+                                    </p>
                                 </div>
-                            <% } %>
-                            <div class="costume-body">
-                                <h3><%= dance.costumes.women.name %></h3>
-                                <p><%= dance.costumes.women.description %></p>
-                            </div>
-                        </div>
-                    <% } %>
-                    
-                    <% if(dance.costumes?.men?.name) { %>
-                        <div class="costume-card">
-                            <div class="costume-header men">زي الرجال</div>
-                            <% if(dance.costumes.men.image) { %>
-                                <div class="costume-image">
-                                    <img src="<%= dance.costumes.men.image %>" alt="زي الرجال">
-                                </div>
-                            <% } %>
-                            <div class="costume-body">
-                                <h3><%= dance.costumes.men.name %></h3>
-                                <p><%= dance.costumes.men.description %></p>
-                            </div>
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-            <% } %>
-
-            <!-- المؤدون -->
-            <% if (dance.performers && dance.performers.length > 0) { %>
-            <div class="content-section">
-                <h2>
-                    <i class="fa-solid fa-users"></i> المؤدون 
-                    <span class="count-badge"><%= dance.performersCount || dance.performers.length %></span>
-                </h2>
-                <div class="performers-list">
-                    <% dance.performers.forEach((p, index) => { %>
-                        <div class="performer-card">
-                            <div class="performer-avatar">
-                                <% if(p.gender === 'نساء') { %>
-                                    <i class="fa-solid fa-person-dress" style="color: #e63946;"></i>
-                                <% } else if(p.gender === 'رجال') { %>
-                                    <i class="fa-solid fa-person" style="color: #1d3557;"></i>
-                                <% } else { %>
-                                    <i class="fa-solid fa-child" style="color: #457b9d;"></i>
                                 <% } %>
-                            </div>
-                            <div class="performer-details">
-                                <h4>مؤدي رقم <%= index + 1 %> <span class="gender-tag"><%= p.gender || 'غير محدد' %></span></h4>
-                                <div class="performer-meta">
-                                    <span><i class="fa-regular fa-id-card"></i> العمر: <%= p.age || '-' %></span>
-                                    <span><i class="fa-solid fa-briefcase"></i> المهنة: <%= p.occupation || '-' %></span>
-                                    <span><i class="fa-solid fa-graduation-cap"></i> التعليم: <%= p.education || '-' %></span>
-                                    <span><i class="fa-solid fa-street-view"></i> التلقين: <%= p.experience?.source || '-' %></span>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
                 </div>
-            </div>
-            <% } %>
+                <% } %>
 
-            <!-- الأدوات -->
-            <% if (dance.tools && dance.tools.length > 0) { %>
-            <div class="content-section">
-                <h2><i class="fa-solid fa-toolbox"></i> الأدوات المستخدمة</h2>
-                <div class="tools-container">
-                    <% dance.tools.forEach((t) => { %>
-                        <div class="tool-card">
-                            <% if(t.image) { %>
-                                <div class="tool-image">
-                                    <img src="<%= t.image %>" alt="<%= t.name %>">
-                                </div>
-                            <% } %>
-                            <div class="tool-body">
-                                <h3><%= t.name %></h3>
-                                <p><%= t.description %></p>
-                                <% if(t.video) { %>
-                                    <a href="<%= t.video %>" target="_blank" class="btn btn-outline tool-video-btn"><i class="fa-solid fa-play"></i> مشاهدة فيديو الأداة</a>
-                                <% } %>
+                    <!-- معرض الصور -->
+                    <% if (dance.description?.images && dance.description.images.length> 0) { %>
+                        <div class="content-section">
+                            <h2><i class="fa-solid fa-images"></i> صور مرتبطة</h2>
+                            <div class="gallery-grid">
+                                <% dance.description.images.forEach(img=> { %>
+                                    <div class="gallery-item">
+                                        <img src="<%= img %>" alt="صورة الرقصة">
+                                    </div>
+                                    <% }) %>
                             </div>
                         </div>
-                    <% }) %>
-                </div>
-            </div>
-            <% } %>
+                        <% } %>
+
+                            <!-- تفاصيل الرقصة والموسيقى -->
+                            <div class="content-section">
+                                <h2><i class="fa-solid fa-info-circle"></i> بيانات الرقصة والموسيقى</h2>
+                                <div class="data-grid">
+                                    <% if(dance.occasion) { %>
+                                        <div class="data-item"><span>المناسبة</span><strong>
+                                                <%= dance.occasion %>
+                                            </strong></div>
+                                        <% } %>
+                                            <% if(dance.presentationStyle) { %>
+                                                <div class="data-item"><span>أسلوب التقديم</span><strong>
+                                                        <%= dance.presentationStyle %>
+                                                    </strong></div>
+                                                <% } %>
+                                                    <% if(dance.mediumType) { %>
+                                                        <div class="data-item"><span>نوع الوسيط</span><strong>
+                                                                <%= dance.mediumType %>
+                                                            </strong></div>
+                                                        <% } %>
+                                                            <% if(dance.music && dance.music.accompanimentType) { %>
+                                                                <div class="data-item"><span>المصاحبة
+                                                                        الموسيقية</span><strong>
+                                                                        <%= dance.music.accompanimentType %>
+                                                                    </strong></div>
+                                                                <% } %>
+                                                                    <% if(dance.music && dance.music.songName) { %>
+                                                                        <div class="data-item">
+                                                                            <span>الأغنية</span><strong>
+                                                                                <%= dance.music.songName %>
+                                                                            </strong></div>
+                                                                        <% } %>
+                                </div>
+                            </div>
+
+                            <!-- الأزياء -->
+                            <% if ((dance.costumes?.women?.name) || (dance.costumes?.men?.name)) { %>
+                                <div class="content-section">
+                                    <h2><i class="fa-solid fa-shirt"></i> الأزياء المرتبطة</h2>
+                                    <div class="costumes-container">
+                                        <% if(dance.costumes?.women?.name) { %>
+                                            <div class="costume-card">
+                                                <div class="costume-header women">زي النساء</div>
+                                                <% if(dance.costumes.women.image) { %>
+                                                    <div class="costume-image">
+                                                        <img src="<%= dance.costumes.women.image %>" alt="زي النساء">
+                                                    </div>
+                                                    <% } %>
+                                                        <div class="costume-body">
+                                                            <h3>
+                                                                <%= dance.costumes.women.name %>
+                                                            </h3>
+                                                            <p>
+                                                                <%= dance.costumes.women.description %>
+                                                            </p>
+                                                        </div>
+                                            </div>
+                                            <% } %>
+
+                                                <% if(dance.costumes?.men?.name) { %>
+                                                    <div class="costume-card">
+                                                        <div class="costume-header men">زي الرجال</div>
+                                                        <% if(dance.costumes.men.image) { %>
+                                                            <div class="costume-image">
+                                                                <img src="<%= dance.costumes.men.image %>"
+                                                                    alt="زي الرجال">
+                                                            </div>
+                                                            <% } %>
+                                                                <div class="costume-body">
+                                                                    <h3>
+                                                                        <%= dance.costumes.men.name %>
+                                                                    </h3>
+                                                                    <p>
+                                                                        <%= dance.costumes.men.description %>
+                                                                    </p>
+                                                                </div>
+                                                    </div>
+                                                    <% } %>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <!-- المؤدون -->
+                                    <% if (dance.performers && dance.performers.length> 0) { %>
+                                        <div class="content-section">
+                                            <h2>
+                                                <i class="fa-solid fa-users"></i> المؤدون
+                                                <span class="count-badge">
+                                                    <%= dance.performersCount || dance.performers.length %>
+                                                </span>
+                                            </h2>
+                                            <div class="performers-list">
+                                                <% dance.performers.forEach((p, index)=> { %>
+                                                    <div class="performer-card">
+                                                        <div class="performer-avatar">
+                                                            <% if(p.gender==='نساء' ) { %>
+                                                                <i class="fa-solid fa-person-dress"
+                                                                    style="color: #e63946;"></i>
+                                                                <% } else if(p.gender==='رجال' ) { %>
+                                                                    <i class="fa-solid fa-person"
+                                                                        style="color: #1d3557;"></i>
+                                                                    <% } else { %>
+                                                                        <i class="fa-solid fa-child"
+                                                                            style="color: #457b9d;"></i>
+                                                                        <% } %>
+                                                        </div>
+                                                        <div class="performer-details">
+                                                            <h4>مؤدي رقم <%= index + 1 %> <span class="gender-tag">
+                                                                        <%= p.gender || 'غير محدد' %>
+                                                                    </span></h4>
+                                                            <div class="performer-meta">
+                                                                <span><i class="fa-regular fa-id-card"></i> العمر: <%=
+                                                                        p.age || '-' %></span>
+                                                                <span><i class="fa-solid fa-briefcase"></i> المهنة: <%=
+                                                                        p.occupation || '-' %></span>
+                                                                <span><i class="fa-solid fa-graduation-cap"></i>
+                                                                    التعليم: <%= p.education || '-' %></span>
+                                                                <span><i class="fa-solid fa-street-view"></i> التلقين:
+                                                                    <%= p.experience?.source || '-' %></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                        </div>
+                                        <% } %>
+
+                                            <!-- الأدوات -->
+                                            <% if (dance.tools && dance.tools.length> 0) { %>
+                                                <div class="content-section">
+                                                    <h2><i class="fa-solid fa-toolbox"></i> الأدوات المستخدمة</h2>
+                                                    <div class="tools-container">
+                                                        <% dance.tools.forEach((t)=> { %>
+                                                            <div class="tool-card">
+                                                                <% if(t.image) { %>
+                                                                    <div class="tool-image">
+                                                                        <img src="<%= t.image %>" alt="<%= t.name %>">
+                                                                    </div>
+                                                                    <% } %>
+                                                                        <div class="tool-body">
+                                                                            <h3>
+                                                                                <%= t.name %>
+                                                                            </h3>
+                                                                            <p>
+                                                                                <%= t.description %>
+                                                                            </p>
+                                                                            <% if(t.video) { %>
+                                                                                <a href="<%= t.video.startsWith('http') || t.video.startsWith('/') ? t.video : '/' + t.video %>" target="_blank"
+                                                                                    class="btn btn-outline tool-video-btn"><i
+                                                                                        class="fa-solid fa-play"></i>
+                                                                                    مشاهدة فيديو الأداة</a>
+                                                                                <% } %>
+                                                                        </div>
+                                                            </div>
+                                                            <% }) %>
+                                                    </div>
+                                                </div>
+                                                <% } %>
 
         </div>
 
@@ -249,7 +293,9 @@
                 <% if (dance.folkloreMaterial && dance.folkloreMaterial.collectionData) { %>
                     <ul class="widget-list">
                         <li><span>تاريخ الجمع:</span> <strong>
-                                <%= dance.folkloreMaterial.collectionData.collectionDate ? new Date(dance.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
+                                <%= dance.folkloreMaterial.collectionData.collectionDate ? new
+                                    Date(dance.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG')
+                                    : '-' %>
                             </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= dance.folkloreMaterial.collectionData.collectionPlace?.governorate || '-' %>
@@ -290,29 +336,30 @@
                                             <%= dance.folkloreMaterial.dataSource.tapeNumber %>
                                         </strong></li>
                                     <% } %>
-                                <% if(dance.folkloreMaterial.dataSource.sideNumber) { %>
-                                    <li><span>رقم الوجه:</span> <strong>
-                                            <%= dance.folkloreMaterial.dataSource.sideNumber %>
-                                        </strong></li>
-                                    <% } %>
-                                        <% if(dance.folkloreMaterial.dataSource.digitalFileLocation) { %>
-                                            <li><span>الملف الرقمي:</span> <strong>
-                                                    <%= dance.folkloreMaterial.dataSource.digitalFileLocation %>
+                                        <% if(dance.folkloreMaterial.dataSource.sideNumber) { %>
+                                            <li><span>رقم الوجه:</span> <strong>
+                                                    <%= dance.folkloreMaterial.dataSource.sideNumber %>
                                                 </strong></li>
                                             <% } %>
+                                                <% if(dance.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                                                    <li><span>الملف الرقمي:</span> <strong>
+                                                            <%= dance.folkloreMaterial.dataSource.digitalFileLocation %>
+                                                        </strong></li>
+                                                    <% } %>
                     </ul>
                     <% } else { %>
                         <p class="text-muted">البيانات غير متوفرة</p>
                         <% } %>
             </div>
 
-            <% if (typeof user !== 'undefined' && user) { %>
-            <div class="sidebar-widget action-widget">
-                <h3>تحديث البيانات</h3>
-                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
-                <a href="/admin/dance/edit/<%= dance._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
-            </div>
-            <% } %>
+            <% if (typeof user !=='undefined' && user) { %>
+                <div class="sidebar-widget action-widget">
+                    <h3>تحديث البيانات</h3>
+                    <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
+                    <a href="/admin/dance/edit/<%= dance._id %>" class="btn btn-outline" style="width: 100%;"><i
+                            class="fa-solid fa-pen-to-square"></i> تعديل المادة</a>
+                </div>
+                <% } %>
         </div>
 
     </div>
@@ -332,20 +379,26 @@
         position: relative;
         overflow: hidden;
     }
+
     .details-header::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(255,255,255,0.05)"/></svg>');
         opacity: 0.8;
         pointer-events: none;
     }
+
     .meta-tags {
         margin-bottom: 20px;
         display: flex;
         justify-content: center;
         gap: 10px;
     }
+
     .meta-tags .badge {
         background: rgba(255, 255, 255, 0.2);
         padding: 6px 15px;
@@ -353,12 +406,14 @@
         font-size: 0.9rem;
         backdrop-filter: blur(5px);
     }
+
     .details-header h1 {
         font-size: 2.5rem;
         margin: 0 0 30px 0;
         font-weight: 700;
         color: white;
     }
+
     .hero-audio {
         max-width: 600px;
         margin: 0 auto;
@@ -367,6 +422,7 @@
         border-radius: 12px;
         backdrop-filter: blur(10px);
     }
+
     .hero-audio audio {
         width: 100%;
         height: 45px;
@@ -381,11 +437,13 @@
         grid-template-columns: 2fr 1fr;
         gap: 30px;
     }
+
     @media (max-width: 900px) {
         .details-grid {
             grid-template-columns: 1fr;
         }
     }
+
     .main-content {
         display: flex;
         flex-direction: column;
@@ -403,6 +461,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         border: 1px solid var(--border-color);
     }
+
     .content-section h2 {
         color: var(--color-primary-dark);
         font-size: 1.4rem;
@@ -414,6 +473,7 @@
         align-items: center;
         gap: 10px;
     }
+
     .count-badge {
         background: var(--color-primary-light);
         color: white;
@@ -422,7 +482,7 @@
         border-radius: 20px;
         margin-right: auto;
     }
-    
+
     /* =========================================
        Dance Specific: Video & Images
        ========================================= */
@@ -430,28 +490,33 @@
         border-radius: 12px;
         overflow: hidden;
         margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         background: #000;
     }
+
     .main-video-container video {
         width: 100%;
         max-height: 450px;
         display: block;
     }
+
     .gallery-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 15px;
     }
+
     .gallery-item {
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease;
     }
+
     .gallery-item:hover {
         transform: scale(1.02);
     }
+
     .gallery-item img {
         width: 100%;
         height: 180px;
@@ -470,11 +535,13 @@
         word-break: break-word;
         font-size: 1.1rem;
     }
+
     .data-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
     }
+
     .data-item {
         background: var(--bg-light);
         padding: 20px;
@@ -485,15 +552,18 @@
         transition: all 0.3s ease;
         border: none;
     }
+
     .data-item:hover {
         background: white;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
+
     .data-item span {
         font-size: 0.85rem;
         color: var(--text-muted);
     }
+
     .data-item strong {
         color: var(--color-primary-dark);
         font-size: 1.05rem;
@@ -507,6 +577,7 @@
         gap: 25px;
         flex-wrap: wrap;
     }
+
     .costume-card {
         flex: 1;
         min-width: 280px;
@@ -514,39 +585,52 @@
         border-radius: 12px;
         overflow: hidden;
         border: 1px solid var(--border-color);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         transition: transform 0.2s ease;
     }
+
     .costume-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
     }
+
     .costume-header {
         padding: 10px 20px;
         color: white;
         font-weight: bold;
         text-align: center;
     }
-    .costume-header.women { background: #e63946; }
-    .costume-header.men { background: #1d3557; }
+
+    .costume-header.women {
+        background: #e63946;
+    }
+
+    .costume-header.men {
+        background: #1d3557;
+    }
+
     .costume-image {
         width: 100%;
         height: 200px;
         background: #f1f1f1;
     }
+
     .costume-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+
     .costume-body {
         padding: 20px;
     }
+
     .costume-body h3 {
         margin: 0 0 10px 0;
         color: var(--color-primary-dark);
         font-size: 1.2rem;
     }
+
     .costume-body p {
         margin: 0;
         color: var(--text-color);
@@ -562,6 +646,7 @@
         flex-direction: column;
         gap: 15px;
     }
+
     .performer-card {
         display: flex;
         align-items: center;
@@ -572,7 +657,12 @@
         border: 1px solid var(--border-color);
         transition: background 0.2s ease;
     }
-    .performer-card:hover { background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+
+    .performer-card:hover {
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
     .performer-avatar {
         width: 60px;
         height: 60px;
@@ -585,7 +675,11 @@
         border: 2px solid var(--border-color);
         flex-shrink: 0;
     }
-    .performer-details { flex: 1; }
+
+    .performer-details {
+        flex: 1;
+    }
+
     .performer-details h4 {
         margin: 0 0 8px 0;
         color: var(--color-primary-dark);
@@ -594,6 +688,7 @@
         align-items: center;
         gap: 10px;
     }
+
     .gender-tag {
         font-size: 0.75rem;
         background: var(--bg-light);
@@ -601,6 +696,7 @@
         border-radius: 12px;
         color: var(--text-muted);
     }
+
     .performer-meta {
         display: flex;
         flex-wrap: wrap;
@@ -608,6 +704,7 @@
         font-size: 0.9rem;
         color: var(--text-color);
     }
+
     .performer-meta span i {
         color: var(--color-primary);
         margin-left: 5px;
@@ -621,36 +718,42 @@
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 25px;
     }
+
     .tool-card {
         background: white;
         border-radius: 12px;
         overflow: hidden;
         border: 1px solid var(--border-color);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         display: flex;
         flex-direction: column;
     }
+
     .tool-image {
         width: 100%;
         height: 180px;
         background: #f1f1f1;
     }
+
     .tool-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+
     .tool-body {
         padding: 20px;
         display: flex;
         flex-direction: column;
         flex: 1;
     }
+
     .tool-body h3 {
         margin: 0 0 10px 0;
         color: var(--color-primary-dark);
         font-size: 1.2rem;
     }
+
     .tool-body p {
         margin: 0 0 20px 0;
         color: var(--text-color);
@@ -658,6 +761,7 @@
         font-size: 0.95rem;
         flex: 1;
     }
+
     .tool-video-btn {
         width: 100%;
         text-align: center;
@@ -674,6 +778,7 @@
         gap: 20px;
         min-width: 0;
     }
+
     .sidebar-widget {
         background: white;
         border-radius: 12px;
@@ -681,6 +786,7 @@
         border: 1px solid var(--border-color);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
+
     .sidebar-widget h3 {
         font-size: 1.1rem;
         color: var(--color-primary-dark);
@@ -692,11 +798,13 @@
         align-items: center;
         gap: 8px;
     }
+
     .widget-list {
         list-style: none;
         padding: 0;
         margin: 0;
     }
+
     .widget-list li {
         margin-bottom: 12px;
         display: flex;
@@ -705,26 +813,34 @@
         border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
         padding-bottom: 8px;
     }
+
     .widget-list li:last-child {
         border-bottom: none;
         margin-bottom: 0;
         padding-bottom: 0;
     }
-    .widget-list li span { color: var(--text-muted); }
+
+    .widget-list li span {
+        color: var(--text-muted);
+    }
+
     .widget-list li strong {
         color: var(--color-text);
         text-align: left;
         max-width: 60%;
     }
+
     .action-widget {
         background: linear-gradient(to bottom, #fff, var(--bg-light));
         text-align: center;
     }
+
     .action-widget h3 {
         justify-content: center;
         border-bottom: none;
         margin-bottom: 10px;
     }
+
     .action-widget p {
         font-size: 0.9rem;
         color: var(--text-muted);

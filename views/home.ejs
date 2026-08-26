@@ -71,7 +71,7 @@
     <div class="container">
         <div class="section-header">
             <h2>التصنيفات الرئيسية</h2>
-            <p>اضغط على أي تصنيف لاستعراض المواد الفلكلورية التابعة له</p>
+            <p>تعرف على التصنيفات العلمية للأرشيف ومحتوى كل تصنيف</p>
         </div>
         <div class="categories-grid">
             <% categories.forEach(cat => { %>
@@ -87,16 +87,23 @@
                     <ul class="overlay-elements-list">
                         <% if (cat.elementsList && cat.elementsList.length > 0) { %>
                             <% cat.elementsList.forEach(el => { %>
-                                <li><%- el.icon %> <%= el.name %></li>
+                                <li>
+                                    <%- el.icon %> <%= el.name %>
+                                    <% if (!el.ready) { %> <span style="font-size: 0.8em; opacity: 0.7;">(قريباً)</span> <% } %>
+                                </li>
                             <% }); %>
                         <% } else { %>
                             <li>لا توجد عناصر مضافة</li>
                         <% } %>
                     </ul>
-                    <a href="/archive?category=<%= cat._id %>" class="btn btn-outline btn-sm">تصفح الأرشيف</a>
                 </div>
             </div>
             <% }); %>
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/archive" class="btn btn-primary" style="padding: 12px 30px; font-size: 1.1rem; border-radius: 30px;">
+                <i class="fa-solid fa-layer-group"></i> تصفح الأرشيف بالكامل
+            </a>
         </div>
     </div>
 </section>

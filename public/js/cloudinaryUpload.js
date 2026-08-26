@@ -100,7 +100,12 @@ class CloudinaryUploader {
                 progressBar.style.width = '0%';
                 
                 try {
-                    const url = await this.uploadFile(file, resourceType, (percent) => {
+                    let typeForThisFile = resourceType;
+                    if (file.name.match(/\.(pdf|doc|docx|xls|xlsx|txt|csv)$/i)) {
+                        typeForThisFile = 'raw';
+                    }
+
+                    const url = await this.uploadFile(file, typeForThisFile, (percent) => {
                         progressBar.style.width = `${percent}%`;
                         if(percent === 100) {
                             progressText.innerText = `جاري المعالجة... ${i+1} من ${files.length}`;

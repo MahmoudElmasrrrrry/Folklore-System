@@ -122,7 +122,8 @@
                                                                                                         الأداء</span><strong>
                                                                                                         <%= mawwal.performanceMethod
                                                                                                             %>
-                                                                                                    </strong></div>
+                                                                                                    </strong>
+                                                                                                </div>
                                                                                                 <% } %>
                         </div>
                     </div>
@@ -247,7 +248,9 @@
                 <% if (mawwal.folkloreMaterial && mawwal.folkloreMaterial.collectionData) { %>
                     <ul class="widget-list">
                         <li><span>تاريخ الجمع:</span> <strong>
-                                <%= mawwal.folkloreMaterial.collectionData.collectionDate ? new Date(mawwal.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG') : '-' %>
+                                <%= mawwal.folkloreMaterial.collectionData.collectionDate ? new
+                                    Date(mawwal.folkloreMaterial.collectionData.collectionDate).toLocaleDateString('ar-EG')
+                                    : '-' %>
                             </strong></li>
                         <li><span>المحافظة:</span> <strong>
                                 <%= mawwal.folkloreMaterial.collectionData.collectionPlace.governorate %>
@@ -288,30 +291,32 @@
                                             <%= mawwal.folkloreMaterial.dataSource.tapeNumber %>
                                         </strong></li>
                                     <% } %>
-                                <% if(mawwal.folkloreMaterial.dataSource.sideNumber) { %>
-                                    <li><span>رقم الوجه:</span> <strong>
-                                            <%= mawwal.folkloreMaterial.dataSource.sideNumber %>
-                                        </strong></li>
-                                    <% } %>
-                                        <% if(mawwal.folkloreMaterial.dataSource.digitalFileLocation) { %>
-                                            <li><span>الملف الرقمي:</span> <strong>
-                                                    <%= mawwal.folkloreMaterial.dataSource.digitalFileLocation %>
+                                        <% if(mawwal.folkloreMaterial.dataSource.sideNumber) { %>
+                                            <li><span>رقم الوجه:</span> <strong>
+                                                    <%= mawwal.folkloreMaterial.dataSource.sideNumber %>
                                                 </strong></li>
                                             <% } %>
+                                                <% if(mawwal.folkloreMaterial.dataSource.digitalFileLocation) { %>
+                                                    <li><span>الملف الرقمي:</span> <strong>
+                                                            <%= mawwal.folkloreMaterial.dataSource.digitalFileLocation
+                                                                %>
+                                                        </strong></li>
+                                                    <% } %>
                     </ul>
                     <% } else { %>
                         <p class="text-muted">البيانات غير متوفرة</p>
                         <% } %>
             </div>
 
-            <% if (typeof user !== 'undefined' && user) { %>
-            <div class="sidebar-widget action-widget">
-                <h3>تحديث البيانات</h3>
-                <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
-                <a href="/admin/mawwal/edit/<%= mawwal._id %>" class="btn btn-outline" style="width: 100%;"><i class="fa-solid fa-pen-to-square"></i> تعديل
-                    المادة</a>
-            </div>
-            <% } %>
+            <% if (typeof user !=='undefined' && user) { %>
+                <div class="sidebar-widget action-widget">
+                    <h3>تحديث البيانات</h3>
+                    <p>يمكن للباحثين المعتمدين تحديث بيانات هذه المادة.</p>
+                    <a href="/admin/mawwal/edit/<%= mawwal._id %>" class="btn btn-outline" style="width: 100%;"><i
+                            class="fa-solid fa-pen-to-square"></i> تعديل
+                        المادة</a>
+                </div>
+                <% } %>
         </div>
 
     </div>
@@ -332,7 +337,10 @@
     .details-header::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l5 15 15 5-15 5-5 15-5-15-15-5 15-5 5-15z" fill="rgba(255,255,255,0.05)"/></svg>');
         opacity: 0.8;
         pointer-events: none;
@@ -470,7 +478,7 @@
     .data-item:hover {
         background: white;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
 
     .data-item span {

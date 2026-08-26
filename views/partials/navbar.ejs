@@ -8,11 +8,11 @@
             <li><a href="/">الرئيسية</a></li>
             <li><a href="/archive">الأرشيف</a></li>
             <% if (user) { %>
-                <li><a href="/admin">لوحة التحكم</a></li>
-                <li><a href="/folklore" class="btn-nav"><i class="fa-solid fa-plus"></i> إضافة مادة جديدة</a></li>
-                <li><a href="/logout" class="btn-nav" style="background-color: #e74c3c;"><i class="fa-solid fa-right-from-bracket"></i> خروج</a></li>
+                <li><a href="/admin" class="btn-nav btn-nav-outline"><i class="fa-solid fa-gauge-high"></i> لوحة التحكم</a></li>
+                <li><a href="/folklore" class="btn-nav btn-nav-primary"><i class="fa-solid fa-plus"></i> إضافة مادة</a></li>
+                <li><a href="/logout" class="btn-nav btn-nav-danger"><i class="fa-solid fa-right-from-bracket"></i> خروج</a></li>
             <% } else { %>
-                <li><a href="/login" class="btn-nav"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</a></li>
+                <li><a href="/login" class="btn-nav btn-nav-outline"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</a></li>
             <% } %>
         </ul>
     </div>
