@@ -22,7 +22,7 @@ const mawwalSchema = new Schema(
 
     mawwalType: {
       type: String,
-      enum: ["قصصي", "غنائي", "ملحمي"],
+      enum: ["قصصي", "غنائي"],
       required: true,
     },
 
@@ -47,7 +47,7 @@ const mawwalSchema = new Schema(
 
     performanceMode: {
       type: String,
-      enum: ["مغني", "ملقن"],
+      enum: ["مغني مصاحب آلات", "مغني بدون آلات", "سرد"],
     },
 
     dialect: {
@@ -66,7 +66,7 @@ const mawwalSchema = new Schema(
     //  3 سرد الموال 
     narrationTime: {
       type: String,
-      enum: ["قديم", "غير محدد", "حديث"],
+      enum: ["قديم", "غير محدد"],
     },
 
     narrationPlace: {
@@ -76,20 +76,9 @@ const mawwalSchema = new Schema(
 
     narrativeStyle: {
       type: String,
-      enum: ["وصفي", "حواري", "ملحمي"],
+      enum: ["وصفي", "حواري"],
     },
 
-    rhetoricalImagery: {
-      type: [String],
-      default: [],
-    },
-
-    rhymeRoleInNarration: String,
-
-    storyStructure: {
-      type: [String],
-      default: [],
-    },
 
     //  4 الدلالات الثقافية والاجتماعية 
     socialFunction: {
@@ -98,14 +87,10 @@ const mawwalSchema = new Schema(
       default: [],
     },
 
-    socialPracticesAndRituals: String,
-
     reflectedValues: {
       type: [String],
       default: [],
     },
-
-    depictedSocialEnvironment: String,
 
     //  5 الأداء والتداول 
     occasion: {
@@ -143,17 +128,9 @@ const mawwalSchema = new Schema(
 
     practiceContext: String,
 
-    //  7 مشاركة المجتمع المحلي 
-    supportingInstitutions: {
-      type: [String],
-      default: [],
-    },
+  
 
-    communityDocumentationEngagement: String,
-
-    narrationVariants: String,
-
-    //  8 الملاحظات والتعليقات 
+    //  7 الملاحظات والتعليقات 
     researcherNotes: String,
 
     geographicSpread: String,
@@ -163,7 +140,7 @@ const mawwalSchema = new Schema(
       default: [],
     },
 
-    //  9 خصائص العنصر 
+    //  8 خصائص العنصر 
     currentStatus: String,
 
 

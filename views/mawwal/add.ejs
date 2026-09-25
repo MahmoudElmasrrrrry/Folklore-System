@@ -21,12 +21,11 @@
                     <option value="">اختر النوع</option>
                     <option>قصصي</option>
                     <option>غنائي</option>
-                    <option>ملحمي</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>التصنيف الموضوعي (افصل بـ -)</label>
-                <input type="text" name="thematicClassification" class="form-control" placeholder="بطولة - ملحمي">
+                <input type="text" name="thematicClassification" class="form-control" placeholder="بطولة - متعدد القيم">
             </div>
         </div>
     </div>
@@ -62,8 +61,9 @@
                 <label>نمط الأداء</label>
                 <select name="performanceMode" class="form-control">
                     <option value="">اختر النمط</option>
-                    <option>مغني</option>
-                    <option>ملقن</option>
+                    <option>مغني مصاحب آلات </option>
+                    <option>مغني بدون آلات </option>
+                    <option>سرد</option>
                 </select>
             </div>
             <div class="form-group">
@@ -91,11 +91,10 @@
                     <option value="">اختر الزمن</option>
                     <option>قديم</option>
                     <option>غير محدد</option>
-                    <option>غير مجدد</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>مكان القص</label>
+                <label>المنسابة</label>
                 <select name="narrationPlace" class="form-control">
                     <option value="">اختر المكان</option>
                     <option>عرس</option>
@@ -108,23 +107,8 @@
                     <option value="">اختر الأسلوب</option>
                     <option>وصفي</option>
                     <option>حواري</option>
-                    <option>ملحمي</option>
                 </select>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>التصوير البلاغي (افصل بـ -)</label>
-                <input type="text" name="rhetoricalImagery" class="form-control" placeholder="تشبيه - استعارة">
-            </div>
-            <div class="form-group">
-                <label>بنية القصة (افصل بـ -)</label>
-                <input type="text" name="storyStructure" class="form-control" placeholder="بداية - عقدة - ذروة">
-            </div>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <label>دور القافية في السرد</label>
-            <textarea name="rhymeRoleInNarration" class="form-control" rows="2"></textarea>
         </div>
     </div>
 
@@ -141,19 +125,11 @@
                 <input type="text" name="reflectedValues" class="form-control" placeholder="الكرم - الشجاعة">
             </div>
         </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <label>الممارسات والطقوس الاجتماعية</label>
-            <textarea name="socialPracticesAndRituals" class="form-control" rows="2"></textarea>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <label>البيئة الاجتماعية المصورة</label>
-            <textarea name="depictedSocialEnvironment" class="form-control" rows="2"></textarea>
-        </div>
     </div>
 
     <!-- 5. الأداء والتداول -->
     <div class="form-section">
-        <h2 class="form-section-title"><i class="fa-solid fa-music"></i> 5. الأداء والتداول</h2>
+        <h2 class="form-section-title"><i class="fa-solid fa-music"></i> 5. الأداء والممارسة</h2>
         <div class="form-row">
             <div class="form-group">
                 <label>المناسبة (افصل بـ -)</label>
@@ -191,10 +167,6 @@
                 <label>رفع ملف صوتي للموال</label>
                 <input type="file" name="audioFile" class="form-control" accept="audio/*" style="padding: 5px;">
             </div>
-            <div class="form-group">
-                <label>أو إضافة رابط خارجي للملف</label>
-                <input type="url" name="audioUrl" class="form-control" placeholder="https://...">
-            </div>
         </div>
         <div class="form-group" style="margin-top: 15px;">
             <label>تقديم الموال</label>
@@ -215,26 +187,7 @@
         </div>
     </div>
 
-    <!-- 7. مشاركة المجتمع -->
-    <div class="form-section">
-        <h2 class="form-section-title"><i class="fa-solid fa-handshake"></i> 7. مشاركة المجتمع المحلي</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>المؤسسات الداعمة (افصل بـ -)</label>
-                <input type="text" name="supportingInstitutions" class="form-control">
-            </div>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <label>مشاركة المجتمع في التوثيق</label>
-            <textarea name="communityDocumentationEngagement" class="form-control" rows="2"></textarea>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <label>تنوع الروايات (Variants)</label>
-            <textarea name="narrationVariants" class="form-control" rows="2"></textarea>
-        </div>
-    </div>
-
-    <!-- 8. الملاحظات والتعليقات -->
+    <!-- 7. الملاحظات والتعليقات -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-clipboard"></i> 8. الملاحظات والتعليقات</h2>
         <div class="form-row">
@@ -253,7 +206,7 @@
         </div>
     </div>
 
-    <!-- 9. خصائص أخرى -->
+    <!-- 8. خصائص أخرى -->
     <div class="form-section">
         <h2 class="form-section-title"><i class="fa-solid fa-star"></i> 9. خصائص العنصر</h2>
         <div class="form-group">
